@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Git</title>
+</head>
+<body>
+如何和别人的仓库保持连接并且更新
+    1 github 就是一个仓库，用来存储自己的代码
+    2 在本地建立一个文件夹用来更新老师的github仓库里的讲义
+    3 在建立好的文件夹右键打开git Bash
+    4  输入第一条命令： git clone http:addff.git地址(群里地址的名字是以.git结尾的),待命令执行结束之后，在本地文件夹内就会出现一个和github仓库相同的文件夹。并且这个文件夹内有一个隐藏的文件夹叫做.git。这样我们就完成了本地和远程仓库的连接
+    5 链接以后就可以在本地更新远程仓库里的所有内容了。(以后每天返学回家直接更新就可以了)   git pull origin master
+
+如何把自己的代码放到提交到自己的仓库
+   1 git add -A  我这样要把我所有的文件都提交到我的远程github仓库中，这会版本号都没有生成，只是在一个暂存区
+   2 git commit -m'这里是这一次提交我的描述'  描述的内容一般是这一次提交的代码是干嘛的，这个提交动作之后就会在版本库里生成了一个新的版本，但是我的仓库中还没有最新状态
+      verson 1  静态
+             2  js写完了
+            48  好多需求
+   3 git push origin master 把已经生成版本号之后的提交到远程仓库
+    提交的过程中验证用户名和密码
+
+如何把本地文件夹初始化成一个本地仓库  其实一个git clone 远程仓库地址  完成了以下三步
+
+    1 git init 这个命令一定在这个文件夹打开gitbash里操作
+    2 git remote add origin 远程仓库地址
+    3 git pull origin master
+
+
+</body>
+</html>

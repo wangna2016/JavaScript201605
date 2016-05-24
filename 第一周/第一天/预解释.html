@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    /*
+    *   js在执行的时候，首先看代码中是否有带var的，如果有那么在代码执行之前要做预解释(变量提声)，但是并没有赋值，赋值的动作是在代码执行这一行之后
+    *    function关键字和var不一样， function不仅仅提前声明还赋值
+    *    区别：var 声明没有赋值默认undefined  function声明并且赋值
+    *
+    * */
+    //console.log(num); //undefined
+    //console.log(sum);
+    /*console.log(fn);
+    var num = 12; //12
+    console.log(num); //12
+    var obj = {name:'zhufeng',age:7}; //引用数据类型，内存地址(堆)
+    function sum(num1,num2){ //也是一个堆内存地址
+        console.log(num1+num2);
+    }*/
+    //in是判断属性是否属于某个对象，返回值只有true和false
+    var fn = function (){}; //
+    //var haha = 1; //如果声明一个变量直接放在了全局内可以理解为是window的一个属性
+    //console.log(window.haha);
+
+    //console.log(num); //在条件里的这个变量是否被提前声明了
+    if(!'num' in window){ //这个条件是否成立，其实看条件里的 var num这个被预解释了
+        var num = 12; //由于预解释不理会条件，所以这个num就会被预解释，但是只要预解释了它就是window的一个属性。当代码执行到这个条件的时候不成立了。所以这个赋值12的动作没有被执行。num的值就是默认的undefined
+    }
+    //console.log(num);//取决于条件是否成立
+
+    //console.log(x);
+    function getX(a){
+        console.log(x);
+        var x = 100;
+        console.log(x);
+        function xxxx(){
+        } //这个函数只有在getX执行的时候才会预解释。
+        return a;
+    }
+
+    getX();
+    getX(100);
+    /*
+    *   预解释只发生在当前作用域，首先一定发生在window的全局作用域。函数执行的时候，在函数执行形成的私有作用域也会预解释当前的。函数执行步骤： 1 形参赋值(形参是相当于在当前私有作用域内的私有变量。并且在函数体代码执行之前就有了值。)  2 预解释当前作用域内的带var和function的  3 代码逐行执行
+    *
+    * */
+
+
+
+    /*
+        预解释需要注意的：
+    *  1 变量提前声明忽略条件
+    *  2 预解释之发生在当前作用域内
+    *  3 全局作用域内的自运行函数不被预解释
+    *  4 预解释var只看等号左面的，即使赋值一个函数也不会预先解释这个函数var fnn = function (){}
+    *  5 return下面的代码也会被预解释虽然不被执行,但是return的值即使是一个函数也不会被预解释，然是如果是一个自运行函数那么等自运行函数执行结束后的结果留下来
+    *  6  如果函数名和变量重名，不需要重新声明，但是却会重新赋值。代码在执行到变量赋值的时候会重新赋值，结合最后一个fn和madongmei的例子
+    *
+    * */
+    //函数在执行的时候，首先形成一个私有作用域(供代码执行的环境,这是栈内存),定义在这个函数内的变量是私有变量。并且这个私有变量在外界是不能访问的。我们把这种函数执行的时候形成的私有作用域内保护私有变量不受外界干扰的的机制叫做闭包.
+    //函数每次执行形成的私有作用域之间没有任何关系
+    console.log(total); //un
+    var total = 0; // total = 0
+    function sum(num1,num2,total){ //这个total其实也相当于在当前函数执行过程中形成的私有作用域内的一个私有变量 var total = undefined
+        console.log(total); //0当代码执行到这的时候，当前作用域内其实就是这个函数里没有一个带var 的total。就去上一级作用域，如果上一个作用域也没有那么就一直查找到window顶级作用域，如果还没有报错
+         var total = num1 + num2;//这是赋值过程，同样当前作用域内没有一个带var的total变量。同样去上一层作用域去查找。把window作用域的total=0重新赋值成300了
+        console.log(total); //300 这个是在执行的过程中打印的
+
+    }
+    console.log(sum(100,200)); //函数的执行： 形成私有作用域  形参赋值 num1,num2是当前作用域内的两个私有变量    当前作用域预解释  total和外面的total不是一回事。这个私有的。外面的是全局的。
+    console.log(total);//300
+    /*
+    *   分别改动了三次：把sum函数里的私有total前面的var去掉==> 无论任何操作其实都是查找上一级作用域的total
+    *                  把sum函数添加了一个形参total==> 相当于在函数体内var了一个total的相同的效果
+    *                  又把total前面的var添加上了
+    * */
+
+    //undefined 0 300 ??
+    //undefined 0 0 0
+    //undefined 0 300 0
+    //undefined 0 300 300
+    //undefined undefined 300 0
+
+    //var xx = 10;
+    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+    (function (){
+        function foo(){
+            xx = 100; //添加了xx的全局变量==> window.xx
+            //代码执行到这一行的时候其实就是相当于直接给window.xx属性赋值,window的属性赋值操作是可以把window省略的。定时器的window.setTimeout和直接setTimeout是一个。window同样可以省略
+        }
+        foo();
+    })();
+/*
+*  var  fx = 0;
+    fx = 0;
+    全局作用域内带var和不带var都是给全局window添加了一个属性。只是带var的是会被预解释的。
+* */
+
+
+
+    console.log(xx);
+    //console.log(window.xx);
+
+    window.yyy = 10000;
+
+    //
+    function fn1(){
+        //arguments是内置接受参数的集合，函数执行的时候传了多少实参在这个arguments的集合里都能获取到
+        console.log(num); // 如果打印出来undefined说明return下面的代码被预解释了，但是永远不会执行
+        console.log();
+        return (function (){ //return后面的代码不执行
+            //alert();//这个alert执行了，那就说明return一个自运行函数，那么需要等到这个函数执行完的结果返回,这个自运行函数没有reutrn那么就是默认留下来一个undefined
+            return ('lidongyun');
+        })();
+
+        var num = 10;
+    }
+
+    var res = fn1(); //res是fn1运行结束后的结果，就看fn1中的return后面的东西，发现是一个自运行函数，那么就等这个自运行函数运行完留下来的结果，自运行函数运行留下来的结果要看这个自运行函数里的return
+    console.log(res);
+    /////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+    fn(); //2
+
+    function fn(){ console.log(1); }  // var fn = function (){}
+    fn(); // 2
+
+    var fn = 'madongmei';
+
+    console.log(fn); // madongmei
+
+    function fn(){
+        console.log(2);
+    }
+
+    console.log(fn()); //Error
+
+    //
+
+</script>
