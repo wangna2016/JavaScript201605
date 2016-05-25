@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>this</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    /*
+    *   js中的this常见用法： 我们重点研究this在函数中的用法
+    *       1 在事件绑定的匿名函数中的this是事件被触发的时候的元素主体 我们用自定义属性来解决选显卡的索引问题
+    *       2 函数中的this是谁，要看函数执行时候调用这个函数的主体.换句话说，就是函数在执行的时候前面"."前面是谁this就是谁。如果没有"."就是window
+    *       3 自执行函数中的this永远是window
+    *
+    *       4 构造函数中的this是当前实例
+    *       5 call和apply可以强制改变this
+    * */
+    //console.log(this); //window
+/*
+    function fn(){
+       // console.log(this);
+    }
+*/
+  /*  var obj = {
+        fn: fn
+    };*/
+
+    //fn(); //window
+    //obj.fn(); //obj
+
+    /////////////////////////////////////////
+    function foo(){
+        //console.log(this);
+    }
+    var oo = {
+        fn: function (){
+            //console.log(this);
+           // console.log(this);
+
+        }
+    }
+    //oo.fn(); //this ==> oo
+
+    /////////////////////////////////
+
+/*
+    var ojb2 = {
+        haha : !function (){
+            //console.log(this);
+        }()
+    }
+*/
+
+
+    /////////////////////////////////////////////////////
+    var num = 2; //这是全局作用域也可以理解是window的一个属性 window.num *= 2 ==>v4 在给对象赋值的过程中，执行自运行函数的时候里面的this改变的值 ==> 4+10=14。这是第一次运行f，f中的那个this是window。把4修改成了14
+    var obj = { //对象赋值过程  1 开辟一个新的对内存  2 把对象的属性值和属性名存入到这个堆内存中  3 把堆内存地址赋值给这个变量
+        num : 3, // 10+3 ==> 13
+        fn : (function (num){ //fn属性是一个自运行函数，先去执行这个自运行函数，然后把自运行函数执行后的结果赋值给fn属性,函数执行三步骤： 1 形参赋值  2 预解释  3 代码执行
+            //var num = 2; ==>22 ==> 45 ==》30(f执行的时候) ==> 15
+            this.num *= 2; //这个this是谁？自运行函数里的this永远是window ==》window.num *= 2;
+            num += 20; //num是谁? 是当前作用域内的私有变量。
+            var num = 45;//形参和私有变量名字相同这个var就没有作用了
+
+            return function (){ //在函数执行的过程中遇到了return并且还是一个引用数据类型，我们要注意的就是这个返回的匿名函数是否被函数外面的变量或者属性占用。如果占用这个函数的堆内存不会被释放，并且由于运行这个自运行函数产生的栈内存也不会被释放
+                this.num += 10; //this是谁？window.num += 10;  obj.num
+                num -= 15; //当前作用域是否有一个num没有，就去上一级作用域去找。由于上一级没有被释放。说明num最后一次被修改成45，然后-15==>30
+                console.log(num); //当前作用域没有num，到上一级作用域去查找。就是刚刚被修改过的30
+            }
+        })(num) //num是谁？2
+    }
+    //再给fn的赋值过程中，就把全局的num修改成了4，自运行函数形参num作为一个私有变量修改成了45
+    var f = obj.fn; //此时的obj.fn就是代表自运行函数返回的那个匿名函数的堆内存地址,并且把这个堆内存地址赋值给f，此时这个堆内存地址有f和ojb.fn同时占用
+    f(); //f就是那个返回的匿名函数，没有形参，没有var。在这里执行f函数中的this就是window。因为前面没有'.' ==> 30
+    obj.fn(); //通过obj.fn属性还是能找到返回的那个匿名函数的堆内存地址，此时的this就是fn执行的时候前面的obj.  15
+    console.log(window.num,obj.num);  //14 13
+    //30 15 14 13
+    //
+
+
+
+</script>

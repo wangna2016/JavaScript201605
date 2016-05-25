@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    var num = 5;
+    var obj = {
+        num : 4,
+        fn : (function (){
+            /*alert(); *///如果这个窗弹出来一次就说明只在赋值的过程中执行一次,如果弹窗多次说明每次获取obj.fn的时候这个自运行函数都会执行一次
+            this.num -= 2;
+            num -= 3;
+             var  num = 10;
+            return function (){
+                this.num -= 10;
+                num *= 2;
+                console.log(num);
+
+            }
+        })(num)
+    }
+    var f = obj.fn;
+    f();
+    obj.fn();
+    //函数中的this是谁看函数在哪里执行的，上一级作用域是谁是看函数在哪里定义的
+    console.log(window.num,obj.num);
+    //  李祥宇  20 40 -7 -6
+    //  尚      20 40 -7 -6
+    // 李树鹏
+    //
+</script>
+
+
+<!--
+<script>
+    var y = 1000;
+    var obj = {y:3};
+    obj.fn = (function (n){
+        console.log(n);
+        return function (){}
+    })(obj.y);
+</script>-->
