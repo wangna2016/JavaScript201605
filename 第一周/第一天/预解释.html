@@ -35,6 +35,7 @@
     }
     //console.log(num);//取决于条件是否成立
 
+
     //console.log(x);
     function getX(a){
         console.log(x);
@@ -75,7 +76,7 @@
 
     }
     console.log(sum(100,200)); //函数的执行： 形成私有作用域  形参赋值 num1,num2是当前作用域内的两个私有变量    当前作用域预解释  total和外面的total不是一回事。这个私有的。外面的是全局的。
-    console.log(total);//300
+    console.log(total);//
     /*
     *   分别改动了三次：把sum函数里的私有total前面的var去掉==> 无论任何操作其实都是查找上一级作用域的total
     *                  把sum函数添加了一个形参total==> 相当于在函数体内var了一个total的相同的效果
