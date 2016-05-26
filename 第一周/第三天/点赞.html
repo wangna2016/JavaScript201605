@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{ margin: 0; padding: 0; }
+        #wrap{ width: 400px; height: 60px; line-height: 60px; font-family: Microsoft Yahei; border: 1px solid #ccc; border-radius: 3px; margin: 30px auto; text-align: center; font-size: 30px; cursor: pointer; -webkit-user-select: none;
+/*
+        overflow: hidden; 溢出隐藏
+        text-overflow: ellipsis; 文本溢出省略号
+        white-space: nowrap; 强制不换行
+*/
+
+        }
+        #wrap span{ color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        认为老师很帅的请点赞
+        <span>1</span>
+    </div>
+</body>
+</html>
+<script>
+    var oDiv = document.getElementById('wrap');
+    var span = oDiv.getElementsByTagName('span')[0];
+/*
+    console.dir(oDiv); //绑定事件的过程其实是把原来元素默认的事件属性的null修改成了一个函数
+    var count = 0; //全局变量
+    oDiv.onclick = function (){
+        //span里面的1不断累加
+        count++; //点击一次变成了1,当前作用域内没有一个叫做count的变量。
+        span.innerHTML = count; //当前作用域内没有一个count变量。去上一级的window作用域去查找
+    }
+*/
+
+    //上面这种办法count是全局。全局变量都可以改不安全。如何把这个count变成一个私有变量呢?
+
+/*
+    ;(function (){ //这是一个自运行函数，运行时候就会形成一个私有作用域
+        var count = 0; //这个直接变成了一个私有变量
+        oDiv['onclick'] = function (){ //这里符合内存不释放条件.那么count这个私有变量在自运行函数产生的那个栈内存中一直被保存下来了
+            count++; //这样每次累加的时候去上一级作用域查找都是在上一次的结果上累加
+            span.innerHTML = count;
+        }
+    })();
+*/
+
+    //其实我们就是想让count留下来目的就达到了，通过作用域不释放的方式有两种，上一种是利用了事件绑定的方式，还有一种return
+/*
+    oDiv.onclick = (function (){
+        var count = 0;
+        return function (){
+            count++;
+            span.innerHTML = count;
+        }
+    })();
+*/
+/*
+//其实我们保存count还可以通过自定义属性的方式，我们把这个count这个自定义属性存给oDiv这个被点击的元素比较好
+    oDiv.count = 0; //在oDiv身上添加了一个自定义属性
+    oDiv.onclick = function (){
+        //this?? oDiv
+
+        span.innerHTML = ++this.count ; //我们先累加，然后再做赋值运算; 这里注意下 i++和++i的区别。放在独立一行的时候没有区别，但是只要涉及到了运算就需要区别
+    }
+*/
+    oDiv.onclick = function (){
+        span.innerHTML++; //span.innerHtml = span.innerHTML + 1;
+        //这里其实就是把上一次留下来的值先取到，然后累加1之后再重新赋值回去
+        //这里注意下： innerHTML取值回来都是字符串，说明++运算有把字符串强制转化为数字的功能
+    }
+
+
+
+</script>

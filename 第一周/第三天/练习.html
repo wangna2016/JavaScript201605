@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    function Fn(){
+       /* this.x = 100;
+        this.getX = function (){
+            console.log(this.x);
+        }*/
+    }
+    Fn.prototype.x = 200;
+    Fn.prototype.y = 300;
+    Fn.prototype.getX = function (){
+        console.log(this.x);
+    }
+    Fn.prototype = { //一个新的对内存地址把原来的内置的原型的那个对象替换了
+        constructor: Fn,
+        x : 200,
+        y : 300,
+        getX : function (){
+            console.log(this.x);
+        }
+    }
+    var f1 = new Fn();
+    var f2 = new Fn();
+    console.log(f1.getX == f2.getX,f1.getX == f2.__proto__.getX,f1.__proto__.getX == Fn.prototype.getX);
+    f1.getX();
+    f1.__proto__.getX();
+    //f f t 100 200
+    //f f t ? ?
+    //f f t ? ?
+    //f t t 100 200
+    console.log(f1.hasOwnProperty('y'));
+    for (var key in f1){
+        if(f1.hasOwnProperty(key)){
+            console.log(key + ':' + f1[key]);
+        }
+       /* if(!f1.propertyIsEnumerable(key)){ //可枚举属性
+            console.log(key + ':' + f1[key]);
+        }
+*/
+    }
+    //for in可以遍历对象的私有和公有属性(自己在原型上添加的)
+
+</script>

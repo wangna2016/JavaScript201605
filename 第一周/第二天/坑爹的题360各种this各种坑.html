@@ -46,3 +46,39 @@
         return function (){}
     })(obj.y);
 </script>-->
+
+<script>
+    //num = 1; NaN  NaN+=2之后还是 NaN
+    var obj = {num: 6}; //8
+    obj.fn = (function () {
+        this.num += 3; //this是window没有问题 window.num = windown.num +3 ==> NaN
+        //num = 1; //在当前作用域内有num没有。这个作用域没有一个私有变量,相当于通过作用域链去上一级作用域去查找num. 然后把这个全局num修改成1
+        return function () {
+            //console.log(this);
+            this.num += 2;
+            //console.log(window.num);
+            num += 1; //
+
+            console.log(num);
+        }
+    })(this.num); //这是实参，就是一个值。
+    console.log(this.num);
+
+
+
+
+    var f = obj.fn;
+    //console.log(f);
+    f();
+    obj.fn(); //这次执行的this就是obj了
+    console.log(window.num, obj.num);
+
+
+
+    /* var y = 100;
+     (function (){})(this.y)
+     */
+
+
+
+</script>
