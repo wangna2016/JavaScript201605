@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        html,body{ width: 100%; height: 100%; }
+    </style>
+</head>
+<body  id="body" style="background: black;">
+
+</body>
+</html>
+<script>
+    var oBody = document.getElementById('body'); //这是一个什么样的数据类型，通过Dom的方式获取来的dom对象,既然是一个对象一定存在多个属性和值
+    //console.dir(oBody);
+    var bg = oBody.style. backgroundColor; //获取body的背景色，仅仅是一个字符串，仅仅代表一个值而已，这个值不是地址更涉及不到和其他共用地址的问题了
+    var oStyle = oBody.style; //保存到style这个值,oStyle其实保存的是oBody.style的值的堆内存地址。 oStyle和oBody.style共享一个堆内存地址,
+    //console.log(bg);//black 这是一个字符串,这是一个基本数据类型
+    //console.log(oStyle); //这是一个对象，这是一个堆内存
+    //bg = 'red'; //背景色会被修改么？
+    oStyle.backgroundColor = 'lightpink'; //这样会不会把颜色修改呢?,通过oStyle的引用地址找到那个堆内存，并且修改了backgroundColor的属性值。所以也导致了oBody.style.backgroundColor的值也被修改了。
+
+    /*
+    *   如果要修改元素的样式，只能桶过元素的style这个属性去修改。如果用变量去保存只能保存到最后的对象数据类型的指针。不能保存一个值类型
+    *
+    * */
+    /*
+    *   预解释(变量提前声明): 预解释是发生在代码执行之前的，带var只提前把变量声明了，但是没有赋值，默认赋值undefined。带function不仅仅把函数名字提前声明了，还把函数的引用赋值给函数名了 区别：是否赋值
+    *   1 预解释不理会条件(暂时可以这样去处理，不同浏览器甚至相同浏览器的不同版本出现过不同情况)
+    *   2 全局的自运行函数不会被预解释
+    *   3 预解释只发生在当前作用域(全局作用域)
+    *   4 return下面的代码是可以被预解释的，但是return后面的函数当作一个整体返回，并没有被预解释  ps: return后面的如果是一个自运行函数，要等自运行函数执行之后的结果留给return
+    *   5 预解释只看var等号前面的，不理会值即使是一个函数
+    *   6 如果函数名和变量重名：那么变量名字只声明一次足够，但是赋值动作要以最后一次为准。当执行到变量赋值动作之后就是变量赋的值了(结合最后的例子)
+    *
+    * */
+    //console.log(num); //如果没有报错说明num这个变量在打印之前就被声明了,并且默认赋值一个undefined
+    var num = 12;
+    //console.log(num); //打印12，经过34行的代码操作，已经把num重新赋值了一个12
+    console.log(obj); //obj虽然是一个对象数据类型，但是对用var声明的变量来说没有影响
+    var obj = {"name":"zhufeng",age:7};
+    //即使把一个函数赋值给一个变量也没影响，在上面打印仍然是undefined
+    console.log(f);
+    var f = function (){}; //
+    //只要是用var声明的变量无论赋值一个什么样类型的值，在代码执行到赋值动作之前都是undefined
+    console.log(fn); //如果在这里打印不是undefined，说明function和var不同，var是只是把这个变量声明了，但是没有赋值。如果function不但把函数名字声明了，并且还把函数那个堆内存地址赋值给函数名了
+
+    function fn(){
+        console.log('welcome to zhufeng');
+    }
+    var fn =10;
+    //
+    //console.log(xx);
+    var num = 12;
+    var ojb = {};
+    var foo = function xx(){} //预解释变量不理会等号右面是啥
+    //
+    console.log(haha); //如果这里没有报错，说明预解释不理会条件
+    if(false){
+        var haha = 6;
+    }
+    console.log(f1);
+    //console.log(f2);
+    function f1(){ //预解释只发生在当前作用域
+        console.log(f2);
+        //console.log(yy); //这里如果报错了，说明在return后面的函数没有被预解释
+        //return function yy(){}; //把这个yy函数看成了一个整体返回，并且不会被预解释
+        return (function (){ //其实就是 return 9;这个9其实是自运行函数的运行结果
+            alert('我是return后面的自运行函数');
+            return 9;
+        })(); //如果return后面是一个自运行函数，首先先要执行这个自运行函数，然后把这个自运行函数的返回结果留给return,这个自运行函数的返回结果我只看自运行函数里面的return，如果函数中没有return默认返回undefined
+        //return; //return下面的代码不执行，但是这个f2确被预解释了
+        function f2(){ //如果有function定义在function里面，如果被一个函数包含着，那么f2没有被预解释.涉及到一个作用域的问题
+        //如果想让f2被预解释，首先要执行f1形成一个新的作用域，然后f2是定义在当前作用域的。所以才会预解释f2
+            var h = 'h';
+        }
+    }
+    f1();
+    //我想验证f1()之后的结果,用一个变量去保存这个结果
+    var res = f1();
+    console.log(res); //打印f1运行结束后的返回值，而f1运行结束的返回值确实f1里自运行函数的运行结果
+    /*
+    *   作用域：供代码执行的环境,我们这个环境也就是作用域是一个栈内存。那么当浏览器刷新的时候首先就会一共一个全局的环境，也叫做全局作用域用window代表，当一个函数执行的时候，也需要给这个函数提供一个运行环境，函数的执行也会形成一个作用域，也是一个栈内存
+    *
+    * */
+   // console.log(xxx);
+    ;(function xxx(){
+        (function yyyy(){})();
+
+    }()); //是在全局作用域内的自运行函数不会被预解释
+
+    //预解释如果变量和函数重名以最后一个为准，函数不仅仅把函数名字预解释还把函数的引用地址赋值给变量，但是变量的赋值动作是在代码执行到这一行的时候才做
+    console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+    fx();
+    function fx(){ console.log(1) }
+    fx();
+    var fx = 6;
+    fx();
+    function fx(){ console.log(2) }
+    fx();
+
+    //
+
+
+</script>

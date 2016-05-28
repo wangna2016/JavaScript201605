@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    //console.log(total); //undefined
+    var total = 0; //3
+    function sum(num1,num2){ //num1=1,num2=2
+        //console.log(total); //total不是当前作用域的变量，那么就去上一级作用域去找是否声明过total，如果还没有继续查找上一级作用域。一直查找到顶级作用域window，如果还没有报错  total未定义
+        var total = num1 + num2; //这是一个赋值动作，把3赋值给total，当前作用域没有total，一直查找到window，并且把window作用域内的total修改成3,这里注意有var和没有var的区别
+        //console.log(window.total); //自己没有一直找到window就打印3
+    }
+    sum(1,2); //
+    //console.log(total); //3 由于执行sum的时候把全局的total修改了
+    /*
+    *   闭包: 形成私有的作用域，在这个作用域内定义的变量也是私有变量,在函数外访问不到。这个私有变量是被保护起来了。函数执行的时候形成的私有作用域里面的私有变量被保护不受外界干扰，这种机制就叫做闭包。
+    *   函数执行的步骤： 1形参赋值  2 预解释当前作用域内的变量和函数  3 逐行执行代码
+    *   形参： 相当于在当函数内的私有变量 其实效果等同于在函数体内声明的变量,不同点: 在函数执行的时候形参不仅仅声明了并且还把实参赋值
+    *
+    * */
+    //var a = 10; // window.a
+    function fn(){
+        //console.log(b); //先去把b的值取过来
+        function inner(){
+            c = 100000; //无论这个行代码有多少个function包含，只要执行到这都是相当于给全局添加了一个属性
+        }
+        inner();
+        b = 100; //就是一个赋值动作,b不是当前作用域内的私有变量，找到window的这个作用域也没有。赋值动作和取值动作不相同,相当于给全局添加了一个b变量,如果是赋值动作相当于直接给window添加了一个b属性  window.b = 100;
+        //console.log(window.b);
+    }
+    fn();
+    //console.log(window.b);
+    //console.log(window.c); //
+    //区别？ 带var预解释，无论是否用var相当于直接给window.k = 1000;
+    var k = 1000;
+    j = 1000;
+
+    ///////////////////////////////////////
+    var ary = [1,2,3]; //ary这回存放的是数组的地址 [1,2,3,4]
+    function a(ary){ //ary是一个形参，相当于在函数里声明私有变量,
+        ary[ary.length] = 4; //ary是不是形参，在私有的这个ary所代表的内存地址的数组上添加最后一项,而这个内存地址和全局公用一个吧
+
+        ary = [5]; //ary仍然是一个私有变量，这是对象数据类型的赋值动作，一个[5]新的数组的堆内存引用地址赋值给ary。ary这个私有变量不再和全局的ary公用一个低估值了。全局变量ary和私有变量ary不再共享一个内存地址了
+        ary[0] = 6; //通过ary所代表的对内存地址找到数组[5]，然后把里的第一项修改成6
+        console.log(ary); //[6]
+    }
+    a(ary); //这个实参ary其实是代表一个数组的引用地址，函数执行第一步形参赋值的过程就是把实参地址给了形参一份。私有变量ary和全局ary共享一个数组的堆内存地址引用
+
+    console.log(ary); //由于执行函数的过程中被私有变量ary修改过一次，变成了[1,2,3,4]
+    ary = null;
+
+
+
+
+
+
+</script>

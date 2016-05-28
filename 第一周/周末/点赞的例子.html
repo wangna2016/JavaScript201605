@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>点赞例子</title>
+    <style>
+        *{ margin: 0; padding: 0; font-family: "Microsoft Yahei"; }
+        #box{ width: 400px; height: 60px; margin: 30px auto; border: 2px solid #ccc; cursor: pointer; -webkit-user-select: none; line-height: 60px; text-align: center; font-size: 30px;  }
+        #box span{ color: red;  }
+    </style>
+</head>
+<body>
+    <div id="box">
+        珠峰培训已经
+        <span>7</span>岁了
+    </div>
+</body>
+</html>
+<script>
+    var oDiv = document.getElementById('box');
+    var oSpan = oDiv.getElementsByTagName('span')[0];
+   /* var count = 0; //count是一个全局变量，不安全。
+    var fn = function (){
+        //count++; //这行代码把上一级作用域的count修改
+        //把累加之后的值赋值给span的innerHTML
+        oSpan.innerHTML = ++count;
+    };
+    oDiv['onclick'] = fn;
+*/
+    //安全的方式,如果把count变成一个私有变量
+
+/*
+    (function clickZan(){
+        var count = 0;
+        oDiv.onclick = function (){
+            oSpan.innerHTML = ++count;
+        }
+    })();
+
+
+    oDiv.onclick = (function (){
+        var count = 0;
+        return function (){
+            oSpan.innerHTML = ++count;
+        }
+    })();
+*/
+
+    //我们能不能换种方式把count保存下来,可以通过自定义属性的方式保存在oDiv的身上
+/*
+    oDiv.count = 0;
+    oDiv.onclick = function (){
+        //this？？oDiv那么我就可以通过this找到oDiv的任何属性
+        oSpan.innerHTML = ++this.count;
+
+    }
+*/
+
+    //
+    oDiv.onclick = function (){
+        this.getElementsByTagName('span')[0].innerHTML = ++this.getElementsByTagName('span')[0].innerHTML;
+    }
+
+
+
+</script>

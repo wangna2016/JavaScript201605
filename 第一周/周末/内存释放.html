@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div id="div1" style="width: 100px; height: 100px; background: red;"></div>
+</body>
+</html>
+<script>
+    //堆内存释放，如果这个堆没有变量引用浏览器就会找个合适的机会主动去释放这些没用的堆
+    var obj = {};
+    obj = null;//空指针，空的引用地址
+
+    //1函数执行的时候也会形成一个新的私有作用域，这是一个栈内存，浏览器也会对栈内存也有一套回收机制。如果函数运行过程中，函数中的某一个部分(引用数据类型)被函数外面的变量或者一个对象的属性所占用。那么这个栈内存就不会被释放，而存放在这个由于函数运行所产生的栈内存也就是那个私有的作用域内的私有变量也不会丢。那么这个私有变量的值也就随之保存在这个当前的作用域中
+    //2 绑定事件方式：函数运行后，函数中的某一部分赋值给元素的时间属性
+    //3 暂时不释放：返回的函数立刻执行
+    /*
+    *   如何查找函数的上一级作用域: 就看函数在哪里定义的，那么它的上一级作用域就是在函数定义位置的上一级
+    * */
+   /* var num = 12;
+    function fn(){
+        var num = 120;
+        return function (){ //这是一个地址
+            console.log(num);
+        }
+    }
+    var f = fn(); //这个返回的匿名函数的地址赋值给变量f了
+    f(1.2);*/
+
+    ////////////////////////////////////////////////////
+
+    /*
+    *   i-- 和 --i的区别
+    *    i++ 和 ++i    i++ 先运算后给i累加
+    *                  ++i 先给i累加后运算
+    *                  ps: i++后者++i没有和别人做运算的时候效果是相同的
+    * */
+    //var i=0; //1 2  3 4
+    //console.log(1 + i++ /*1*/ + ++i /*3*/ + i++ /*5*/+ ++i); //??9
+    //console.log(i); //4
+
+    function fn(){
+        var i = 0; // 1
+        return function (n){
+            console.log(n + ++i);
+        }
+    }
+    var f = fn(); //这行代表f这个变量占用着fn函数运行结束后的返回值，就因为这行占用代码导致内存没有释放
+    f(10);
+    f(20);
+
+    fn()(10); //11 fn运行结束后返回的函数立刻运行
+    fn()(20); //21
+    // 11 21 ? ?
+    //11 21 ? ?
+
+    var oDiv = document.getElementById('div1');
+    //for(var i=0; i<3; i++){} //lis小于lis.length
+        (function (xingccan){
+            // var i = 0;
+            //var obj = {};
+            //obj.onclick = function (){};
+            oDiv.onclick = function (){ //绑定事件
+                //console.log(this); //this == oDiv
+                console.log(xingccan++);
+            }
+        })(8);
+
+    oDiv.onclick = (function (){
+       return function (){
+
+       }
+    })();
+
+
+    /*
+    *   匿名函数的执行也会形成一个私有作用域： 1 形参赋值 2 预解释 3 代码执行
+    *
+    * */
+
+
+
+</script>
