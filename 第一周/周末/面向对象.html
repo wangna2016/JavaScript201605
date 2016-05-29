@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+</body>
+</html>
+<script>
+    var date = new Date;//实例创建方式 js中已经规定好了
+    var ary = new Array(); //ary就代表这个空数组
+    //[1,2]
+    //判断当前实例是否属于某个类  instanceof
+    var obj = new Object();
+    var fn = new Function(); //Function也是js中已经内置好的类
+    //如果是一个类，那么首字符大写, Function Array  ....内置类
+    //如何去面向一类去编程？再也不具体到某一个实例
+    /*
+    *   单例模式 ：(其实就是一个对象) 也可以叫做命名空间 nameSpace, 虽然简单但是比较常用
+    *       缺点：如果想多一个例子，需要每次都新声明一个对象
+    *   工厂模式：(就是一个函数) 因为是工厂，这个工厂函数我需要运行结束后返回一个对象。
+    *       我们在写工厂模式的过程其实就是函数的封装过程
+    *   构造函数： 实例 类 的概念
+    *       就是声明了一个类，但是只有运行的时候才知道运行方式。构造函数会默认返回一个实例，构造函数中的this都是当前实例
+    *
+    *   原型模式:
+    *       1 任何一个对象数据类型都会有一个天生自带的属性叫做__prot__
+    *       2 任何一个函数数据类型不仅仅有__proto__,还有一个prototype,这个prototype就叫原型，并且这个prototype的属性值仍然是一个对象数据类型的，并且包含两个天生属性，一个是constructor,另外一个是__proto__
+    *       Table = {
+    *           prototype: {
+    *               constructor : Table,
+    *               __proto__: ??
+    *           }
+    *       }
+    *       3 任何一个实例(对象数据类型)都天生自带一个属性叫做__proto__，这个属性值是这个实例所属于那个类的原型 table1.__proto__ === Table.prototype
+    *       4 定义在类的原型上的任何方法和属性都是公有的，任何一个实例都天生自带原型上的公有属性，这个原型可以通过实例的__ptoto__属性访问，也可以通过l类的prototype访问
+    *
+    *
+    *
+    *
+    * */
+    /*
+    *   函数的三种角色：
+    *       1 普通函数
+    *       2 任何一个函数都是Function这个类的一个实例
+    *       3 这个函数本身也可以看做是一个类(人为定义一个类需要用function关键字)
+    *
+    * */
+    //单例模式
+    var tiaxi = {
+        name : 'tianxi',
+        age : 30,
+        fn : function (){
+            console.log(this);
+        }
+    };
+    var zhufeng = {
+        name : 'zhufeng',
+        age : 40,
+        fn : function (){
+            console.log(this);
+        }
+    }
+    function fn(){
+        console.log(this);
+    }
+    function fn(){
+        console.log(2);
+    }
+    //每穿件一个都需要重新声明一个对象
+    //如果一个相同的文件由多个工程师共同编辑，就有可能出现重名的情况。
+
+    //工厂模式: 可以解决批量生产问题
+/*
+    function Factory(name,age,fn){
+        var obj = {};
+        //在这个对象中添加属性和方法
+        obj.name = name;
+        obj.age = age;
+        obj.fn = fn;
+        return obj; //这个工厂函数只要执行一次就会留下一个对象
+    }
+    var fn = function (){
+        console.log(this);
+    }
+    var person1 = Factory('tianxi',30,fn); //这个函数执行一次就给我留下一个对象
+    var person2 = Factory('zhufeng',30,fn); //这个fn是在全局下定义的那个fn的堆内存地址，Factory在执行的时候又把这个地址赋值给了对象的obj.fn属性,比较的时候只要关注是不是同一个堆内存地址就可以
+    //console.log(person1.fn ==  fn);  //这是两个对象永远也不相等,但是如果这个对象中的具体的属性值是有可能相等
+
+    //构造函数
+    function Fe(name,age){ //规定一个类和定义一个函数是相同的，浏览器这会不知道你想当作一个类还是当作一个函数,当函数运行的时候就知道，如果当作一个类就用new的方式去运行，如果当作普通函数那就小括号执行就ok
+        var x = 1000; //如果当作类去运行这个x压根没用，当作一个普通函数执行的时候的这个x就是一个私有变量
+        this.age = age;  //向this身上添加一个age属性
+        this.name = name;
+        this.fn = function (){  //这个方法没有执行，给每一个实例都会添加一个叫做fn的属性，属性值这个匿名函数
+            console.log(this); //函数没有执行的时候你不知道this是谁,只要this被function包起来了this就不再是同一个了
+        }
+        return 7; //7是基本数据类型，没有对实例造成影响
+        return []; //只要返回一个对象数据类型就会对默认返回实例替换了
+
+    }
+    var res = Fe('tianxi',30); //当作一个普通函数运行
+    var res1 = new Fe('zhufeng',40); //当作一个类,当作一个类的时候return一个实例对象是默认发生的。
+    var res2 = new Fe('hanxiaobo',20);
+    //console.log(res2);
+    //console.log(res1);
+    //res1这个实例和res2这个实例都有一个叫做fn的方法，这两个方法还是相同的操作。有没有一种方式这个fn只定义一次，然后每个实例都天生自带这个fn ==> fn原来是长在每个实例身上的私有属性，能不能把这个私有的变成公有的
+
+    //in运算符  可以判断一个属性是否属于这个对象
+
+
+    //原型模式
+
+    function Table(w,h){ //声明了一个Table函数
+        this.width = w;
+        this.height = h;
+        /!*this.fn = function (){ //这个方法是每个实例私有的
+
+        }*!/
+        this.x = 1000;
+    }
+    Table.prototype.fn = function (){
+        console.log(this.width);
+    }
+    Table.prototype.x = 100;
+    //Table.gengmin = 'xxxx';
+    console.dir(Table); //打印任何一个引用数据类型都有一个叫__proto__天生属性
+    var table1 = new Table(100,200); //默认会返回一个对象实例
+    var table2 = new Table(300,400); //默认会返回一个实例对象
+    console.dir(table1); //
+    console.dir(table2); //通过打印我发现我添加在Table这个类原型上的属性，
+    table2.__proto__/!*Table.prototype*!/.x = 300;
+    var table3 = new Table(500,600);
+    console.log(table3.x); // 如果私有的不存在就默认通过__ptoto__到原型上去查找,那么如果原型上也不存在呢？？？通过原型的__proto__到原型所属类的原型上去查找
+    console.log(table3.__proto__.x); //?
+
+    Object.prototype.y = 1000; //通过Object的原型添加上的
+    ({}).__proto__.y = 2000; //Object的原型可以通过Object的任何一个实例的__proto__访问
+    table3.__proto__.__proto__.y = 3000;
+    var table4 = new Table(1,2);
+    console.log(table4.y);
+
+    //
+    //f1.__proto__.myAlert(); //??会弹窗么？不会因为还没有赋值呢
+    Table.__proto__.myAlert = function (){  alert('我是在函数Function的原型上添加的')  };
+    var f = function (){  };
+    f.__proto__.myAlert();
+    function f1(){
+
+    }
+    //
+    Function.prototype.haha = function (){  console.log('haha')  }
+    var ary = new Array();
+*/
+    //ary.push/*函数*/.__proto__/*Function的原型*/.haha();
+    //可不可以把数组去重放到Array的原型上呢？以后每一个数组都可以直接调用去重方法
+    Array.prototype.unique = function (){
+        console.log(this); //函数中的this?  函数执行的时候才知道
+        //this就是要去重的那个数组实例
+        var obj = {};
+        for(var i=0; i<this.length; i++){
+            var cur = this[i];
+            if(obj[cur] === cur){
+                this.splice(i,1);
+                i--;
+            }else{
+                obj[cur] = cur;
+            }
+        }
+        obj = null;
+        return this;
+    }
+    var ary = [1,2,3,4,3,2,1];
+    var res = ary.unique(); //ary去重,返回值仍然是一个数组，可以继续调用数组的其他方法。这就是典型的链式写法
+    console.log(res);
+
+    //
+    function Table(){
+        this.x = 10000;
+        this.y = 20000;
+    }
+/*
+    Table.prototype.fn = function(){} //这是在原型上新添加了一个属性,但是原型的堆内存地址还是原来那个
+    Table.prototype.fo = function (){}
+    Table.prototype.fx = function (){}
+*/
+    //批量设置公有属性
+    Table.prototype = { //这是吧Table的原型用一个新的对象的内存地址替换了,原来的天生的那个堆内存就释放了。那个原型上的constructor这个内置属性也丢了,__proto__不用添加，因为这个新对象也有
+        constructor : Table,
+        fn : function (){},
+        fo : function (){},
+        fx : function (){}
+    }
+    var table10 = new Table(); //  这是一个实例对象，身上存在很多属性。可以用for in 遍历
+    for(var key in table10 ){ //for in循环把私有和原型上的公有(我们自己添加的)都会遍历出来了
+        //不要公有，判断是不是key是不是共有属性
+       /* if(key propertyIsEnumerable )*/
+
+        if(table10.hasOwnProperty(key)){  //判断属性是否是一个对象的私有属性
+            console.log(key); //私有属性只有x和y
+        }
+
+    }
+
+    //
+
+
+</script>

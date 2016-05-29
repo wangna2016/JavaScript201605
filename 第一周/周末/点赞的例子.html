@@ -57,10 +57,24 @@
 */
 
     //
-    oDiv.onclick = function (){
+   /* oDiv.onclick = function (){
         this.getElementsByTagName('span')[0].innerHTML = ++this.getElementsByTagName('span')[0].innerHTML;
     }
 
+*/
+    //var i = 0; //1 2
+    function fn(i){//var i = 0;
+        //var i = 0;
+        //var i = 0;
+        //var i = 0;
+        return function (){
+            //时间发生要执行这得代码
+            oSpan.innerHTML = ++i;
+        }
 
+    }
+    //var f = fn();
+    //fn(i);
 
+    oDiv.onclick = fn(0); //要给我留下一个函数
 </script>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>this</title>
+</head>
+<body>
+    <div id="div1" style="width: 200px; height: 200px; background: green;"></div>
+</body>
+</html>
+<script>
+    /*
+    *   js中this的常见用法：我们研究的this一般是指函数中的this,在全局作用域下打印this就是window
+    *       1 在绑定事件的时候，事件触发执行的函数中的this就是触发事件的主体
+    *
+    *       2 函数中的this是谁，就看函数在执行的时候调用函数的主体就是函数中的this。 ==> 函数在执行的时候，就看函数前面的'.'，点前面是谁函数中的this就是谁。如果没有点那么就是window  函数中的this是谁只有在函数执行的时候才知道 ps:上一级作用域是谁在定义的位置就知道了
+    *       3 自运行函数中的this永远是window
+    *
+    *       4 构造函数中的this是当前实例
+    *       5 call和apply可以强制改变this
+    *
+    * */
+    function fn(){
+        console.log(this); //
+    }
+    //fn(); //这是fn在执行的时候，前面没有点，那么fn中的this就是window
+
+    var obj = {
+        name:'tianxi',
+        fn: fn //冒号后面的fn其实就是代表fn这个函数所代表的堆内存地址,这个这个函数的堆内存地址被fn占用也被obj.fn这个属性占用
+    }
+    //obj.fn(); //obj 在执行的时候函数'.'前面是obj,所以fn中的this是obj
+
+    var o = {
+        o:'o',
+        fn: function (){
+            console.log(this);
+            fn(); //fn中的this是谁？
+        }
+    }
+    //o.fn();
+   /* (function (){
+        (function (){
+            console.log(this);
+        })();
+
+    })()
+*/
+    var obj = { //首先开辟新的堆内存空间，把属性等存到这个空间中，最后才把这个空间地址赋值obj这个变量
+        num : 3,
+        fn: (function (){
+            alert();
+            console.log(this); //？？自运行函数中的this永远是window
+        })()   //再给这个对象赋值的过程中，是先执行这个自运行函数，然后把这个自运行函数的返回值赋值给fn这个属性
+    }
+    obj.fn(); //
+    obj.fn(); //
+
+
+
+
+
+
+
+
+
+
+
+
+
+    document.getElementById('div1').onclick = function (){
+        //console.log(this); //
+        fn(); //div1的点击动作发生的时候执行fn,fn中的this?
+    }
+
+</script>
