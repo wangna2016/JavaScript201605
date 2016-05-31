@@ -54,7 +54,7 @@
 
     //把oLis这个类数组转化成数组
     function listToArray(likeArray){ //参数是需要被转化的类数组
-        return Array.prototype.slice.call(likeArray); //传进来的参数修改定义在数组原型上的slice方法中this，那么slice函数中的所有操作都是针对likeArray你传进来这个参数
+        return Array.prototype.slice.call(likeArray,0); //传进来的参数修改定义在数组原型上的slice方法中this，那么slice函数中的所有操作都是针对likeArray你传进来这个参数
         //低版本ie不行 ==> for循环去做这件事
     }
    /* function quchong(likeArray){
@@ -69,8 +69,6 @@
     *
     *
     * */
-
-
 
     function listToArray(likeArray){
         try{

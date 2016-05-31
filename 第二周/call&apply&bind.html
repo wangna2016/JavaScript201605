@@ -83,12 +83,30 @@
     *   知道call的用法就ok，把函数中this修改成第一个参数，然后调用call方法的函数执行
     *
     * */
+    Array.prototype.slice = function (n,m){  // 2,4  第三项和第四项
+        //n,m从索引n开始到索引m
+        console.log(this); //谁调用slice谁就是this?谁能调用slice呢？任何一个数组实例都可以调用slice
+        //假如我把this换成了olis
 
+        var newAry = []; //我从this中复制来的放到这个新数组并且返回就行了
+        /*if(arguments.length == 0){ //说明一个参数没传
+            for(var i=0; i<this.length; i++){
+                //newAry.push(this[i]);
+                newAry[newAry.length] = this[i];
+            }
+            return newAry
+        }
+        if(arguments.length == 1){
+            for(var i=n; i<this.length; i++){
+                newAry.push(this[i]);
+            }
+            return newAry
+        }*/
+        for(var i= n; i<= m-1; i++){
+            newAry.push(this[i]);
+        }
+        return newAry;
 
-
-
-
-
-
+    }
 
 </script>
