@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    //"use strict"; //严格模式和非严格模式的区别,从这往下都用严格模式去解析
+    /*
+    *   严格模式下：1 如果call后面没有参数默认是undefined
+    *              2 严格模式下自执行函数中的this是undeified
+    *              3 如果找不到函数调用的主体(‘.’没有)默认页this是undefined
+    *
+    *
+    * */
+    function fx1(){ console.log(1) }
+    function fx2(){ console.log(2) }
+    //fx1.call(fx2);
+    //fx1.call.call(fx2);
+    //由于call是定义在Function原型上的方法。可以通过实例找到还可以直接通过原型找到
+    Function.prototype(); //Function.prototype可以直接小括号执行并且没有报错，说明Function.prototype是一个函数
+    //Array.prototype()//报错，说明除了Function.prototype其他的都不是函数
+    //无论是函数还是对象，都是一个引用数据类型。都可以对其添加属性
+    fx1.xxxx = 10000;
+    Function.prototype/*这也是一个函数*/.xxxxx = 100000;
+
+    Function.prototype.call(fx1); //Function的原型是一个函数，并且这个函数什么也不做
+    Function.prototype.call.call.call.call(fx1); //是fx1执行
+//    console.dir(Array.prototype);
+
+    //
+    function fn(){
+        console.log(this);
+    }
+   // fn(); //window
+    //fn.call(undefined); //没传参数,默认是window
+    //fn() === fn.call() //如果fn这个函数中没有this那么fn.call()也把fn执行结束了
+/*
+    (function (){
+        console.log(this);
+    })()
+*/
+    function sum(num1,num2){
+        console.log(this);
+        console.log(num1+num2);
+    }
+    //sum.call(null,100,200); //call默认把第一个100当成了this的参数，200才是num1
+    //sum.apply(null,[100,200]);
+    /*
+    *  apply的用法：和call方法相同都是改变this指向的。不同是apply给调用apply的函数传参的方式不同，apply需要一个数组.把参数数组中每一项当作参数一个一个传给调用apply的方法
+    *
+    *
+    * */
+    //求数组中的最大值
+    var ary = [1,2,3,4,5,4,3,2,1];
+    //排序
+    ary = ary.sort(function (a,b){return a-b});
+    //var res = ary.pop();
+    //
+    var res1 = Math.max.apply(null,ary); //这跟this没有关系，apply不仅仅可以改变this，还可以把数组中每一项当作参数分别传给Math.max。这会是利用apply的传参数的特点
+    var res2 = Math.max(1,2,3,4,5,4,3,2); //相当于传了4个参数
+    //var res2 = Math.max(ary); //相当于传了4个参数,直接传一个数组不行
+
+    //假设
+    var max = ary[0]; //假如第一个就是最大值
+    for(var i= 1; i<ary.length; i++){
+        if(max< ary[i]){
+            max = ary[i];
+        }
+    }
+    console.log(max);
+
+    //eval,把字符串转化为js代码执行,可以理解为它能有去除字符串的引号动作
+
+    Math.max(eval(ary.join()))
+    console.log(eval('Math.max('+ary.join()+')'));
+    //Math.max(1,2,3,4,5)
+
+    function foo1(){ console.log(1) }
+    function foo2(){ console.log(2) }
+/*
+    (foo1,foo2)();
+*/
+
+    //bind的用法:  bind和call和apply的用法基本相同，bind的作用就是预处理函数中的this，先把this修改。但是并没有像call和apply那样直接执行。其实就是把call的用法拆分成了两步。一步是把this修改并且返回新的函数。预先把this的问题处理好，js编程过程中叫做预处理思想
+    function fy(n,m){
+        console.log(this);
+        console.log(n+m);
+    }
+    var obj = {name: 'tianxi'};
+    fy.call(obj,1,2); //
+    debugger
+    var newFy = fy.bind(obj); //这回没有执行就仅仅改变了this。fy中的this改成了obj,这个bind的返回值是一个改变了this的新的函数
+
+    newFy(3,4); //这里面执行就不用修改this了
+
+
+
+    Array.prototype.unique = function (){
+        console.log(this); //这个this是谁?
+    }
+    var ary = new Array();
+    ary.unique();
+    var b = new Array();
+    b.unique();
+    Object.prototype.toString = function (){
+
+
+    }
+    var obj = new Object();
+    obj.toString();
+    var reg = new RegExp();
+    obj.toString.call(reg,2,3); //call方法？把toString中的this都替换了，其实所有的操作都是对reg的操作。reg借用了obj.toString方法   .regtoString()
+
+</script>

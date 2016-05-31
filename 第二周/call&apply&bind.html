@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <p id="p"></p>
+
+</body>
+</html>
+<script>
+    var p = document.getElementById('p');
+    console.dir(p);
+    //HTMLParagraphElement ==> HTMLElement ==> Element ==> Node ==> EventTarget ==> Object 通过这个原型链可以知道方法是定义的位置
+    function Fn(){
+        console.log(this);
+    }
+    //Fn是Function类的一个实例，Fn可以调用在Function原型上的方法
+    console.dir(Fn.__proto__);
+    //Fn.__proto__.call(); //call这是this的第五种用法，可以强制改变函数中的this
+    /*
+    *   call用法: 任何一个函数(实名函数可以，匿名函数也可以，如果属性的值也是一个函数也可以   [].push也是一个函数，push也可以调用call)
+    *       1 call执行，先找到Function.prototype原型上的call方法
+    *       2 把调用call方法的函数中的this改成call的第一个参数
+    *       3 最后把调用call方法的那个函数执行
+    *   ps: 如果只有一个call就是调用call方法的函数执行，如果有多个call那么就是参,多个的时候就是利用利用函数的call属性找到了一个方法
+数执行
+    * */
+    function fn(){
+        console.log(this); // 把这个this改成obj
+    }
+    var obj = {name : 'zhufeng'};
+    //fn(); //在这执行fn中的this是window
+    fn.call(obj); //首先找到call方法，然后把fn中的this改成obj，最后fn执行
+
+    var f1 = {}
+    f1.call = call;
+    function call(){
+        //console.log(1);
+        this(); //其实这个this是f2
+    }
+    function f2(){
+        console.log(2);
+    }
+    f1.call.call(f2); //??找到call方法，把f1中this修改成f2(f1中没有this)，然后f1执行
+
+    f1.call/*由于f1是Function的一个实例，然后找到Function原型上的call属性，属性值仍然是一个函数(也是Function的一个实例)*/.call./*把前面这一堆中的this修改成f2，然后再执行*/call(f2);  //无论前面多少个call.call.call.call都是相当于把call这个函数中的this修改成f2.然后把call执行
+    f1.call.call.call(f2);  //把call方法中的this修改成f2,call方法到底干了点啥？把前面这一堆中this修改成f2,
+
+
+
+    /*
+    *   任何一个函数都可以调用call方法
+    * */
+
+    Function.prototype.myCall = function (obj){ //模拟call方法,这是定义在Function原型上的方法。任何一个函数都可以调用
+        console.log(this);
+        //我要把这里卖弄的this换成obj
+        this();
+
+    }
+    f1.call.call.call(f2);
+
+    function f3(){} //f3可以调用call方法
+    f3.myCall(obj); //myCall中的this是谁？\
+    f4.myCall();
+
+
+    Function.prototype.myCall    = function (obj){
+        //console.log(this); //f4
+        //我们如何更换call方法中的this换成obj呢?我们需要把这个函数体中的this修改成obj。。。可以把函数体中this替换成obj...js做不到了
+        this(); //无论怎么样，call方法最后一步一定是让this执行
+    }
+    function f4(){} //这是一个Function的实例
+    var obj = {};
+    f4.call(obj);
+    //f5.call(obj);
+    //无论f4还是f5都是执行call的时候，call方法中的this分别代表了f4和f5
+
+
+    /*
+    *   知道call的用法就ok，把函数中this修改成第一个参数，然后调用call方法的函数执行
+    *
+    * */
+
+
+
+
+
+
+
+
+</script>

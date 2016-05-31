@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li></li>
+        <li>8</li>
+    </ul>
+</body>
+</html>
+<script>
+    var oLis = document.getElementsByTagName('li'); //返回来是的通过dom方式获取来的集合
+    console.dir(oLis);
+    //console.log(oLis.item(0)); // oLis[0]
+    //oLis.push(1);  //oLis不是数组，不能用任何定义在数组原型上的方法。我还想用数组上的方法 ==》 把这个oLis这个类数组转化成数组
+    //olis是类数组，如果能借用数组的slice方法那么就直接省去了for循环的麻烦,如何借用数组方法?
+
+    Array.prototype.unique = function (){
+        console.log(this); //this是谁？ 只有在函数执行的时候才知道,这会是函数的定义
+        //this ==》 ary ,[] this就是每次调用unique这个方法Array的实例,如果把这里的this改成oLis，那么这个函数中的所有操作都是oLis的操作了
+        var obj = {};
+        for(var i=0; i<this.length; i++){ //我们在写的时候把this想成具体的一个数组就行
+            var cur = this[i];
+            if(obj[cur] === cur){
+                this.splice(i,1);
+                i--;
+
+            }else{
+                obj[cur] = cur;
+            }
+
+        }
+        obj = null;
+        return this; //我们要把去重后的结果返回
+
+    }
+
+    Array.prototype.myslice = function (n,m){
+        //这里面的this也是实例,如果这里的this要能修改成oLis就结束了，我就是这个定义在原型上的slice方法中的this修改成oLis就可以了。
+        //Array.prototype.slice.call(oLis) ==>
+    }
+    var ary = new Array(); //ary是Array的实例
+    ary.unique();//自己的私有属性没有，默认通过__proto__去原型上查找
+    [].unique();
+
+    //把oLis这个类数组转化成数组
+    function listToArray(likeArray){ //参数是需要被转化的类数组
+        return Array.prototype.slice.call(likeArray); //传进来的参数修改定义在数组原型上的slice方法中this，那么slice函数中的所有操作都是针对likeArray你传进来这个参数
+        //低版本ie不行 ==> for循环去做这件事
+    }
+   /* function quchong(likeArray){
+        return Array.prototype.unique.call(likeArray); //传进来的类数组，返回的是已经去重结束后的数组
+    }*/
+    //console.log(listToArray(oLis).reverse()); //如果报错了说明返回值不是一个数组，如果倒叙了我们已经成功把一个类数组转化为数组
+
+
+    //容错的listToArray
+    /*
+    *   try catch这是js中常见用兼容处理方法  先去尝试try里面的代码，如果报错了就进入catch中的代码
+    *
+    *
+    * */
+
+
+
+    function listToArray(likeArray){
+        try{
+            return [].slice.call(likeArray);  //这是通过一个实例找到原型上的slice方法
+        }catch(e){ //只要代码运行到catch这里。当前浏览器在try中报错了
+            var a = [];
+            for(var i=0; i<likeArray.length; i++){
+                a.push(likeArray[i]);
+            }
+            return a;
+        }
+    }
+    console.log(listToArray(oLis));
+    //把li中的顺序打乱然后按照每个li中的innerHTML排序
+
+</script>
