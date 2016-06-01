@@ -10,6 +10,7 @@
         #wrap table thead { background: lightblue; -webkit-user-select: none; }
         #wrap table th,#wrap table td{ width: 100px; height: 30px; text-align: center; line-height: 30px;  }
         .cursor{ cursor: pointer; }
+        .bg{ background: lightcyan; }
     </style>
 </head>
 <body>
@@ -19,9 +20,9 @@
         <tr>
             <th>姓名</th>
             <th class="cursor">年龄</th>
-            <th>性别</th>
-            <th>体重(kg)</th>
             <th>身高(cm)</th>
+            <th class="cursor">体重(kg)</th>
+            <th>性别</th>
         </tr>
         </thead>
         <tbody>
@@ -65,8 +66,8 @@
     var thead = table.tHead; //因为一个表格只有一个thead
     var theadRow = thead.rows[0]; //表头下面的行
     var theadCells = theadRow.cells; //表头这行下面所有的列,cell是单元格的意思。
-    var tbody = table.tBodies[0]; //获取表格里第一个主体
-    var tbodyRows = tbody.rows; //表格主体里所有的行，因为要排序就是针对所有行排序
+        var tbody = table.tBodies[0]; //获取表格里第一个主体
+        var tbodyRows = tbody.rows; //表格主体里所有的行，因为要排序就是针对所有行排序
     //唯独表格才可以这样获取
 
 
@@ -74,7 +75,9 @@
     /*
     *   Ajax步骤：
     *       1 先声明一个异步对象  new XMLHttpRequest();
-    *
+    *       2 xhr.open("get/post","url",true/false); 第一个参数是获取方式，第二个参数是接口，第三个参数是同步还是异步
+    *       3 xhr.onreadystatechange 监听xhr的状态
+    *       4 xhr.send(null)
     *
     * */
     var xhr = new XMLHttpRequest(); //用实例的创建方式创建一个异步对象，http:超文本传输协议
@@ -92,9 +95,75 @@
     //xhr还没有出发，上面的都是约定.
     xhr.send(null);  //xhr就已经在路上了,只要才出发了就能实时监听xhr异步对象的状态，只要成功返回了，说明成功拿到了数据。==>  接下来就是处理数据了
     console.log(res); //由于是同步的如果不成功执行不到这里
-
-
     //数据已经成功取回，接下来需要把数据和表格绑定在一起其实就把数据塞到表格中
+
+    function bind(){ //把获取到的数据绑定到页面中
+        var frg = document.createDocumentFragment();
+        for(var i=0; i<res.length; i++){ //数据是一组，这一组数据中有多少个对象就有多少行
+            var tr = document.createElement('tr'); //只要有一条数据我就需要创建一行
+            //行里的列我该怎么做????
+            var curObj = res[i];  //这是数组中每一个对象,每一行的列数和这个对象有多少组属性是相同的; 属性和遍历，每遍历一次需要创建一个td标签
+            for (var key in curObj ){ //这是在创建列
+                var td = document.createElement('td');
+                td.innerHTML = curObj[key]; //td标签里的内容也就是td.innerHTML就是curObj的属性值
+                tr.appendChild(td); //把每次创建的列放到行中
+            }
+            frg.appendChild(tr); //把每次已经创建的行，并且这个行中已经被里面的小循环有多少组属性就创建了多少列,把包含多列的这一行添加到文档碎片中
+        }
+        //到这个位置所有的循环已经结束，frg的文档碎片已经放了很多行
+        tbody.appendChild(frg); //frg已经存放了res.length那么多行
+        frg = null;
+    }
+    bind();
+
+    //隔行变色
+    function changeBg(){
+        for(var i=0; i<tbodyRows.length; i++){
+            tbodyRows[i].className = i % 2 ? 'bg' : "";
+        }
+    }
+    changeBg();
+
+    //排序
+    function sort(/*clickThIndex*/){ //点击的那一列的表头的索引需要动态传进来
+        //console.log(this); //??如果不加call，this就是window,如果加了call这个this就被修改了，修改成call的第一个参数，call第一个参数是事件发生的时候点击的元素 ==> 其实也就是点击的那个表头列,那么参数就可以不用了，我能获取到你点击的元素了,我知道了点击的元素，我就能获取到点击元素身上的索引值
+        console.log(this.index);
+        var that = this; //保存this的做法以后在编程的过程中也经常做
+        var rowsArray = utils.listToArray(tbodyRows); //rowsArray已经是一个数组了
+        rowsArray.sort(function (a,b){ //a和b分别代表相邻的两行
+            //我不是按照行排序，我是按照行里面具体的某一列的innerHTML排序
+            return a.cells[/*clickThIndex*/that.index]/*行的第二列年龄*/.innerHTML - b.cells[/*clickThIndex*/that.index].innerHTML;
+        });
+        //还需要把还好序的数组重新添加到页面中
+        var frg = document.createDocumentFragment();
+        for(var i=0; i<rowsArray.length; i++){
+            frg.appendChild(rowsArray[i]);
+        }
+        tbody.appendChild(frg);
+        frg = null;
+        changeBg(); //由于排序之后隔行变色乱了，需要重新执行下各行变色的函数即可
+    }
+    //sort();
+
+
+    //点击带cursor这个类的表头列我才按照当前列去排序
+    for(var i = 0; i<theadCells.length; i++){
+        var cur = theadCells[i];
+        cur.index = i;
+        if(cur.className === 'cursor'){ //带这个cursor这个类的列我才绑定
+            cur.onclick = function (){
+                //console.log(this); //??
+                //暂时表头的每一列都还没有索引,我们需要在事件发生之前就给每个表头列分别保存一个索引 ==>  自定义属性
+                //sort(this.index); //这会只能点击年龄按照年龄排序,由于当前的sort方法只能按照年轻排序，需要修改
+                //能不能不给sort传参数,能不能把这个自定义属性在sort中直接获取到
+                sort.call(this); //这个this是谁？call的第一个参数this就是当前你点击的表头列
+                //sort.call(this)  ==> 把sort函数中的this修改成当前的this，而当前的这个this是你点击发生的时候那个表头列
+
+            }
+        }
+    }
+
+
     
 
 

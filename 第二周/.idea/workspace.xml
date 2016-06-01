@@ -21,11 +21,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="表格排序.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="表格排序.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/第二天/表格排序.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.7105265">
-              <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
+            <state vertical-scroll-proportion="-5.598165">
+              <caret line="66" column="42" selection-start-line="66" selection-start-column="42" selection-end-line="66" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="json.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/第二天/json.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="1" column="51" selection-start-line="1" selection-start-column="51" selection-end-line="1" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -51,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="dom.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="dom.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/第二天/dom.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.0">
-              <caret line="124" column="9" selection-start-line="124" selection-start-column="9" selection-end-line="124" selection-end-column="9" />
+            <state vertical-scroll-proportion="-4.4210525">
+              <caret line="111" column="19" selection-start-line="111" selection-start-column="19" selection-end-line="112" selection-end-column="5" />
               <folding>
                 <element signature="e#3126#3131#0" expanded="false" />
               </folding>
@@ -81,8 +91,8 @@
         <option value="$PROJECT_DIR$/call&amp;apply&amp;bind.html" />
         <option value="$PROJECT_DIR$/第二天/JSON.html" />
         <option value="$PROJECT_DIR$/第二天/dom.html" />
-        <option value="$PROJECT_DIR$/第二天/json.txt" />
         <option value="$PROJECT_DIR$/第二天/utils.js" />
+        <option value="$PROJECT_DIR$/第二天/json.txt" />
         <option value="$PROJECT_DIR$/第二天/表格排序.html" />
       </list>
     </option>
@@ -294,21 +304,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/第二天/json.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.04974271">
-          <caret line="1" column="68" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/第二天/表格排序.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.7105265">
-          <caret line="99" column="0" selection-start-line="99" selection-start-column="0" selection-end-line="99" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/第二天/utils.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -327,11 +322,27 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/第二天/dom.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.0">
-          <caret line="124" column="9" selection-start-line="124" selection-start-column="9" selection-end-line="124" selection-end-column="9" />
+        <state vertical-scroll-proportion="-4.4210525">
+          <caret line="111" column="19" selection-start-line="111" selection-start-column="19" selection-end-line="112" selection-end-column="5" />
           <folding>
             <element signature="e#3126#3131#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/第二天/json.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="51" selection-start-line="1" selection-start-column="51" selection-end-line="1" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/第二天/表格排序.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.598165">
+          <caret line="66" column="42" selection-start-line="66" selection-start-column="42" selection-end-line="66" selection-end-column="42" />
+          <folding />
         </state>
       </provider>
     </entry>
