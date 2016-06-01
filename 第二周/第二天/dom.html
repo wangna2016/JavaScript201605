@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>dom的映射和回流</title>
+    <style>
+        *{ margin: 0; padding: 0; list-style: none; font-family: 微软雅黑; }
+        .list{ width: 200px; border: 1px solid #ccc; padding: 10px; margin: 30px auto; }
+        .list li{ height: 30px; line-height: 30px; text-align: center; border-bottom: 1px dashed #ccc;  }
+
+    </style>
+</head>
+<body>
+    <ul class="list">
+        <li>3</li>
+        <li>2</li>
+        <li>1</li>
+    </ul>
+</body>
+</html>
+<script>
+    var ul = document.getElementsByClassName('list')[0];
+    var lis = ul.getElementsByTagName('li'); //lis其实是一个类数组,lis是通过dom的防水获取来的dom对象。 lis和页面中的li标签还存在关系么？，lis中的每一项和也页面中的每一个li是有对应关系的。我们把这种对应关系就叫做DOM映射.有了这个映射关系就可以通过lis中具体某一项的修改就能修改页面对应li的任何属性了
+    console.log(lis); //lis是一个元素集合  HTMLCollection
+    var res = listToArray(lis); //我把这个类数组转化成数组，那么还存在映射关系么？虽然把类数组转化成了数据但是数组中每一项和页面中的元素的DOM映射关系没有丢
+    for(var i=0; i<res.length; i++){
+        res[i].onmouseover = function (){ //当i=0的是lis[0]其实就是页面中的第一个li标签,然后在lis[0]添加了onmouseover事件属性。由于dom的映射关系在页面中滑过这个li的时候就能触发事件
+            this.style.backgroundColor = 'green';
+        }
+        res[i].onmouseout = function (){
+            this.style.backgroundColor = '';
+        }
+    }
+
+    //向页面中的li下面追加几个？？？ 追加3个: 循环3次，每次都新创建一个li标签。然后append进去
+    /*
+    *   通过append的方式添加到页面中的元素：不会影响原来存在的元素的事件属性后者其他属性
+    *
+    * */
+
+    //动态创建标签的方式
+/*
+    for(var i=0; i<3; i++){
+        var li = document.createElement('li'); //创建了一个新的li标签
+        li.innerHTML = i+4; //因为页面中要4开始
+        ul.appendChild(li);
+    }
+*/
+
+    //用innerHTML: 这种方式会影响原来页面中存在的元素(原来的li的事件都丢失了)
+/*
+    var str = '';
+    for(var i=0; i<3; i++){
+        str+='<li>'+ (i + 4) +'</li>';
+    }
+    ul.innerHTML = ul.innerHTML + str; //这是一个赋值动作,等号右面是取值动作，ul.innerHTML其实取值来的是包含前三个li的字符串(仅仅是字符串而已),然后这些拼接好的字符串又被重新渲染成了li元素。
+    ul.innerHTML += str; //在原来的基础上累加
+*/
+
+    //appendChild(引起多次回流,原来的事件没丢)和innerHTML(一次,原来的事件都丢了)的方式哪个好呢？？
+    /*
+    *   dom的回流：任何页面中的元素的增加或者删除或者元素位置的改变都会引起dom的回流
+    *   dom的重绘：元素的样式的改变或者其他某属性改变会引起dom的重绘
+    *
+    * */
+    //是否有一种方式：原来的事件不丢失并且只引起一次回流？？？需要一个容器把每次直接添加到页面中的li先添加到容器中，然后一次性把容器中的所有的li添加到页面中
+    //创建一个容器: 文档碎片
+    var frg = document.createDocumentFragment(); //这就是一个临时可以装dom元素的容器
+    for(var i=4; i<=6; i++){
+        var li = document.createElement('li');
+        li.innerHTML = i;
+        frg.appendChild(li); //把每次创建好的li放到frg这个临时的文档碎片容器中,其实这会还没有添加到页面中更不会引起回流
+    }
+    ul.appendChild(frg); //把容器添加到页面中
+    frg = null; //frg这个容器添加之后就没用了
+
+    //但是以上都是向页面中追加元素，在工作中追加的时候并不多
+    console.log(lis); //不是重新获取，但是会随着页面的li的增加而增加
+    var res = listToArray(lis); //把lis这个类数组转化成数组
+    res = res.sort(function (a,b){ //res是已经是一个排好序的数组了
+        //console.log(a,b);
+        return a.innerHTML- b.innerHTML; //此时的a和b分别是li,我们是按照li.innerHTML排序
+    });
+    //我要把排序好的数组中的每一个li重新放回到页面中
+    var frg = document.createDocumentFragment();
+    for(var i=0; i<res.length; i++){
+        frg.appendChild(res[i]); //并不是追加由于dom的影射关系是依次按照大小挪到最后位置
+    }
+    ul.appendChild(frg); //其实并不是向后追加，由于dom映射关系并不是向后添加。而是把原来的位置重新调换一下,那我们就可以对页面中的元素进行排序了
+    frg = null;
+
+
+
+
+
+
+
+
+    Array.prototype.myslice = function (n,m){ //2,4
+        //这个slice方法就是自己说的算了。可以分为没有参数，一个参数。两个参数等情况
+        var ary = [];
+        if(arguments.length ==0 || (arguments[0] == 0 && arguments.length == 1)){
+            for(var i=0; i<this.length; i++){
+                ary[ary.length] = this[i];
+            }
+            return ary;
+        }
+
+        for(var i=n; i<=m-1; i++){
+            ary[ary.length] = this[i];
+        }
+        return ary;
+    }
+    function listToArray(likeArray){
+        try{
+            return Array.prototype.slice.call(likeArray,0);
+        }catch (e){
+            var ary = [];
+            for(var i=0; i<likeArray.length; i++){
+                ary[ary.length] = likeArray[i];
+            }
+            return ary;
+        }
+    }
+</script>

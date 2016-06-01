@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>JSON</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    /*\
+    *   JSON是一种数据格式: 一般用来前端和后台的数据交换
+    * */
+    var obj = {name:'tianxi',age:30}; //
+    var jsonObj = { "name":"zhufeng","age":30}; //这就是一个json格式的数据
+    //JSON数据和JSON格式的字符串相互转换
+    var jsonStr = JSON.stringify(jsonObj); //把json格式的对象转化成json格式的字符串
+
+    console.log( jsonStr);
+
+    var newjsonObj = JSON.parse(jsonStr); //把json格式的字符串转化成json格式的对象,其实也是一个去引号的过程 eval也可以去引号
+
+    console.log(newjsonObj);
+
+    //写一个方法解析json格式的字符串
+    function jsonParse(jsonStr){
+        return 'JSON' in window ? JSON.parse(jsonStr) : eval("("+jsonStr+")");
+    }
+</script>

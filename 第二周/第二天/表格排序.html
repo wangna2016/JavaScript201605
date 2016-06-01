@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>表格排序</title>
+    <style>
+        * { margin: 0; padding: 0; font-family: 微软雅黑; }
+        #wrap{ width: 500px; margin: 30px auto; border: 2px solid #ccc; border-radius: 5px; padding: 15px;  }
+        #wrap table{ }
+        #wrap table thead { background: lightblue; -webkit-user-select: none; }
+        #wrap table th,#wrap table td{ width: 100px; height: 30px; text-align: center; line-height: 30px;  }
+        .cursor{ cursor: pointer; }
+    </style>
+</head>
+<body>
+<div id="wrap">
+    <table cellspacing="0" cellpadding="0">
+        <thead>
+        <tr>
+            <th>姓名</th>
+            <th class="cursor">年龄</th>
+            <th>性别</th>
+            <th>体重(kg)</th>
+            <th>身高(cm)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!--<tr>
+            <td>田喜</td>
+            <td>30</td>
+            <td>1</td>
+            <td>89</td>
+            <td>175</td>
+        </tr>
+        <tr>
+            <td>陈超</td>
+            <td>20</td>
+            <td>1</td>
+            <td>75</td>
+            <td>180</td>
+        </tr>
+        <tr>
+            <td>李宁</td>
+            <td>18</td>
+            <td>0</td>
+            <td>45</td>
+            <td>165</td>
+        </tr>-->
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+<script src="utils.js"></script><!--引入我需要的js文件-->
+<script>
+    /*
+    *   表格排序： 可以按照列去排序，但是我们调整的顺序确实行的顺序
+    *
+    *
+    * */
+    //获取表格内我们所有可能操作到的元素
+    var wrap = document.getElementById('wrap'); //获取最外层的包裹,最大的容器
+    var table = wrap.getElementsByTagName('table')[0]; //获取到table
+    //获取table下的行
+    var thead = table.tHead; //因为一个表格只有一个thead
+    var theadRow = thead.rows[0]; //表头下面的行
+    var theadCells = theadRow.cells; //表头这行下面所有的列,cell是单元格的意思。
+    var tbody = table.tBodies[0]; //获取表格里第一个主体
+    var tbodyRows = tbody.rows; //表格主体里所有的行，因为要排序就是针对所有行排序
+    //唯独表格才可以这样获取
+
+
+    //由于表格中的数据都不是静态的，需要在渲染表格之前就获取到,接下来我们模拟前后端通信的方式做数据的交互和动态绑定，通过Ajax  async(异步的)  javascript and XML来获取后台数据接收并处理绑定数据，然后渲染
+    /*
+    *   Ajax步骤：
+    *       1 先声明一个异步对象  new XMLHttpRequest();
+    *
+    *
+    * */
+    var xhr = new XMLHttpRequest(); //用实例的创建方式创建一个异步对象，http:超文本传输协议
+    xhr.open("get"/*用什么样的方式去拿数据post*/,"json.txt"/*去拿数据的接口(去哪里拿数据一般情况下是服务端来定)*/,false/*是同步还是异步*/); //true代表异步，false代表同步
+    xhr.onreadystatechange = function (){ //时刻监听xhr这个异步对象的状态
+        //console.log(xhr.readyState); //还有好多阶段不是4 1 ...
+        if(xhr.readyState == 4 && xhr.status == 200){ //同时符合这两个条件代表成功获取到数据
+            //status == 200代表成功,readyState == 4代表xhr的状态。这个readyStat是不断改变的
+            //304一般代表本地缓存
+            //404 一般是找不到页面
+            //5开头的一般是服务器错误(跟前端没关系)
+            window.res = utils.jsonParse(xhr.responseText/*这是字符串*/); //responseText就是从接口获取来的数据,只要成功取回数据就多了一个全局的res变量
+        }
+    }
+    //xhr还没有出发，上面的都是约定.
+    xhr.send(null);  //xhr就已经在路上了,只要才出发了就能实时监听xhr异步对象的状态，只要成功返回了，说明成功拿到了数据。==>  接下来就是处理数据了
+    console.log(res); //由于是同步的如果不成功执行不到这里
+
+
+    //数据已经成功取回，接下来需要把数据和表格绑定在一起其实就把数据塞到表格中
+    
+
+
+</script>
