@@ -18,9 +18,9 @@
     <table cellspacing="0" cellpadding="0">
         <thead>
         <tr>
-            <th>姓名</th>
+            <th class="cursor">姓名</th>
             <th class="cursor">年龄</th>
-            <th>身高(cm)</th>
+            <th class="cursor">身高(cm)</th>
             <th class="cursor">体重(kg)</th>
             <th>性别</th>
         </tr>
@@ -105,7 +105,17 @@
             var curObj = res[i];  //这是数组中每一个对象,每一行的列数和这个对象有多少组属性是相同的; 属性和遍历，每遍历一次需要创建一个td标签
             for (var key in curObj ){ //这是在创建列
                 var td = document.createElement('td');
-                td.innerHTML = curObj[key]; //td标签里的内容也就是td.innerHTML就是curObj的属性值
+                //如果是gender属性我们需要处理下,key是代表每次给列赋值的时候的属性，我们在给性别赋值之前不能直接赋值1或者0
+                if(key === 'gender'){ //说明你要给性别那一列赋值了
+                    if(curObj[key] == 1){ //男
+                        td.innerHTML = '男';
+                    }else{ //女
+                        td.innerHTML = '女';
+                    }
+                }else{
+                    td.innerHTML = curObj[key]; //td标签里的内容也就是td.innerHTML就是curObj的属性值
+                }
+
                 tr.appendChild(td); //把每次创建的列放到行中
             }
             frg.appendChild(tr); //把每次已经创建的行，并且这个行中已经被里面的小循环有多少组属性就创建了多少列,把包含多列的这一行添加到文档碎片中
@@ -128,11 +138,22 @@
     function sort(/*clickThIndex*/){ //点击的那一列的表头的索引需要动态传进来
         //console.log(this); //??如果不加call，this就是window,如果加了call这个this就被修改了，修改成call的第一个参数，call第一个参数是事件发生的时候点击的元素 ==> 其实也就是点击的那个表头列,那么参数就可以不用了，我能获取到你点击的元素了,我知道了点击的元素，我就能获取到点击元素身上的索引值
         console.log(this.index);
+        for(var i=0; i<theadCells.length; i++){
+            if(theadCells[i] != this){ //如果这个条件成立说明当前的theadcells[i]不是你点击的那个
+                theadCells[i].sortFlag = -1; //只要不是点击的那个我就把排序的这个自定义属性标识恢复成原始的-1
+            }
+        }
         var that = this; //保存this的做法以后在编程的过程中也经常做
         var rowsArray = utils.listToArray(tbodyRows); //rowsArray已经是一个数组了
+        that.sortFlag *= -1;
         rowsArray.sort(function (a,b){ //a和b分别代表相邻的两行
             //我不是按照行排序，我是按照行里面具体的某一列的innerHTML排序
-            return a.cells[/*clickThIndex*/that.index]/*行的第二列年龄*/.innerHTML - b.cells[/*clickThIndex*/that.index].innerHTML;
+            if(isNaN(a.cells[that.index].innerHTML) || isNaN(b.cells[that.index].innerHTML) ){ //只要有一个是true就说明当前点击的列里面的内容不是数字，我们就不能用减法，用localeCompare
+                return (a.cells[that.index].innerHTML.localeCompare(b.cells[that.index].innerHTML))*that.sortFlag;
+
+            }
+            return (a.cells[/*clickThIndex*/that.index]/*行的第二列年龄*/.innerHTML - b.cells[/*clickThIndex*/that.index].innerHTML)*that.sortFlag; //这个return的值才是排序的关键?那么我能不能每次点击的时候都让这个return的值取反： 上一次正序，下一次点击之后就取反就是倒叙,如果每次点击的时候都能让return的这个值每次都乘以一个-1那么就能到达我的效果了,那么这个-1放在哪里比较合适？点击的时候我们才排序，那么这个-1存在点击元素的身上才是最直接的。
+
         });
         //还需要把还好序的数组重新添加到页面中
         var frg = document.createDocumentFragment();
@@ -145,11 +166,12 @@
     }
     //sort();
 
-
     //点击带cursor这个类的表头列我才按照当前列去排序
     for(var i = 0; i<theadCells.length; i++){
         var cur = theadCells[i];
         cur.index = i;
+        cur.sortFlag = -1; //给表头的每一列都存了一个-1，那么点击的时候排序方法中的return每次都乘以this.sortFlag
+
         if(cur.className === 'cursor'){ //带这个cursor这个类的列我才绑定
             cur.onclick = function (){
                 //console.log(this); //??
@@ -162,6 +184,18 @@
             }
         }
     }
+
+    /*
+    *  需要处理的小问题：
+    *           性别赋值的男女显示问题
+    *           升序降序问题(其实是按照sort排序的时候return 那个差才是我们关注的重点)
+    *           排序点击恢复默认升序问题  需要在点击其他列的时候把除了点击列的自定义sortFlag属性恢复成原始的-1默认值
+    *           如果点击列是名字需要在return的时候处理 localeCompare
+    *
+    * */
+
+
+
 
 
     
