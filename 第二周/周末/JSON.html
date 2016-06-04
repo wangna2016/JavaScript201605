@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>JSON</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    /*
+    *   JSON  Javascript Object Notation 是一种前后端交互的数据格式 和对象的区别属性名字用双引号包含起来了,属性值如果是字符串也用双引号
+    *       常用方法:
+    *           1 JSON.parse()  把json格式的字符串转化为json格式的对象
+    *           2 JSON.stringify() 把json格式的对象转换成json格式的字符串
+    *
+    * */
+    var obj = {name:'tianxi',age:30};
+    var jsonObj = {"name":"tianxi","age":30}; //这个就是json
+    var jsonStr = JSON.stringify(jsonObj);
+    console.log(jsonStr);
+    var newJsonObj = JSON.parse(jsonStr); //把json格式的字符串转化为json格式的对象
+
+    //JSON  Math  ==> window.JSON window.Math
+    function jsonParse(jsonStr){ //兼容所有浏览器的解析json格式的字符串
+        return 'JSON' in window ? JSON.parse(jsonStr) : eval("("+jsonStr+")");
+    }
+
+
+</script>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <ul id="list">
+        <li><span>1</span></li>
+        <li><span>2</span></li>
+        <li><span>5</span></li>
+        <li><span>4</span></li>
+        <li><span>3</span></li>
+    </ul>
+
+</body>
+</html>
+<script>
+    function listToArray(likeArray){
+        try{
+            return [].slice.call(likeArray,0);
+        }catch(e){
+            var newAry = [];
+            for(var i=0; i<likeArray.length; i++){
+                newAry.push(likeArray[i]);
+            }
+            return newAry;
+        }
+    }
+    var lis = document.getElementById('list').getElementsByTagName('li');
+    var res = listToArray(lis);
+    res.sort(function (a,b){
+        console.log(a,b);
+        return a.innerHTML- b.innerHTML;
+        //return a.children[0].innerHTML - b.children[0].innerHTML;
+    })
+</script>
