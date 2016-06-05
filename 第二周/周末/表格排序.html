@@ -20,11 +20,11 @@
         <table cellpadding="0" cellspacing="0">
             <thead>
                 <tr>
-                    <th>姓名</th>
-                    <th>性别</th>
+                    <th class="cursor">姓名</th>
+                    <th class="cursor">性别</th>
                     <th class="cursor">年龄</th>
-                    <th>身高(cm)</th>
-                    <th>体重(kg)</th>
+                    <th class="cursor">身高(cm)</th>
+                    <th class="cursor">体重(kg)</th>
                 </tr>
             </thead>
             <tbody>
@@ -196,25 +196,42 @@
     //点击的时候执行排序 表头可以有cursor这个类的才可以点
 
     function bindEvent(){
-        debugger;
         for(var i=0; i<thaedThs.length; i++){
             var curTh = thaedThs[i];
+            curTh.suibian = i;
+            curTh.flag = -1;
             if(curTh.className == "cursor"){ //年龄
                 curTh.onclick = function (){
                     //排序
-                    tableSort();
+/*
+                    console.log(this); //这个this就是你点击谁就是谁
+*/
+                    tableSort.call(this,this.suibian); //
                     changeBg();
                 }
             }
         }
     }
     bindEvent();
-
-    function tableSort(){
+    function tableSort(index){ //排序的时候我只想按照你当前点击的元素的索引那一列排序
+        console.log(this); // 这个this在函数被调用的时候被call修改了，修改成点击的表头列
+        for(var i=0; i<thaedThs.length; i++){
+            if(thaedThs[i] != this){ //我不是点击的表头列
+                thaedThs[i].flag = -1; //恢复成默认的初始-1
+            }
+        }
         //我们获取到的tbody里的所有的行排序，然后把排好序的在放回到数组中
        var  tbodyTrsAry = listToArray(tbodyTrs); //先转化成数组然后才能调用数组的sort方法
+        var _this = this; //把当前作用域里的this保存下来
+        _this.flag *= -1;
         tbodyTrsAry = tbodyTrsAry.sort(function (a,b){
-            return a.cells[2].innerHTML - b.cells[2].innerHTML;
+            var _a = a.cells[index].innerHTML;
+            var _b = b.cells[index].innerHTML;
+            if(isNaN(_a) || isNaN(_b)){ //  只要有一个不是有效数字就不能用直接的减法
+                return (_a.localeCompare(_b))*_this.flag;
+            }else{
+                return (_a - _b)*_this.flag; //这个索引值2每次都是按照年龄去排序的。这个index也可以使用_this.suibian
+            }
         });
         //把排序好的数组在添加到表格中
         var frg = document.createDocumentFragment();
@@ -224,6 +241,11 @@
         tbody.appendChild(frg);
         frg = null;
     }
+    /*
+    *   如果按照姓名排序：我们要注意下不能按照数字的排序方式  localeCompare 这是字符串方法
+    *
+    * */
+
     function listToArray(likeArray){
         try{
             return [].slice.call(likeArray,0);
