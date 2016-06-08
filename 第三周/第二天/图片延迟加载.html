@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>图片延迟加载</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #box {
+            width: 300px;
+            height: 200px;
+            border: 5px solid green;
+            border-radius: 3px;
+            margin: 3000px auto 300px auto;
+            background: url("images/load.jpg") no-repeat center;
+        }
+
+        #box img {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <img src="" trueSrc="images/6.jpg" alt=""/><!--trueSrc是我的自定义属性-->
+    <!--getAttribute setAttribute-->
+</div>
+</body>
+</html>
+<script src="../utils.js"></script>
+<script>
+    /*
+     *   图片延迟加载思路：
+     *       1如果图片不在当前的可视窗口内我暂时可以不加载。当图片完全进入可视窗口内才加载
+     *       2 如果图片已经在当前的可视窗口内，但是图片资源特别大，由于资源资源大可能加载比较慢，尤其移动端特别突出。那么如果图片没有加载结束那么图片的位置可能就是空白，那么用户体验不好。那么在图片没有加载完成之前可以给背景或者友情提示，比如：玩命加载中 或者loading...。
+     *
+     * */
+    //获取我需要操作的元素
+    var box = document.getElementById('box');
+    var img = box.getElementsByTagName('img')[0];
+    /*
+     var timer = window.setTimeout(function (){ //规定了一个定时器
+     //延迟加载的思路： 我怎么判断我要加载的图片是否已经加载成功呢，只有成功之后才会把真实有效的路径赋值给真正的图片src属性
+     var tempImg = new Image(); //这是创建图片的另外一种方式,这是一个已经创建好的图片标签
+     tempImg.src = img.getAttribute('trueSrc'); //把真是的图片的src资源路径赋值给临时的图片的src属性。这个临时的图片就去加载真实图片的资源了
+     //var tempImg = document.createElement('img');
+
+     tempImg.onload = function (){ //这是监听图片是否加载成功的事件
+     //如果代码执行到这里，说明图片已经加载成功 ==> 说明我本地已经缓存了一份，如果再去获取这个图片资源就是从本地获取
+     img.src = this.src; //这个this就是那个临时的图片
+
+     }
+
+
+     },1000);
+     */
+
+    //如果图片没有出现首屏，那么等图片完全滚动到当前可视窗口的时候再去加载
+    //如何判断一张图片已经完全进入浏览器可视窗口: 当前浏览器的底边距离body的顶部的距离 > 图片盒子本身的offsetHeight(带边框) + 图片盒子距离body顶部的距离,就说明图片已经完全进入到可视窗口内
+    window.onscroll = function () {
+
+        var browerBottomDisBodyTop = utils.win('clientHeight') + utils.win('scrollTop');  //浏览器可视窗口的高度+浏览器已经滚出去的高度
+        var imgBoxBottomDisBodyTop = box.offsetHeight + utils.offset(img.parentNode).top; //图片盒子本身的带边框的高度 + 图片盒子距离body顶部的距离
+
+        if (browerBottomDisBodyTop > imgBoxBottomDisBodyTop) { //图片盒子已经完全进入到可视窗口内
+            if(img.loaded){ return; } //这个loaded的属性是在图片做过加载之后添加上的
+            console.log('haha，终于等到你了,我要开始加载图片了');
+            var tempImg = document.createElement('img');
+            tempImg.src = img.getAttribute('trueSrc');
+            tempImg.onload = function () {
+                //临时图片已经成功加载
+                img.src = this.src;
+                img.style.display = 'block';
+                tempImg = null; //这个临时的图片加载成功之后也就没用了
+            }
+            img.loaded = true; //给img添加了一个自定义属性，用来记录已经加载过,无论成功失败下次不会再加载了
+
+        }
+    }
+
+
+</script>

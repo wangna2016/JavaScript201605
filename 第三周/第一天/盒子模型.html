@@ -24,7 +24,10 @@
             margin: 20px 0 0 30px;
             padding: 5px 0 0 4px;
             overflow: auto;
-            opacity: .5;
+            /*opacity: .5;*/
+/*
+            filter:alpha(opacity=50);/!*这个是兼容ie低版本7/8透明度的样式*!/
+*/
         }
         #outer:hover{
             background: blue;
@@ -51,6 +54,7 @@
 -->
 </body>
 </html>
+<script src="../utils.js"></script>
 <script>
     /*
      *   js盒子模型:
@@ -86,15 +90,15 @@
     console.log("scrollWidth:"+outer.scrollWidth,", scrollHeight:"+outer.scrollHeight,", scrollLeft:"+outer.scrollLeft,", scrollTop:"+outer.scrollTop);
 
 
-    function getWin(attr,val){ //'clientWidth','clientHeight'
+    function Win(attr,val){ //'clientWidth','clientHeight'
         if(typeof val != 'undefined'){ //说明val传值了，我就认为你是要设置attr这个属性的值为val.
             document.documentElement[attr] = val; //这是设置这个值，至于这个函数是否留下结果对我来说不重要
             document.body[attr] = val;
         }
         return document.documentElement[attr]||document.body[attr];
     }
-    console.log(getWin('clientWidth')); //这就是获取可视窗口的宽度
-    console.log(getWin('scrollTop',1000)); //这是获取可视窗口滚出去的高度 ==> 这个可以赋值
+    console.log(Win('clientWidth')); //这就是获取可视窗口的宽度
+    console.log(Win('scrollTop',1000)); //这是获取可视窗口滚出去的高度 ==> 这个可以赋值
 
     //offsetTop,offsetLeft都是获取当前元素外边框距离offsetParent的内边框的偏移量
     //需求：不理会offsetParent是谁，我要求求出距离body的偏移量？
@@ -132,8 +136,19 @@
         var val = null;
         if('getComputedStyle' in window){ //标准浏览器支持的
             val = window.getComputedStyle(ele,null)/*到这返回一个所有样式的对象*/[attr]/*attr代表的是具体的某一个样式*/;
-        }else{
-            val =  ele.currentStyle[attr]; //这是ie7和8支持的
+        }else{ //这里才是ie的低版本的处理方式
+            //filter:alpha(opacity=50);
+            if(attr === 'opacity'){ //你传一个opacity这样的字符串我才认为你是要获取透明度           //alpha(opacity=50) 获取来的filter属性的值也是这个字符串，我只想把50的部分拿过来
+                var reg = /^alpha\(opacity=(\d+(\.\d+)?)\)$/
+                val = ele.currentStyle['filter'];
+                //['alpha(opacity=50)','50',index:14,input:'alpha(opacity=50)']
+                //透明的返回值我要求返回一个0-1之间的数,如果是filter那么捕获回来都是0-100之间的数，需要除以100才符合透明度的值。
+                reg.test(val) ?  val = reg.exec(val)/*到这是一个数组*/[1]/*捕获回的数组的第二项才是分组正则的匹配到的内容*//100 : 1;
+
+            }else{
+                val =  ele.currentStyle[attr]; //这是ie7和8支持的
+            }
+
         }
         //如果val符合带单位的规则我就处理下
         var reg = /^-?\d+(\.\d+)?(px|em|rem|pt|deg)$/; //这个正则验证的是是否有单位
@@ -146,9 +161,13 @@
     }
     console.log(getCss(outer,'marginLeft')); //这种样式有复合值 margin padding border background
 
-    function setCss(){ //设置css  ==> 一堆关于dom操作的方法全都放在一起 ==> dom库
 
-    }
+    utils.setCss(outer,'opacity',0.2);
+
+
+
+
+
 
 
 
