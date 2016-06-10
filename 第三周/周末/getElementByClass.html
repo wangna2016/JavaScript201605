@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>getElementByClass</title>
+</head>
+<body>
+<div class="c">
+    <div class="c1"></div>
+    <div class="c2"></div>
+    <div class="       c2 c1 c3     ">a</div>
+    c1 ,c2
+    <div class="c2 c3"></div>
+    <div class="    c1 c2 c3">b</div>
+    <p class="c2"></p>
+    <span class="c2"></span>
+</div>
+
+</body>
+</html>
+<script src="utilsweekend.js"></script>
+<script>
+    var c = document.getElementsByClassName('c')[0];
+    var divs = c.getElementsByClassName('c1');
+    //规定的范围是可以改变的
+    //console.log(divs);
+
+    function getElementByClass(strClass, context) { //context如果是规定的范围，那个这个context就是代表获取元素的上下文
+        /*
+         if('getComputedStyle' in window){ //标准浏览器
+         return context.getElementsByClassName(strClass);
+         }
+         */
+        //从这往下的代码都是非标准浏览器
+        context = context || document; //如果context传了就在你传的范围内获取，如果没有传就在整个文档中获取
+        //strClass= 'c1 c2' 我是要获取带c1和c2同时含有的。==> 只要有一个没有那么就不符合规则
+        // '    c1 c2     '  我要对传进来的这个strClass字符串做首尾去空格处理,把首或者尾的一个或者多个空格用""空字符串替换
+        var reg = /^ +| +$/g;
+        strClass = strClass.replace(reg, ''); //'c1    c2 c3'
+        var strClassAry = strClass.split(/ +/g); //把这个去掉了首尾空格的类的字符串按照一个或者多个空格拆分成数组 ==> ['c1','c2'];
+        console.log(strClassAry); //判断： 如果这个数组中包含的class只有有一个没有，我就认为你不符合条件
+        var ary = [];
+        var nodeList = context.getElementsByTagName('*'); //把所有的标签都获取到,因为class任何一个标签都可以引用，所以我要把context这个范围内的所有标签都获取到，然后再这个获取到的比集合中挑出来我符合strClassAry里每一项的标签
+        console.log(nodeList);
+        for (var i = 0; i < nodeList.length; i++) {
+            var cur = nodeList[i]; //cur分别代表每次循环的时候拿过来的nodeList里一个
+            //div.c1  ==> [c2,c1] ==> 如何验证是否符合规则 ==> 循环数组[c2,c1]这里代表的是我需要比比对的每一个class，如果数组的某一项没有出现在 div.className中，那么我就认为你不符合规则，只有有一个不在className中，那么这个循环就没有必要进行下去了。那么当前的这个div不符合规则。
+            var flag = true; //假设你符合条件
+            for (var k = 0; k < strClassAry.length; k++) {
+                //div1.className = '   c1c2  '  c2     [c2,c1,c3]
+                var curClass = strClassAry[k]; //每一次代表分别是c2和c1
+                var kReg = new RegExp("(^| +)" + curClass + "( +|$)");//这个正则就是验证在c1 == c1c2  我要排除这种 ==> curClass在这个字符串两边不能出现任何其他字符
+                //我们这则是不是每一次都需要变化下
+                if (!kReg.test(cur.className)) { //这是验证不通过的时候,只要有一次不通过就没有必要验证下去了，这个判断什么时候永远都进不来 == > 验证了一轮数组中的class(你自己穿的 c2 c1)，验证一轮都没有不符合条件的。==>你所有的class数组项都曾经出现过在当前元素的className中,只要进来一次，那么也说明你有一个class数组项目没出现在当前元素的className中，那么直接宣布你不符合要求。我也没有必要验证其他的class数组项是否出现过在当前元素的className中了
+                    flag = false; //你不符合条件
+                    break;
+                }
+            }
+            if (flag) {
+                ary.push(cur);
+            }
+        }
+        return ary;
+    }
+    var res = utils.getElementsByClass('  c2       c1 ', c);
+
+    console.log(res);
+
+</script>

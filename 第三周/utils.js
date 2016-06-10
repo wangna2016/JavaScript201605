@@ -2,7 +2,7 @@
  * Created by lucky on 2016/6/8.
  */
 var utils = {
-    //°ÑÀàÊı×é×ª»¯³ÉÊı×é
+    //æŠŠç±»æ•°ç»„è½¬åŒ–æˆæ•°ç»„
     listToArray : function (likeArray){
         try{
             return Array.prototype.slice.call(likeArray,0);
@@ -14,7 +14,7 @@ var utils = {
             return a;
         }
     },
-    //½âÎöjson×Ö·û´®
+    //è§£æjsonå­—ç¬¦ä¸²
     jsonParse : function (jsonStr){
         if('JSON' in window){
             return JSON.parse(jsonStr);
@@ -22,7 +22,7 @@ var utils = {
             return eval('('+jsonStr+')');
         }
     },
-    //offset»ñÈ¡eleµ½bodyµÄÆ«ÒÆÁ¿
+    //offsetè·å–eleåˆ°bodyçš„åç§»é‡
     offset : function (ele){
         var offsetParent = ele.offsetParent;
         var l = null;
@@ -36,29 +36,29 @@ var utils = {
         }
         return {left:l,top:t};
     },
-    //»ñÈ¡¿ÉÊÓ´°¿ÚÏà¹ØµÄ
+    //è·å–å¯è§†çª—å£ç›¸å…³çš„
     win : function (attr,val){
-        if(typeof val != 'undefined'){ //ËµÃ÷µÚ¶ş²ÎÊı´«ÁË,ÄÇÃ´¾ÍÊÇÉèÖÃÕâ¸öÖµ¡£Ö»ÓĞÒ»ÖÖÇé¿öÓĞ×÷ÓÃ  scrollTop  scrollLeft
+        if(typeof val != 'undefined'){ //è¯´æ˜ç¬¬äºŒå‚æ•°ä¼ äº†,é‚£ä¹ˆå°±æ˜¯è®¾ç½®è¿™ä¸ªå€¼ã€‚åªæœ‰ä¸€ç§æƒ…å†µæœ‰ä½œç”¨  scrollTop  scrollLeft
             document.documentElement[attr] = val;
             document.body[attr] = val;
         }
         return document.documentElement[attr] || document.body[attr];
     },
-    //»ñÈ¡ÔªËØ¾­¹ıä¯ÀÀÆ÷äÖÈ¾Ö®ºóµÄÑùÊ½
+    //è·å–å…ƒç´ ç»è¿‡æµè§ˆå™¨æ¸²æŸ“ä¹‹åçš„æ ·å¼
     getCss : function (ele,attr){
         var val = null;
-        if('getComputedStyle' in window){ //±ê×¼ä¯ÀÀÆ÷
+        if('getComputedStyle' in window){ //æ ‡å‡†æµè§ˆå™¨
             val = window.getComputedStyle(ele,null)[attr];
         }else{ //ie678
-            //´¦ÀíopacityÎÊÌâ£¬Ö»ÓĞµÍ°æ±¾µÄie²Å»á³öÏÖÍ¸Ã÷¶ÈÓÃfilterÀ´Ğ´
+            //å¤„ç†opacityé—®é¢˜ï¼Œåªæœ‰ä½ç‰ˆæœ¬çš„ieæ‰ä¼šå‡ºç°é€æ˜åº¦ç”¨filteræ¥å†™
             if(attr === 'opacity'){
                 val = ele.currentStyle['filter'];
                 // alpha(opacity=70.55)
-                var reg = /^alpha\(opacity=(\d+(?:\.\d+)?)\)$/; //·Ö×éÇ°ÃæµÄ?:½áºÏÒ»ÆğÊ¹ÓÃ¾ÍÊÇÆ¥Åäµ«ÊÇÎÒ²»²¶»ñ¡£ÕâÊÇĞÔÄÜÓÅ»¯
+                var reg = /^alpha\(opacity=(\d+(?:\.\d+)?)\)$/; //åˆ†ç»„å‰é¢çš„?:ç»“åˆä¸€èµ·ä½¿ç”¨å°±æ˜¯åŒ¹é…ä½†æ˜¯æˆ‘ä¸æ•è·ã€‚è¿™æ˜¯æ€§èƒ½ä¼˜åŒ–
                /* val = reg.test(val) ?  reg.exec(val)[1]/100 : 1;*/
                 if(reg.test(val)){
                     val = reg.exec(val)[1]/100;
-                }else{ //ËµÃ÷Äã¸ù±¾Ã»ÉèÖÃ¹ıÍ¸Ã÷¶È£¬Èç¹ûÃ»ÓĞÉèÖÃÍ¸Ã÷¶ÈÄ¬ÈÏÊÇ1
+                }else{ //è¯´æ˜ä½ æ ¹æœ¬æ²¡è®¾ç½®è¿‡é€æ˜åº¦ï¼Œå¦‚æœæ²¡æœ‰è®¾ç½®é€æ˜åº¦é»˜è®¤æ˜¯1
                     val = 1;
                 }
 
@@ -67,34 +67,34 @@ var utils = {
             }
 
         }
-        //ĞèÒª´¦Àíµ¥Î»ÎÊÌâ -33px  33.33px
+        //éœ€è¦å¤„ç†å•ä½é—®é¢˜ -33px  33.33px
         var regDanwei = /^-?\d+(\.\d+)?(px|pt|em|rem|deg)$/;
         val = regDanwei.test(val) ? parseFloat(val) : val;
         return val;
     },
-    setCss : function (ele,attr,val){ //¸øeleÉèÖÃattrÕâ¸öÑùÊ½ÖµÊÇval
-        //¸÷ÖÖ¸÷ÑùµÄÅĞ¶Ï opacityĞèÒª´¦Àí,ÔÚ±ê×¼ºÍieÖĞ²»Ò»Ñù
+    setCss : function (ele,attr,val){ //ç»™eleè®¾ç½®attrè¿™ä¸ªæ ·å¼å€¼æ˜¯val
+        //å„ç§å„æ ·çš„åˆ¤æ–­ opacityéœ€è¦å¤„ç†,åœ¨æ ‡å‡†å’Œieä¸­ä¸ä¸€æ ·
         if(attr == 'opacity'){
             var userAgent = window.navigator.userAgent; //
-            var reg = /MSIE (7|8)/; //ÓÃÕıÔòÀ´ÅĞ¶Ïµ±Ç°ä¯ÀÀÆ÷ÊÇie7/8
-            if(reg.test(userAgent)){ //Èç¹û²»·ûºÏÌõ¼ş¾ÍÊÇie7/8
+            var reg = /MSIE (7|8)/; //ç”¨æ­£åˆ™æ¥åˆ¤æ–­å½“å‰æµè§ˆå™¨æ˜¯ie7/8
+            if(reg.test(userAgent)){ //å¦‚æœä¸ç¬¦åˆæ¡ä»¶å°±æ˜¯ie7/8
                 ele['style']['filter'] = 'alpha(opacity=' + val*100 + ')';
             }
             return;
         }
-        if(attr == 'float'){ //floatÔÚieºÍ±ê×¼ÖĞÒ²²»ÏàÍ¬
-            ele['style']['cssFloat'] = val; //±ê×¼ä¯ÀÀÆ÷ÖĞÉèÖÃ¸¡¶¯
-            ele['style']['styleFloat']=val; //ieµÍ°æ±¾ÉèÖÃ¸¡¶¯
+        if(attr == 'float'){ //floatåœ¨ieå’Œæ ‡å‡†ä¸­ä¹Ÿä¸ç›¸åŒ
+            ele['style']['cssFloat'] = val; //æ ‡å‡†æµè§ˆå™¨ä¸­è®¾ç½®æµ®åŠ¨
+            ele['style']['styleFloat']=val; //ieä½ç‰ˆæœ¬è®¾ç½®æµ®åŠ¨
             return;
         }
-        //windth height left top bottom right  margin padding marginBottom paddingRight...ÎÒÃÇ¶¼ĞèÒª¼ÓÉÏµ¥Î»
-        //5  5px  setCss(outer,width,5px)  ´¦Àíµ¥Î»ÎÊÌâ£¬Èç¹û´øµ¥Î»¾Í²»ÓÃ´¦ÀíÁË
-        var reg = /^width|height|left|top|bottom|right|(margin|padding)(Left|Bottom|Right|Top)?$/; //ºóÃæµÄLeft Bottom Right Top¿ÉÒÔ³öÏÖ¿ÉÒÔ²»³öÏÖ
-        if(reg.test(attr)){ //Èç¹ûÕâ¸öÕıÔòÑéÖ¤Í¨¹ıËµÃ÷ÄãÉèÖÃ¾ÍÊÇÈçÉÏÄÇĞ©Çé¿ö
-            if(!isNaN(val)){ //Õâ¸öÅĞ¶ÏÊÇvalÊÇ·ñ´øÁËµ¥Î»,Èç¹û´øÁËµ¥Î»ÎÒ¾Í²»¼ÓpxÁË 5px 6px
+        //windth height left top bottom right  margin padding marginBottom paddingRight...æˆ‘ä»¬éƒ½éœ€è¦åŠ ä¸Šå•ä½
+        //5  5px  setCss(outer,width,5px)  å¤„ç†å•ä½é—®é¢˜ï¼Œå¦‚æœå¸¦å•ä½å°±ä¸ç”¨å¤„ç†äº†
+        var reg = /^width|height|left|top|bottom|right|(margin|padding)(Left|Bottom|Right|Top)?$/; //åé¢çš„Left Bottom Right Topå¯ä»¥å‡ºç°å¯ä»¥ä¸å‡ºç°
+        if(reg.test(attr)){ //å¦‚æœè¿™ä¸ªæ­£åˆ™éªŒè¯é€šè¿‡è¯´æ˜ä½ è®¾ç½®å°±æ˜¯å¦‚ä¸Šé‚£äº›æƒ…å†µ
+            if(!isNaN(val)){ //è¿™ä¸ªåˆ¤æ–­æ˜¯valæ˜¯å¦å¸¦äº†å•ä½,å¦‚æœå¸¦äº†å•ä½æˆ‘å°±ä¸åŠ pxäº† 5px 6px
                 val += 'px';
             }
         }
-        ele['style'][attr] = val; //ÉèÖÃÕâÊÇ¸³Öµ¹ı³Ì
+        ele['style'][attr] = val; //è®¾ç½®è¿™æ˜¯èµ‹å€¼è¿‡ç¨‹
     }
 };

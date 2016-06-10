@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>盒子模型</title>
+    <style>
+        .a{box-sizing: border-box;} /*这个属性会把padding的值自动从width减去了css3*/
+        *{ margin: 0; padding: 0; }
+        #outer{ width: 300px; height: 300px; border: 10px solid #ccc; padding: 50px; margin: 30px; background: lightcoral; }
+        #middle{ width: 180px; height: 180px; border: 10px solid darkolivegreen; background: lightcyan; padding: 40px; opacity: .8; filter: alpha(opacity=80);  }
+        #inner{ width: 80px; height: 80px; border: 10px solid darkred; background: lightseagreen;  }
+        #middle:hover{  }
+        #middle:before{
+            content: '我是';
+            display: block;
+            width: 100px;
+            height: 100px;
+            background: red;
+        }
+        #middle:after{}
+    </style>
+</head>
+<body>
+    <div id="outer" style="position: static;" >
+        <div id="middle" qiancheng="88" class="qiancheng" style="overflow: auto; float: left "  >
+            屈原·通州限购催热注册空壳公司 摇号中签率将创新低
+            ·北京将可补换异地身份证 月薪过万的人怎样工作
+            ·京92号汽油重回"6元时代" 中国有多少百万富翁?
+            ·4人告去哪儿网败诉 草原天路收费取消困扰犹存
+            ·离职了五险一金怎么办？ 男友跟异性走太近咋办
+            ·端午北京去哪最好玩？ 正版授权高达全机体制霸·通州限购催热注册空壳公司 摇号中签率将创新低
+            ·北京将可补换异地身份证 月薪过万的人怎样工作
+            ·京92号汽油重回"6元时代" 中国有多少百万富翁?
+            ·4人告去哪儿网败诉 草原天路收费取消困扰犹存
+            ·离职了五险一金怎么办？ 男友跟异性走太近咋办
+
+            <div id="inner"></div>
+
+        </div>
+    </div>
+    <video src=""></video>
+    <audio src=""></audio><!--h5的标签-->
+    <textarea name="" id="" cols="30" rows="10" >asdfasdf</textarea>
+</body>
+</html>
+<script>
+    /*
+    *   js中的盒子模型:
+    *       clientHeight: 内容+上下填充
+    *       clientWidth:  内容+左右填充
+    *       clientTop:   上边框宽度
+    *       clientLeft:  左边框宽度
+    *
+    *       offsetWidth:  内容+左右填充+左右边框
+    *       offsetHeight: 内容+上下填充+上下边框 ==> clientHeight+上下边框
+    *       offsetParent: offsetParent是谁取决于它的上一级元素是否有定位属性(relative,absolute,fixed),如果没有定位属性那么就继续向上查找，直到找到一个带定位属性的上一级元素。如果都没有就是body,但是body没有offsetParent(父级参照物)
+    *       offsetTop: 外边框距离父级参照物的内边框的距离(垂直方向的) 上偏移
+    *       offsetLeft: 外边框距离父级参照物的内边框的距离(水平方向)  左偏移
+    *       /onfocus onblue onchange select  ondblclick(双击)
+    *
+    *       scrollHeight: 如果没有内容溢出和clientHeight是相等的，有内容溢出那么就是 内容+上padding
+    *       scrollWidth:  如果有内容溢出那么就是  内容+左padding
+    *       scrollTop:  如果有滚动条就是滚出去的高度，否则就是0
+    *       scrollLeft:  如果有滚动条就是滚出去的宽度 0
+    *       ps: scrollTop和scrollLeft可以人为赋值并且不断改变滚出去的高度或者宽度
+    *       除了scrollLeft和scrollTop其他的盒子模型属性不支持赋值
+    * */
+    var outer = document.getElementById('outer');
+    var middle = document.getElementById('middle'); //通过id获取元素的时候只能用document才能调用。==> 根本原因：doucument有一个叫做getElementById的属性
+    var inner = document.getElementById('inner');
+    console.dir(middle);
+    console.log(middle.parentNode,middle.offsetParent);
+    console.log(inner.offsetParent);
+    console.log(document.body.offsetParent,document.body.parentNode); //body没有offsetParent
+
+    /*
+    *   通过style只能获取行内样式，通过js  middle.style.height = '300px' 这也是把样式写在行内。行内的样式优先级高于class等
+    *   如何获取不是写在行内的样式：
+    *       window.getComputedStyle : 是window的一个属性，也是获取经过计算过后的样式的方法，并且这个方法需要两个参数  window.getComputedStyle(dom,伪类样式),
+    *       如果想获取伪类样式那么第二个参数就放一个伪类样式字符串，返回值都是一个包含所有对当前元素生效的样式对象
+    *       在低版本的ie中如何获取经过浏览器渲染过后的样式：
+    *       middle.currentStyle  在ie7和ie8中  ==>在ie78中window没有一个叫做getComputedStyle的属性
+    *
+    * */
+    console.log(window.getComputedStyle(middle,'before')/*到这返回一个对象*/['width']) //这是获取到middle这个元素经过计算过后的winth的样式
+
+    function getCss(ele,attr){ //获取支持所有浏览器的样式的方法
+/*
+        if("getComputedStyle" in window){ //不会报错只有true和false在标准浏}览器都是是true
+*/
+        var val = null;
+        if(window.getComputedStyle){ //要么是一个函数，要么是再获取一个压根不存在属性那么就是undefined
+            val =  window.getComputedStyle(ele,null)[attr]; //暂时获取具体到某一个属性的样式，需要一个变量(参数)
+        }else{ //这个地方是ie低版本,这里的透明度需要通过filter来获取
+            //'alpha(opacity=80)'
+            if(attr === 'opacity'){
+                val = ele.currentStyle['filter'];
+                //val = 'alpha(opacity=80)'
+                var filterReg = /^alpha\(opacity=(\d+(?:\.\d+)?)\)$/;
+                if(filterReg.test(val)){
+                    val = filterReg.exec(val)[1]/100; //exec正则返回一个数组，数组的第一项是第一个分组的内容
+                }else{
+                    val = 1;
+                }
+            }else{
+                val =  ele.currentStyle[attr];
+            }
+        }
+        //返回值有的带单位，有的不带单位  ==> 去单位的操作 163px -163px -165.34px
+        var reg = /^-?\d+(\.\d+)?(px|em|rem|deg|pt)$/; //用来匹配带单位的正则
+        if(reg.test(val)){
+            val = parseFloat(val);
+        }
+        return val;
+    }
+
+    function win(attr,val){ //获取可视窗口的宽度和高度
+       //两个参数，如果第二个参数传了我就做赋值动作，如果没传那么就是获取动作
+        if(typeof val != 'undefined'){ //第二个参数传值了,其实这个赋值的动作只有scrollTop和scrollLeft生效，其他赋值动作没用
+            document.documentElement[attr] = val;
+            document.body[attr] = val;
+        }
+        return document.documentElement[attr] || document.body[attr];
+    }
+    console.log(win('clientHeight'));
+
+    function setCss(ele,attr,val){ //设置样式 100 100px
+        //需要处理单位，如果你传了px我就不加了。如果你没传我就给你加上默认的px单位
+        //100 100px
+        //如果设置透明度
+        if(attr === 'opacity'){ //如果设置透明度需要写两套,给标准浏览器和ie都写一份
+            ele.style[attr] = val;
+            ele.style.filter = 'alpha(opacity='  + val*100  + ')';
+            return;
+        }
+        if(attr ==='float'){ //如果要设置浮动
+            ele.style['cssFloat'] = val; //给标准浏览器用的
+            ele.style['styleFloat'] = val; //给ie低版本用的
+            return;
+        }
+
+        var reg = /^width|height|top|left|right|bottom|border|(margin|padding)(Left|Top|right|bottom)$/;
+       if(reg.test(attr)){ //如果正则验证通过那么说明是正则这么多情况中的一种
+           if(!isNaN(val)){ //如果带单位。。。。如果不带单位我就加上一个px
+               val += 'px';
+           }
+       }
+        ele['style'][attr] = val;
+       // middle.style.width = 1000;
+    }
+    /*setCss(middle,'width',1000); //我给middle设置宽度1000*/
+
+    function offset(ele){ //无论元素的offsetParent是谁，我都要获取距离body的偏移量
+        var l = null;
+        var t = null;
+        var parent = ele.offsetParent; //这是自己的offsetParetn，只要我的父级参照物存在我就需要把我父级参照物的边框和offsetLeft累加上，一直到不存在offsetParent为止
+        l += ele.offsetLeft; //先把自己的加上
+        t += ele.offsetTop;
+        while(parent){ //在ie8中clientLeft已经包含在内
+            console.log(1); //这个1打印几次取决于所有上一级节点有几个定位属性
+            l += parent.clientLeft + parent.offsetLeft;
+            t += parent.clientTop + parent.offsetTop;
+            parent = parent.offsetParent; //我不断的更新parent
+        }
+        return {left:l,top:t};
+    }
+    console.log(offset(inner).top);
+
+</script>
