@@ -79,6 +79,8 @@ var utils = {
             var reg = /MSIE (7|8)/; //用正则来判断当前浏览器是ie7/8
             if(reg.test(userAgent)){ //如果不符合条件就是ie7/8
                 ele['style']['filter'] = 'alpha(opacity=' + val*100 + ')';
+            }else{
+                ele['style'][attr] = val;
             }
             return;
         }
