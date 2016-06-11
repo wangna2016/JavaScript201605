@@ -38,14 +38,13 @@ var utils = (function (){
                 val = ele.currentStyle[attr];
             }
         }
-        var reg = /^-?\d+(\.\d+)?(px|em|rem|deg|pt)$/;
+        var reg = /^-?\d+(\.\d+)?(px|em|rem|deg|pt)?$/;
         if (reg.test(val)) {
             val = parseFloat(val)
         }
-        ;
         return val;
     }
-    function setCss(ele, attr, val) {
+    function setCss(ele, attr, val) {ã€€
         if (attr === 'opacity') {
             ele.style[attr] = val;
             ele.style.filter = 'alpha(opacity=' + val * 100 + ')';
@@ -76,7 +75,7 @@ var utils = (function (){
         }
         return { left : l, top : t };
     }
-    function prev(ele){ //»ñÈ¡ÔªËØµÄÉÏÒ»¸öÔªËØ¸ç¸ç½Úµã
+    function prev(ele){ //ï¿½ï¿½È¡Ôªï¿½Øµï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ôªï¿½Ø¸ï¿½ï¿½Úµï¿½
         var pre = ele.previousSibling;
         while(pre && pre.nodeType != 1){
             pre = pre.previousSibling;
@@ -85,9 +84,9 @@ var utils = (function (){
     }
     function prevAll(ele){
         var ary = [];
-        var pre = ele.previousSibling; //pre = this.prev(ele); ÎÒÓÃthis.prev»ñÈ¡À´µÄ¶¼ÊÇÔªËØ
+        var pre = ele.previousSibling; //pre = this.prev(ele); ï¿½ï¿½ï¿½ï¿½this.prevï¿½ï¿½È¡ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½Ôªï¿½ï¿½
         while(pre){
-            if(pre.nodeType == 1){ //Èç¹û½èÓÃprev·½·¨Õâ¸öÅÐ¶Ï¾ÍÃ»ÓÐ±ØÒªÁË
+            if(pre.nodeType == 1){ //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½prevï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï¾ï¿½Ã»ï¿½Ð±ï¿½Òªï¿½ï¿½
                 ary.unshift(pre);
             }
             pre = pre.previousSibling; //pre = this.prev(pre);
@@ -98,9 +97,11 @@ var utils = (function (){
         return this.prevAll(ele).length;
     }
     function getElementsByClass(strClass,context){ //'c1  c2' ==[c1,c2]
+        context = context || document;
         if('getComputedStyle' in window){
             return context.getElementsByClassName(strClass);
         }
+
         var ary = [];
         var nodeList = context.getElementsByTagName('*');
         var classArray = strClass.replace(/^ +| +$/g,'').split(/ +/g);

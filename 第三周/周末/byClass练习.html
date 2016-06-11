@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>byClass</title>
+</head>
+<body>
+    <div id="c">
+        <div class="c1c2c3c2"></div>c1,c2,c3<!--这个只有c1c2c3才符合-->
+        <div class="c1 c2 c3"></div>c1,c2,c3
+        <div class="c3 c2 c1"></div>c1,c2,c3
+        <span class="c3 c2 c0"></span>c1,c2,c3
+        <p class="c3 c2 c0"></p>c1,c2,c3
+    </div>
+</body>
+</html>
+<script>
+    /*if('JSON' in window){ //判断是否是标准浏览器的方式有很多
+     //如果是标准浏览器就不用去模拟了
+     }*/
+    var nodes = document.getElementsByClassName('c1 c2 c3'); //同时包含c1和c2
+    console.log(nodes);
+
+
+    function byClass(strClass,context){ //
+        context = context || document; //如果有context传了就在这个范围内获取否则整个文档内获取
+        // 需要处理字符串，把函数执行传进来的
+        strClass = strClass.replacce(/^ +| +$/g,'');
+        var strClassAry = strClass.split(/ +/g); //[c1,c2,c3]
+        //上面的代码就是把传进来的字符串拆分成数组
+        var tagList = context.getElementsByTagName('*'); //我要在这里挑
+        var emptyAry = [];
+        for(var i=0; i<tagList.length; i++){
+            var curTag = tagList[i]; //每一次循环代表一个标签
+            var maybeFlag = true;
+            for(var k=0; k<strClassAry.length; k++){
+                var curClass = strClassAry[k];
+                var reg = new RegExp("(^| +)"+curClass+'( +|$)'); // 'c1    c1' /c1 /  /c2/
+                if(!reg.test(curTag.className)){
+                    maybeFlag = false;
+                    break;
+                }
+            }
+            if(maybeFlag){
+                emptyAry.push(curTag);
+            }
+        }
+        return emptyAry;
+    }
+    byClass('    c1 c2    ');
+
+</script>
