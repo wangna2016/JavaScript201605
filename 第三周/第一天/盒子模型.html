@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #wrap {
+            position: relative;
+            margin: 50px;
+            padding: 30px;
+            border: 5px solid #ccc;
+        }
+
+        #outer {
+            width: 200px;
+            height: 100px;
+            border-top: 3px solid #000;
+            border-left: 4px dashed blue;
+            background: pink;
+            margin: 20px 0 0 30px;
+            padding: 5px 0 0 4px;
+            overflow: auto;
+            /*opacity: .5;*/
+/*
+            filter:alpha(opacity=50);/!*这个是兼容ie低版本7/8透明度的样式*!/
+*/
+        }
+        #outer:hover{
+            background: blue;
+        }
+
+    </style>
+</head>
+<body>
+<div id="box" style="position: relative; border: 10px solid red; padding: 20px; "  >
+    <div id="wrap" >
+        <div id="outer" class="c1 c2">
+            clientWidth:204 , clientHeight:105 , clientLeft:4 , clientTop:3clientWidth:204 , clientHeight:105 , clientLeft:4 , clientTop:3clientWidth:204 , clientHeight:105 , clientLeft:4 , clientTop:3clientWidth:204 , clientHeight:105 , clientLeft:4 , clientTop:3clientWidth:204 , clientHeight:105 , clientLeft:4 , clientTop:3clientWidth:204 , clientHeight:105 , clientLeft:4 , clientTop:3clientWidth:204 , clientHeight:105 , clientLeft:4 , clientTop:3clientWidth:204 , clientHeight:105 , clientLeft:4 ,
+        </div>
+    </div>
+</div>
+
+<!--
+    <video src=""></video>
+    <select name="" id="">
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+    </select>
+-->
+</body>
+</html>
+<script src="../utils.js"></script>
+<script>
+    /*
+     *   js盒子模型:
+     *       //返回值都是一个数字没有单位
+     *       clientHeight:  元素的高度(内容的高度不包括边框但是包含填充)  100
+     *       clientWidth:  元素的宽度(不包括边框包括填充) 200
+     *       clientTop:  元素的上边框的宽度 3
+     *       clientLeft: 元素的左边框的宽度 4
+     *
+     *       offsetHeight  (元素的高+上下填充+上下边框)
+     *       offsetWidth  元素的宽度+左右填充+左右边框
+     *       offsetLeft 元素距离offsetParent的左偏移量 ==>当前元素的外边框距离offsetParetn的内边框的距离
+     *       offsetTop  当前元素的上边框距离offsetParent的上边框内的距离
+     *       offsetParent(参照物)和parentNode的区别：
+     *           offsetParent如果父级元素有定位属性absolute,relative,fixed的时候那么offsetParent和parentNode的同一个。如果父级元素没有定位属性，那么当前元素的offsetParent会一直向上去查找。直到找到一个定位元素位置，如果一直找到body还没有，那么offsetParent就把body返回
+     *
+     *        scrollHeight:  如果元素内有内容，内容不超出的时候和clientHeight是相同的，如果有溢出那么scrollHeight的值就是所有的内容高度+上填充
+     *        scrollWidth:  如果内容没有溢出那么和clientWidth是相同的,如果有溢出那么scrollWidth的值是内容的宽度+做填充
+     *        scrollTop: 是滚出去的高度
+     *        scrollLeft: 是滚出去的宽度
+     *
+     *        ps: 在盒子模型的12个属性中只有scrollTop和scrollLeft赋值动作有效。并且赋值超出范围会直接赋值一个临界值
+     *        ps: document.body.offsetParent = null; body不存在offsetParent
+     *
+     *        document.documentElement.clientWidth || document.body.clientWidth
+     *        document.documentElement.clientHeight || document.body.clientHeight
+     *
+     * */
+    var outer = document.getElementById('outer');
+    console.dir(outer); //outer通过dom方式获取来的，dom对象
+    console.log('clientWidth:'+outer.clientWidth,", clientHeight:" +outer.clientHeight,", clientLeft:"+outer.clientLeft,", clientTop:"+outer.clientTop);
+    console.log("offsetWidth:"+outer.offsetWidth,", offsetHeight:"+outer.offsetHeight,", offsetLeft:"+outer.offsetLeft,", offsetTop:"+outer.offsetTop);
+    console.log("scrollWidth:"+outer.scrollWidth,", scrollHeight:"+outer.scrollHeight,", scrollLeft:"+outer.scrollLeft,", scrollTop:"+outer.scrollTop);
+
+
+    function Win(attr,val){ //'clientWidth','clientHeight'
+        if(typeof val != 'undefined'){ //说明val传值了，我就认为你是要设置attr这个属性的值为val.
+            document.documentElement[attr] = val; //这是设置这个值，至于这个函数是否留下结果对我来说不重要
+            document.body[attr] = val;
+        }
+        return document.documentElement[attr]||document.body[attr];
+    }
+    console.log(Win('clientWidth')); //这就是获取可视窗口的宽度
+    console.log(Win('scrollTop',1000)); //这是获取可视窗口滚出去的高度 ==> 这个可以赋值
+
+    //offsetTop,offsetLeft都是获取当前元素外边框距离offsetParent的内边框的偏移量
+    //需求：不理会offsetParent是谁，我要求求出距离body的偏移量？
+    function offset(ele){ //ele参数就是我要求的元素的偏移量
+        var parent = ele.offsetParent; //如果ele是body，那么这个变量的值是null
+        var l = ele.offsetLeft; //获取当前元素的左偏移量，剩余的是需要把父亲元素的边框和父亲元素的左偏移累加就好
+        var t = ele.offsetTop; //同理
+        //如何是不是ie 8  window.navigator.userAgent  /MSIE (8)/ str.indexOf  reg
+        while(parent){ //body.offsetParent = null;
+            //只要offsetParent存在我就要循环的向left和top这两个基数上累加
+            l += parent.clientLeft + parent.offsetLeft; //每次需要把父亲的左边框和父亲左偏移累加
+            t += parent.clientTop + parent.offsetTop; //父亲的上边框和父亲的上偏移累加
+            //现在就需要迭代我的offsetParent了
+            parent = parent.offsetParent; //这才是保证这个while循环继续循环下去的条件。如果到达了body那么parent这个变量就被赋值为null，那么下次的循环条件不符合循环停止
+        }
+        return {left:l,top:t};
+    }
+    console.log(offset(outer).top); //前面是函数的运行，结果是一个对象。然后获取对象的属性left
+
+    //有很多样式都是计算过后样式还有伪类样式
+        /*
+        *   获取元素经过浏览器计算过后的样式:
+        *       1 window.getComputedStyle(ele,null)在标准浏览器中获取计算过后的样式不支持ie7/8,这个null是用来获取伪类样式的  :before  :after,返回值是一个对象，对象中存放是所有对当前元素有作用的样式。
+        *
+        *       2 ele.currentStyle  这是在ie中支持的
+        *
+        * */
+    //console.log(window.getComputedStyle(outer,'before')['width']); //这样就是获取outer的before这个伪类样式
+    //console.log(outer.currentStyle);
+
+    //写一个函数：用来获取当前元素的具体样式
+    function getCss(ele,attr){ //获取ele这个元素的attr样式,如果想获取伪类样式还可以给一个参数
+        //改造：我们需要处理带单位的返回值,如果包含单位就把单位去掉  px em rem deg
+        //'183px' '-183px' '183.5px  '0.8em'  ==> parseFloat  如何验证字符串是否符合规则  ==> reg.test()
+        var val = null;
+        if('getComputedStyle' in window){ //标准浏览器支持的
+            val = window.getComputedStyle(ele,null)/*到这返回一个所有样式的对象*/[attr]/*attr代表的是具体的某一个样式*/;
+        }else{ //这里才是ie的低版本的处理方式
+            //filter:alpha(opacity=50);
+            if(attr === 'opacity'){ //你传一个opacity这样的字符串我才认为你是要获取透明度           //alpha(opacity=50) 获取来的filter属性的值也是这个字符串，我只想把50的部分拿过来
+                var reg = /^alpha\(opacity=(\d+(\.\d+)?)\)$/
+                val = ele.currentStyle['filter'];
+                //['alpha(opacity=50)','50',index:14,input:'alpha(opacity=50)']
+                //透明的返回值我要求返回一个0-1之间的数,如果是filter那么捕获回来都是0-100之间的数，需要除以100才符合透明度的值。
+                reg.test(val) ?  val = reg.exec(val)/*到这是一个数组*/[1]/*捕获回的数组的第二项才是分组正则的匹配到的内容*//100 : 1;
+
+            }else{
+                val =  ele.currentStyle[attr]; //这是ie7和8支持的
+            }
+
+        }
+        //如果val符合带单位的规则我就处理下
+        var reg = /^-?\d+(\.\d+)?(px|em|rem|pt|deg)$/; //这个正则验证的是是否有单位
+        //-可以出现可以没有
+
+        if(reg.test(val)){
+            val = parseFloat(val);
+        }
+        return val;
+    }
+    console.log(getCss(outer,'marginLeft')); //这种样式有复合值 margin padding border background
+
+
+    utils.setCss(outer,'opacity',0.2);
+
+
+
+
+
+
+
+
+
+
+
+</script>

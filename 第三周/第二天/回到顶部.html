@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>回到顶部</title>
+    <style>
+        *{ margin: 0; padding: 0; }
+        html,body{ width: 100%; height: 300%;  background: linear-gradient(to bottom , pink 0, lightblue 50%, lightyellow 75%, lightgreen 100%); }
+        #btn{ display: none; position: fixed; right: 30px; bottom: 40px; width: 50px; height: 50px; border: 5px solid #000; text-decoration: none; border-radius: 50%;  line-height: 50px; text-align: center; font-size: 26px; font-weight: bold; background: darkorange; opacity: 0.3; }
+        #btn:hover{
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<a id="btn" href="javascript: void 0">Top</a><!--href这个位置阻止默认行为,跳转-->
+</body>
+</html>
+<script src="../utils.js"></script>
+<script>
+    /*
+    *   点击按钮的时候回到顶部
+    * */
+    var btn = document.getElementById('btn');
+    btn.onclick = function (){
+        //点击的时候让scrollTop这个属性值0
+        //utils.win('scrollTop',0); //把html或者body可视窗口的scrollTop赋值为0
+        var duration = 1000;  //我在1000ms之内回到顶部
+        var change = utils.win('scrollTop'); //滚出去的高度就是我要运动的距离
+        var interval = 10;
+        var speed = change/duration*interval; //每1ms走多远,定时器不认识1ms ==> 定时器每执行一次走speed这么远==> speen相当于步长
+        var timer = window.setInterval(function (){
+            var curScrollTop = utils.win('scrollTop'); //每次执行定时器都需要获取当前的滚出去的高度
+            if(curScrollTop == 0){  //如果已经到达顶部把定时器就可以停止了，已经回到了顶部，然后把解除绑定的window.onscroll事件还需要绑定上
+                window.clearInterval(timer);
+                window.onscroll = fn; //把fn所代表的函数的引用地址重新赋值给window.onscroll事件,为了保证下次正常执行
+                return;
+            }
+            curScrollTop -= speed; //每次执行的时候都需要在原来的基础上减去每次运动的距离
+            utils.win('scrollTop',curScrollTop); //把已经减去当次运动距离的值重新赋值回来
+        },interval);
+        this.style.display = 'none';
+        window.onscroll = null; //点击之后我把事件解除绑定了,当定时器停止的时候寿命已经运动到顶部。为了解决在回到顶部的过程中又不断出发了window.onscroll事件，而这个事件又把按钮显示出来了
+    }
+
+    //默认回到顶部的按钮是不现实的，当滚动超出一屏的时候才显示,我们就需要时刻监听滚动事件，然后再事件被触发的时候判断已经滚出去了多高
+    function fn(){ //滚动的时候 滚轮事件对于浏览器来讲是有捕捉频率的
+        var scrollTop = utils.win('scrollTop'); //获取滚出去的高度
+        var curScreenHeight = utils.win('clientHeight'); //当前可视窗口的高度
+        if(scrollTop>curScreenHeight){ //说明滚出去的高度已经超过一屏了
+            btn.style.display = 'block';
+        }
+    }
+    window.onscroll = fn;
+    //回到顶部的时候不消失...
+
+</script>

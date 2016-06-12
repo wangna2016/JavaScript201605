@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{ margin: 0; padding: 0; font-family: 微软雅黑;}
+        .wrap{ width: 500px; margin: 30px auto; border: 2px solid #ccc; padding: 20px; }
+        .wrap table thead { background: lightcoral;  }
+        .wrap table thead tr,.wrap table tbody tr{ height: 30px; line-height: 30px; -webkit-user-select: none; }
+        .wrap table thead tr th,.wrap table tbody tr td{
+            width: 100px; text-align: center;
+        }
+        .bg{ background: lightblue; }
+        .cursor { cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <table cellpadding="0" cellspacing="0">
+            <thead>
+                <tr>
+                    <th class="cursor">姓名</th>
+                    <th class="cursor">性别</th>
+                    <th class="cursor">年龄</th>
+                    <th class="cursor">身高(cm)</th>
+                    <th class="cursor">体重(kg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!--<tr class="bg">
+                    <td>田喜</td>
+                    <td>1</td>
+                    <td>30</td>
+                    <td>175</td>
+                    <td>90</td>
+                </tr>
+                <tr>
+                    <td>田喜</td>
+                    <td>1</td>
+                    <td>29</td>
+                    <td>175</td>
+                    <td>90</td>
+                </tr>-->
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+<script>
+    /*
+    *   表格排序： 1 首先要获取表格中我们可能会要操作到的元素
+    *
+    * */
+    /*
+    *   1如何获取数据  Ajax的方式获取数据 async(异步的) javascript  and XML(是一种数据格式)
+    *
+    * */
+    //获取到了所有我们可能要操作的表格元素
+    var wrap = document.getElementsByClassName('wrap')[0];
+    var table = wrap.getElementsByTagName('table')[0];
+    var thead = table.tHead; //表格中只有一个表头,这是table里特殊的获取方式
+    var theadTr = thead.rows[0]; //获取表头里面的行
+    var thaedThs = theadTr.cells; //这是获取表头第一行中的所有的列(单元格)
+    var tbody = table.tBodies[0]; //第一个tbody
+    var tbodyTrs = tbody.rows; //tbody里所有的行
+
+/*
+    console.dir(tbodyTrs); //我们要把这里所有的行排序
+    var ary = listToArray(tbodyTrs); //把类数组转化成数组之后这种一一对应的映射关系让然没有丢,那么排序之后只是位置的改变这种对应关系仍然还存在
+    var ary = ary.sort(function (a,b){
+        //a和b分别代表的是行
+        return a.cells[2].innerHTML - b.cells[2].innerHTML;
+    });
+    console.log(ary); //这会ary是一个已经排序好的数组，并且和页面中的元素的dom映射关系没丢
+    for(var i=0; i<tbodyTrs.length; i++){ //所有的tbody里的行
+        tbodyTrs[i].onmouseover = function (){
+            this.style.backgroundColor = 'yellow';
+        }
+        tbodyTrs[i].onmouseout = function (){
+            this.style.background = '';
+        }
+    }
+    //把排好序的数组在放回到页面的tbody中就完成了表格排序
+    for(var i=0; i<ary.length; i++){
+        tbody.appendChild(ary[i]);  //ary[i]代表的是排好序的每一行,appendChild是添加到父容器的末尾,这种元素位置的改变
+    }
+*/
+    //我想在tbody的底部在追加两行
+/*
+    for(var i=0; i<1; i++){  //这是用循环创建标签的方式添加,会引起多次回流造成性能浪费
+        var tr = document.createElement('tr');
+        tr.innerHTML = "123";
+        tr.style.background = 'red'
+        tbody.appendChild(tr);
+    }
+*/
+/*    var str = "";
+    for(var i=0; i<1; i++){ //用innerHTML的方式会破环原有的元素的事件等属性,虽然只引起了一次回流但是却造成了原有事件丢失
+       str += '<tr>456</tr>'
+    }
+    tbody.innerHTML += str; // tbody.innerHTML = tbody.innerHTML+str;  *///这是赋值的覆盖过程,然后又重新渲染的。所以造成了原来的事件丢失
+
+    /*
+    *   文档碎片:  相当于一个临时的容器，可以用来存储刚刚动态创建好的标签，然后一次性的把容器添加到页面中。这样就仅仅引起了一次回流，并且原有事件也没有丢失
+    *   document.createDocumentFragment()
+    *
+    * */
+/*
+    var frg = document.createDocumentFragment(); //创建一个文档碎片,也是一个临时容器
+    for(var i=0; i<5; i++){
+        var tr = document.createElement('tr');
+        tr.innerHTML = i;
+        frg.appendChild(tr); //把tr放到我们这个临时的文档碎片中
+    }
+    tbody.appendChild(frg); //把包含多个动态创建的tr放到这个文档碎片中
+    frg = null;//容器没用了
+*/
+
+    /*
+    *  DOM的回流和重绘和映射
+    *       映射：通过dom方法获取的dom集合和网页中元素的一一对应关系其实就是DOM映射
+    *       DOM回流: 网页中元素的位置的改变和元素的添加和删除都会都会引起dom的回流
+    *       重绘: 网页中元素样式内容的改变就是重绘
+    *       用appendChild的方式不会对原来的元素产生影响
+    *
+    * */
+
+    var wrap = document.getElementsByClassName('wrap')[0];
+    var table = wrap.getElementsByTagName('table')[0];
+    var thead = table.tHead; //表格中只有一个表头,这是table里特殊的获取方式
+    var theadTr = thead.rows[0]; //获取表头里面的行
+    var thaedThs = theadTr.cells; //这是获取表头第一行中的所有的列(单元格)
+    var tbody = table.tBodies[0]; //第一个tbody
+    var tbodyTrs = tbody.rows; //tbody里所有的行
+
+    /*
+    *    获取数据: ajax
+    *       1 创建一个异步对象
+    *
+    * */
+    function getData(){
+        var xhr = new XMLHttpRequest(); //这是一个获取数据的一个载体
+        xhr.open('get',"data.txt",false); //get/post是用什么样的方式去获取,url是接口(获取数据的地址,一般由后端工程师提供),false是同步还是异步的方式. false是同步的意思
+        xhr.onreadystatechange = function (){ //我们要时刻关注xhr的状态
+            if(xhr.readyState == 4 && xhr.status == 200){ //只有这两个状态成功组合在一起的时候才代表成功返回数据
+                //404  没取回来
+                //500 服务端错误
+                // 304 本地缓存
+                window.res = jsonParse(xhr.responseText); //把返回的数据存储下来
+            }
+        }
+        xhr.send(null); //发送请求
+    }
+    getData();
+    console.log(res); //已经成功获取到数据
+
+    /*
+    *   把获取到的数据动态添加到表格的tbody中
+    *
+    * */
+    function dataBind(){ //把获取回来的数据放到表格中
+        var frg = document.createDocumentFragment(); //开头创建frg
+        for(var i=0; i<res.length; i++){ //循环数据有多少条，每一条都是一个tr
+            var tr = document.createElement('tr'); //开头创建tr
+            //每条数据里(行)放多少列呢?
+            var curTrData = res[i]; //这是返回数据的每一项，是一个对象.这个对象有多少组属性我就创建多少个td
+            for(var key in curTrData){
+                var td = document.createElement('td');
+                //向td中放innerHTML
+                //需要处理下对象gender这个属性值问题
+                if(key == 'gender'){ //给性别赋值 ==> 然后再判断男女
+                    td.innerHTML = curTrData[key] == 1 ? '男' : '女';
+                }else{
+                    td.innerHTML = curTrData[key]; //这是向td中写内容,这个内容的值就是当前数据对象的属性值
+
+                }
+                tr.appendChild(td);
+            }
+            frg.appendChild(tr); //每次循环的末尾添加tr
+
+        }
+        tbody.appendChild(frg); //末尾添加frg
+        frg = null;
+    }
+    dataBind();
+
+    //隔行变色
+    function changeBg(){
+        for(var i=0; i<tbodyTrs.length; i++){
+            tbodyTrs[i].className = i % 2 ? 'bg' : void 0;
+        }
+    }
+    changeBg();
+
+    //点击的时候执行排序 表头可以有cursor这个类的才可以点
+
+    function bindEvent(){
+        for(var i=0; i<thaedThs.length; i++){
+            var curTh = thaedThs[i];
+            curTh.suibian = i;
+            curTh.flag = -1;
+            if(curTh.className == "cursor"){ //年龄
+                curTh.onclick = function (){
+                    //排序
+/*
+                    console.log(this); //这个this就是你点击谁就是谁
+*/
+                    tableSort.call(this,this.suibian); //
+                    changeBg();
+                }
+            }
+        }
+    }
+    bindEvent();
+    function tableSort(index){ //排序的时候我只想按照你当前点击的元素的索引那一列排序
+        console.log(this); // 这个this在函数被调用的时候被call修改了，修改成点击的表头列
+        for(var i=0; i<thaedThs.length; i++){
+            if(thaedThs[i] != this){ //我不是点击的表头列
+                thaedThs[i].flag = -1; //恢复成默认的初始-1
+            }
+        }
+        //我们获取到的tbody里的所有的行排序，然后把排好序的在放回到数组中
+       var  tbodyTrsAry = listToArray(tbodyTrs); //先转化成数组然后才能调用数组的sort方法
+        var _this = this; //把当前作用域里的this保存下来
+        _this.flag *= -1;
+        tbodyTrsAry = tbodyTrsAry.sort(function (a,b){
+            var _a = a.cells[index].innerHTML;
+            var _b = b.cells[index].innerHTML;
+            if(isNaN(_a) || isNaN(_b)){ //  只要有一个不是有效数字就不能用直接的减法
+                return (_a.localeCompare(_b))*_this.flag;
+            }else{
+                return (_a - _b)*_this.flag; //这个索引值2每次都是按照年龄去排序的。这个index也可以使用_this.suibian
+            }
+        });
+        //把排序好的数组在添加到表格中
+        var frg = document.createDocumentFragment();
+        for(var i=0; i<tbodyTrsAry.length; i++){
+            frg.appendChild(tbodyTrsAry[i]);
+        }
+        tbody.appendChild(frg);
+        frg = null;
+    }
+    /*
+    *   如果按照姓名排序：我们要注意下不能按照数字的排序方式  localeCompare 这是字符串方法
+    *
+    * */
+
+    function listToArray(likeArray){
+        try{
+            return [].slice.call(likeArray,0);
+        }catch(e){
+            var newAry = [];
+            for(var i=0; i<likeArray.length; i++){
+                newAry.push(likeArray[i]);
+            }
+            return newAry;
+        }
+    }
+    function jsonParse(jsonStr){ //兼容所有浏览器的解析json格式的字符串
+        return 'JSON' in window ? JSON.parse(jsonStr) : eval("("+jsonStr+")");
+    }
+
+</script>

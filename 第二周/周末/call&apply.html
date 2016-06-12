@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <ul id="list">
+        <li name="li">1</li>
+        <li name="li">2</li>
+        <li name="li">6</li>
+        <li name="li">4</li>
+        <li name="li">3</li>
+        <li name="li">5</li>
+    </ul>
+
+</body>
+</html>
+<script>
+    //"use strict"; //这个字符串代表的意思： 以下的js代码用严格模式解析
+    /*
+    *   严格模式和非严格模式的区别：
+    *       1 call apply 的第一个参数是null或者undefined 严格模式下分别是unll和undefined,非严格模式下是window
+    *       2 自执行函数中的this在非严格模式下是window，严格模式下是undefined
+    *       3 如果函数在执行的时候找不到函数的主体那么默认在非严格模式下是window，在严格模式下undefined
+    *
+    * */
+/*
+    console.dir(Function.prototype);
+    function fn(){}
+    fn.xx = '5'; //我在fn这个函数身上添加了一个xx属性
+    fn.call //fn.call的属性值是一个函数
+    fn.call(); //
+*/
+    /*
+    *   call的用法: call这个方法只能被函数实例调用   [].push  [].slice都是一个函数 他们也可以调用call方法
+    *    作用:  强制改变函数中的this
+    *        fn.call(obj)
+    *    call的执行步骤:
+    *       1 通过函数实例找到call方法
+    *       2 把调用call的实例函数中的this修改成call的第一个参数  ==> 把fn中的this修改成obj
+    *       3 最后把调用call的函数实例执行   ==>  fn() 虽然执行了，但是fn中的this已经被修改成call的第一个参数了
+    *       4 call的第一个参数是用改变调用call方法函数中的this，从第二个参数开始才是真正传给函数实例的参数
+    *
+    * */
+/*
+    var obj = {'name':'tianxi', fn: fn};
+
+    function fn(){
+        console.log(this); //这个this是谁要看fn执行的时候
+        //console.log(obj);
+    }
+*/
+
+    //fn(); //window
+    //obj.fn(); // obj
+    //fn.call(["asdf"]); //fn找到call这个属性，发现属性的值是一个函数，call执行传了一个参数obj
+
+    //call方法我们自己能不能模拟呢
+    Function.prototype.myCall = function (obj) { //在Function的原型上定义了叫做myCall的方法,只有Function的实例才能调用
+        console.log(this);
+        //其实就是把这里面的this换成obj
+        /*
+        *   把这里面的this修改成第一个参数  this换成obj  js做不到
+        * */
+        this(); //fx调用的是就是fx();this()就是谁调用myCall都会有一个最后的执行动作
+    }
+    function fx(){
+        alert('我是fx');
+    };
+    fx.myCall(); //myCall中的this就是fx
+    var fy = function (){
+        alert('我是fy');
+    };
+    fy.myCall();  //myCall中的this就是fy
+    var num = function (){
+        alert('我刚被修改成了一个函数  ')
+    };
+    num.myCall();  //??  无论谁调用我在call这个方法中都会有一个this执行
+
+    ///////////////////////////////
+    function f1(){
+        alert(1);
+    }
+    function f2(){
+        alert(2); //alert()会把参数强制转化为字符串
+    }
+    f1.call(f2); //把f1中的this修改成f2，然后f1执行
+
+    var obj = {
+        call:{
+            call: function (){
+                this(); //这个中的this被修改成f2了，然后this()就是f2()执行
+            }
+        }
+    }
+    obj.call.call.call(f2); //2
+
+    f1.call/*到这里其实找到了Function.prototype.call的值还是一个函数,也可以理解为call的值仍然是Function的一个实例*/.call/*call函数当作一个实例继续知道Funciton原型上的call方法,然后把这个call方法中的this修改成f2,执行*/.call(f2); //吧f1.call.call中的this修改成f2,然后是f1.call.call执 ==> 多个call连续使用的是，是把call方法中的this修改成第一个参数，然后this() ==》多个call连续使用的是就是参数执行，只有一个call调用的时候，是把调用函数中的this修改成call的第一个参数，然后这个函数执行
+    f1.call.call.call(f2); //其实最后就是f2执行，其实就是利用f1这个实例来查找call方法而已
+    (function (){}).call.call.call.call(f2); //??
+    [].push.call.call.call.call(f2); //都是通过call属性去找到call方法
+    Object.toString.call.call.call(f2); //Object.toString也是一个函数所以也能找到call方法
+    f1.call(f2);
+
+    function sum(num1,num2){
+        console.log(num1+num2); //NaN
+        console.log(this); //虽然用不到但是也改了
+    }
+    sum.call(100,200); //100是用来改变this的。200才是传给num1的,num2没有就是undefined
+    sum.call(null,100,200); //我用不着改变this,null把sum中的this改变成window了
+    sum.call(undefined,100,200); //同样在非严格模式下也改变成了window
+
+    /*
+    *   apply的用法：也是定义在Function的原型上的。任何一个函数实例都可以调用，和call的用法基本相同，不同：就是传参数的方式不相同
+    *       参数：从第二个参数是传给函数实例的是一个数组，分别把数组中的每一项当作参数分别传给调用apply的函数实例
+    *
+    *
+    *
+    * */
+    sum.apply(null,[300,400]);//不是这个数组整体传给sum，是把300和400分别传给sum
+    function f3(){
+        console.log(9000);
+    }
+    f1.call.call.apply.call.apply(f3); //??
+
+    //利用apply的这种传参方式
+    var ary = [6,5,9,3,1]; //我想找出这个数组中的最大值
+    //1 排序
+    ary = ary.sort(function (a,b){return a -b});
+    console.log(ary[ary.length-1]);
+    //2 假设 在编程的过程中经常用会用假设  假设第一项就是最大的，然后分别和第一个比较。如果比最大值还大，那么我需要更新(需要把我的最大值重新赋值)我的最大值。
+    var max = ary[0];
+    for(var i=1; i<ary.length; i++){
+        if(ary[i] > max){
+            max = ary[i];
+        }
+    }
+    console.log(max);
+
+    //3 Math.max(1,2,3,4,5,3,2,2) 其实就是给Math.max传了多个参数,如果要是能把数组中的每一项分别传给Math.max就ok了
+    var res = Math.max.apply(null,ary); //这跟this没有关系，就是利用apply把ary中的每一项当作参数传给Math.max
+    console.log(res);
+
+    //4 利用eval 把数组中的每一项那个用","隔开放到参数位置 join(",")
+    Math.max(ary.join(",")); //ary.join的返回值是一个字符串
+    Math.max('1,2,3,5,6,8,9'); //这相当于把字符串当作一个整体传给了max，需要引号
+    console.log(Math.max(eval([2,3,1].join()))); //不行 ","运算符只看最后一个
+    //(f1,f2)(); //其实这只有f2执行
+    var str = 'Math.max(' + ary.join() + ')';  //这是字符串的拼接
+    console.log(eval(str));
+
+    /*
+    *   bind方法 ： 也是定义在Function.prototype上的。作用和call和apply是相同的，都是改变函数实例中的this的
+    *       区别： bind方法并没有立刻执行，只是把一个改变了this的函数返回了,如果执行需要人为自己执行这个返回的函数,其实bind只是预先处理了this的问题 ==> 预处理思想
+    *
+    * */
+    function f5(){
+        console.log(5);
+    }
+    function f6(){
+        console.log(6);
+    }
+    //f5.call(f6); //其实这会f5已经执行结束了
+    var newF5 = f5.bind(f6);  //如果执行了就打印5
+    newF5();
+
+    Array.prototype.mySlice = function (n,m){  //模拟slice  slice(n,m)  slice() slice(0)
+        //n和m是负数
+        //m<n
+        var newAry = [];
+        if(arguments.length ==0 || (arguments.length == 1 && arguments[0] == 0) ){ //一个参数都没有
+            for(var i=0; i<this.length; i++){
+                newAry[newAry.length] = this[i]; //?
+            }
+            return newAry;
+        }
+        for(var i=n; i<=m-1; i++){
+            newAry.push(this[i]);
+        }
+        return newAry;
+    }
+    var ary = [1,2,3,4,5];
+    var res = ary.mySlice(2,4);
+    var b = [6,7,8,9];
+    console.log(b.mySlice());
+    console.log(res);
+
+    //sort
+/*
+    Array.prototype.sort = function (){
+        //这里的this也是和slice一样也是每次调用sort的数组实例
+    }
+*/
+
+    //类数组 ： 有索引，有length两个属性我们都可以把它叫做类数组.虽然具备数组和索引和length属性但是也不能用数组的任何方法  ==> 类数组转化成数组
+    var list = document.getElementById('list');
+    var lis = list.getElementsByTagName('li');
+    //var lis = document.getElementsByName('li');
+    //通过不同的方式获取来的集合可能是不同类的
+    //
+    //console.dir(lis);
+    //[].sort();
+    function listToArray(likeArray){  //把类数组转化成数组
+        //数组方法中返回值仍然是一个数组有哪些？？slice splice concat reverse sort map
+        //如果ary能借用一下slice(0)方法就会直接返回一个数组: 如何借用
+        //call和apply在ie6-7中不好使,直接报错 ==> 容错
+        try{
+            return Array.prototype.slice.call(likeArray,0); //一行代码就可以把类数组转化为数组
+
+        }catch(e){ //e这个参数就是捕获到的错误
+             var newAry = [];
+             for(var i=0; i<likeArray.length; i++){
+             newAry.push(likeArray[i]);
+             }
+             return newAry;
+        }/*finally{
+            throw new Error('别尝试了无解');
+        }*/
+        /*
+        *   try catch js中的容错处理 先尝试try中的代码，如果报错在使用catch中的方法
+        *
+        * */
+
+
+    }
+    var res = listToArray(lis); //原来lis是一个HTMLCollection
+    console.dir(res); //如果res是一个数组就成功了
+
+    //如果想把函数让任何实例都可以调用那么就需要把函数放到类的原型上
+
+    //lis我想让lis排序，但是lis是一个类数组，先把类数组转化成数组然后再排序
+
+
+
+
+
+
+
+</script>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>正则</title>
+</head>
+<body>
+</body>
+</html>
+<script>
+    /*
+    *   正则: 正则是用来验证字符串是否符合我的规则和捕获符合规则的字符串  regular expression
+    *       test: 用来验证字符串是否符合正则 ==> 返回值只有true/false
+    *       exec: 用正则捕获符合规则的字符串 ==>  是一个数组：包含捕获到的内容，index索引值， input：原有字符串
+    *
+    * */
+    var reg = /a/; //字面量的方式创建一个正则
+    var reg = new RegExp(); //实例创建的方式,实例和字面量的创建方式是有区别的
+
+    var reg1 = /pei/; //两个斜杠中间包含的就是规则
+    //console.log(reg1.test('zhufengpeixun'));
+    /*
+    *   正则中有特殊意义的元字符：
+    *       \d 代表的是0-9之间的一个数字
+    *       \D 除了\d的任意一个字符
+    *       \w 代表的是[0-9][a-z][A-Z]_ 字母数字下划线中的任意一个
+    *       \s 代表的是空格空白等
+    *       \b 代表的是边界  边界不占位
+    *       \n 代表的换行符...
+    *       . 代表的是除了\n之外的任意字符
+    *       \ 转义字符  \.这表.本身
+    *       ^ 以什么开始 不占位
+    *       $ 以什么结束 不占位
+    *
+    * */
+/*
+    var list = document.getElementsByTagName('*');
+*/
+    var reg2 = /\d/;  //只要字符串中出现了数字就是true
+    //reg2.test('zhu')
+
+    var reg3 = /\d\w/; //只要字符串中包含一个\d\w两个连续符合规则的就可以
+    //console.log(reg3.test('assdfasdfasdf7w'));
+    //
+    var reg4 = /\d\b\s\b\w/;
+    //console.log(reg4.test('zhufeng2016 peixun'));
+
+    var reg5 = /\./; //虽然是任意字符但是唯独不能没有  \是把.转义成原来的意义
+    //console.log(reg5.test('.'));
+
+    var reg6 =  /^\d\d\d\d\d\d\d\d\d\d\d$/; //相当于在开始和结束中间只有一个\d，超出了长度都是false
+    var str6 = '66';
+    //console.log(reg6.test(str6));
+    /*
+    *   量词元字符:
+    *       *   修饰前面的元字符出现0次到多次  可以出现可以不出现
+    *       +   1次到多次  至少出现一次
+    *       ?   0次到1次   最多出现一次
+    *       {n}  出现n次
+    *       {n,} 至少出现n次
+    *       {n,m} 出现n到m次
+    * */
+    var reg7 = /^\d{5}$/; //09999 第一位不能是0，第一位用来表示一万的是需要从1-9挑一个
+
+    /*
+    *   正则中代表或者：
+    *       x|y  代表或者的意思，x或者y中的一个 /^\s|\d$/和/^(\s|\d)$/的区别
+    *       [xyz] 代表x或者y或者z中的一个
+    *       [\w\s] 代表\w或者\s中的一个
+    *       [+-] 这里的+不代表一个到多个了，就代表自己本身
+    *       [.]  这里只代表.本身自己的意义
+    *       [^xyz] ^在中括号中的时候是取非  除了x或者y或者z
+    *       [a-z]  当-两边有字符的时候，代表的是a到z
+    *       [a-zA-Z0-9_]  \w
+    * */
+    var reg8 = /x|y/; //在字符串中只要出现过x或者y中的一个就可以,一般不会把一个或者符轻易的暴露在我们的正则中。在运用的时候可以结合小括号一起使用，小括号可以改变优先级
+    var str8 = "x"; //true
+
+    var reg9 = /(18|19)/; //如果是这个只要字符串中包含18或者19就行
+    var reg9 = /^(18|19)$/; //要求只能是18和19,加上了^$就相当于给正则规定了位数
+
+    //例子
+    //手机号
+    var phoneReg = /^1\d{10}$/;
+    //身份证号码
+    var idCard = /(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{2})(\d{1})(\d|x)/; //21省12市24县1986年02月10日82 1性别0/X
+    //匹配一个任何一个空字符串 ""0次    " " 1次      "        "多次
+    var reg = /^\s*$/; //这个正则验证通过就说明是一个空
+    // !/^\s*$/.test(str) 这是非空验证  一般用于必填项
+
+    //有效数字验证 +,2,-3,-3.3,+3990.333         +9.3  -98.6  98.66  897.777
+    var numReg = /^[+-]?(\d|[1-9]\d+])(\.\d+)?$/;
+    /*
+    *   如何识别一个正则：
+    *       1 先看正则中的小括号,小括号包含起来我理解为一个整体
+    *       2 看量词  看或者符号
+     *      3 按照正则可以写出来一个符合正则的例子字符串然后分析字符串的用途
+    *
+    * */
+
+    //简单版的邮箱验证
+    // 121170784@qq.com  tianxi@ijinshan.com  _tianxi@conew.com tianxi@cmcm.com tianxi@163.com   tianxi@gmail.com.cn
+    var regEmail = /^\w{1,10}@[0-9a-zA-Z]{2,}(\.[a-z]{2,4}){1,2}$/;
+
+    //var reg = /\w+/;
+    var reg = /\d+/g; ///\d+?/
+    var str = "zhufeng2015peixun";
+    str = 'zhufeng2015peixun2016';
+    //exec 正则表达式中用来捕获符合规则的字符串的
+    var res = reg.exec(str); //用reg这个正则来捕获str中符合规则的字符
+    //console.log(res.constructor); //res.__proto__.constructor 打印自己的类
+    console.log(res); //res.__proto__.constructor 打印自己的类
+    console.log(reg.lastIndex); //11这是我当前这个正则的一个属性,每次存储的值都是下次开始查找的开始索引
+    //reg.lastIndex = 1000; //这个lastIndex在有全文g的时候是可以支持人为修改的。那么下一次就从修改过的值开始向后查找
+
+    var res = reg.exec(str); //这是第二次执行,没有变化,我想拿到2016如何拿到呢？我们发现我这一次拿到的是2016，我们这一次绝对不是从头开始查找的。有一个属性或者其他标识来告诉这个正则下次从哪里开始查找
+    console.log(res);
+    console.log(reg.lastIndex); //21
+
+    /*var res = reg.exec(str); //这是第三次执行
+    console.log(res);
+    console.log(reg.lastIndex);
+
+    var res = reg.exec(str);
+    console.log(res);
+    console.log(reg.lastIndex);
+     */
+
+    //我一次性把索引exec捕获到都拿过来
+    var reg = /\d+/g; ///\d+?/，如果把这个g每次都是从开头0索引开始捕获，那么这个条件永远成立。while循环不会停止了
+    var str = "zhufeng2015peixun2016";
+    var res = reg.exec(str); //res捕获的结果: ['2015',index,input]  数组中的第一项才是结果
+    var ary = []; //2015,2016
+    while(res){ //如果捕获回来的结果null说明真个字符串已经把符合条件的都捕获回来了，那么循环就可以停止了
+        ary.push(res[0]);
+        res = reg.exec(str); //['2016',index,input]
+    }
+    console.log(ary);
+
+
+
+
+
+    /*
+    *   正则表达式中常用的修饰符：img
+    *       i: ignoreCase 忽略大小写
+    *       m: multiLine  多行匹配
+    *       g: global用于全文匹配  exec捕获的时候lastIndex属性
+    *
+    * */
+
+
+    /*
+    *   exec: 作用是用来捕获符合条件的字符串的
+    *         返回值是一个数组
+    *         数组中的每一项: 数组里包含捕获到的字符(符合正则),index:捕获到字符的索引 input: 原有字符串
+    *
+    * */
+
+    /*
+    *   正则的懒惰性和贪婪性(其实都可以人为去修改)
+    *       懒惰性：尽可能少的去匹配次数
+    *       贪婪性：每次尽可能多的去匹配
+    *               我们可以在量词元字符后面放一个问号，那么匹配的时候就是尽可能少的去匹配
+    *
+    * */
+
+    /*
+    *   正则字面量和实例创建方式的区别：
+    *       如果用实例的创建方式，第一个参数字符串如果用特殊元字符需要转义
+    *       实例创建方式如果需要添加修饰符放在第二个字符串参数上
+    *       如果正则中需要变量那么只能使用实例的创建方式
+    * */
+    var reg = /\d/g; //字面量的方式
+    var reg = new RegExp('\\d',"g"); //  /\d/才是相同的效果
+    var res = reg.exec('89');
+    var name = 'zhufeng'; //这是一个变量
+    var reg = /'h'+name/; //我本意是想拼接字符串,但是这样不可以,不会把name去解析成一个变量。
+    var reg = new RegExp(name); //这个name就是name变量了
+    var ary = ['a','b','c'];
+    for(var i=0; i<ary.length; i++){
+        var reg = new RegExp("@"+ary[i]);
+        //这个reg是不是每次循环的时候都是不同的正则。下周学dom库的byClass的时候就会用到
+    }
+    //console.log(res);
+
+    //编写一个简单的正则  18-65    18-19 20-59 60-65
+    var reg = /^(1[8-9]|[2-5][0-9]|6[0-5]])$/;
+
+
+    /*
+    *   正则中?的常见用法：
+    *       1  代表0次或者1次
+    *       2  改变(贪婪性)尽可能少的去匹配，一般放在了量词的后面
+    *       3  ?:放在分组前面就是匹配但是不捕获
+    *       4 正向预查询和负向预查询  ==>带条件的正则表达式
+    *
+    *
+    * */
+    var idCardReg = /(?:\d{2})(?:\d{2})(?:\d{2})(?:\d{4})(?:\d{2})(?:\d{2})(?:\d{2})(?:\d{1})(?:\d|x)/; //21省12市24县1986年02月10日82 1性别0/X
+    /*
+     *   小括号()作用：
+     *       1 可以改变优先级
+     *       2 还可以起到分组的作用  ==> 分组和分组的引用 ==>相当于在一个最大的正则中又独立了若干分组个小正则 在exec方法中，如果正则中出现了分组exec执行的返回结果也会把小正则捕获到内容添加到数组中 ==> [大正则捕获到内容，...分组捕获到的内容...，index，input]，但是有的时候分组就是为了改变优先级，并不想捕获内容 ==> 在分组的开头用?:，就只匹配但是不会捕获这个小分组的内容
+     * */
+
+    var result = idCardReg.exec('211224198602108210');
+    //console.log(result); //这一定一个数组
+
+
+    /*
+    * 分组的引用: 在正则中如果出现分组，可以用\n代表第n个分组所匹配到的内容,分组的内容在exec中能体现
+    * */
+    var reg = /(\w)(\d)\1\2/g; //\1如果正则中出现分组，那么\1就代表分组匹配来的结果
+    var res = reg.exec('w2w2');
+    //console.log(res);
+    /*
+    *   match: 了解match和exec的区别, 如果正则中没有分组match比exec好。 如果需要分组并且以后对分组内容需要捕获只能使用exec
+    *       match是字符串方法，参数是一个正则，match如果是全文匹配会直接把所有匹配到的结果返回到一个新的数组中
+    *       优点：一次性都返回了，不像exec需要执行多次
+    *       缺点：如果正则中有分组，那么分组的内容也没有捕获到
+    *       全文匹配g: 如果不是全文匹配那么返回的结果是相同的
+    *
+    * */
+
+    var str = 'zhufeng2015peixun2016huilongguan2017';
+    var reg = /(\d+)/g; //大的正则和小的正则匹配到的内容是相同的
+
+    var result = reg.exec(str);
+    console.log(result);
+    console.log(reg.lastIndex);
+
+
+    var res = str.match(reg);
+    console.log(res);
+    console.log(reg.lastIndex);
+
+    /*
+    *   replace(old,new)
+    *       1 replace(old,new) old可以是一个正则，new是把正则匹配到的结果用new替换
+    *       2 replace(reg,function (){}); 第二个参数是一个匿名函数的时候,是用函数的返回值去替换正则所匹配到内容
+    *       3 在匿名函数参数中打印arguments就是和exec的返回值基本相同
+    *       arguments[大正则匹配到的结果，...分组匹配到结果...,index,input]
+    *       4 匿名函数执行的次数和匹配的次数是相同的
+    *       RegExp.$1....$9 是正则捕获到第几个分组的内容,这是在RegExp这个正则的类身上的属性
+    *
+    * */
+    var str = 'zhufeng2015peixun2016huilongguan2017';
+    var reg = /(\d+)/g;
+    //str = str.replace(reg,'珠峰培训'); //把reg匹配到的结果用'珠峰培训'替换
+    str = str.replace(reg,function (a,b,c){
+        //如果函数中没有return默认nudefined
+        console.log(arguments); //arguments都是内置的。
+        console.log(RegExp.$1); //每次捕获到的第一个分组的内容...了解下就行
+        return arguments[arguments.length-2];
+    });
+
+
+    console.log(str);
+
+/*
+    str = str.replace('2015','珠峰培训'); //把返回的替换好的新字符串重新赋值给str
+    console.log(str);
+    str = str.replace('2016','珠峰培训');
+    console.log(str);
+*/
+
+
+    var str = '201503'; //如何把这个数字字符串换成大写的 贰零壹伍零叁
+    var numStr = '零壹贰叁肆伍陆柒捌玖';
+    str = str.replace(/\d/g,function (){
+        //arguments每次匹配到的结果数组
+       return numStr.charAt(arguments[0]) ;
+    });
+   console.log(str);
+
+    Number.prototype.plus = function (n){
+        return this+n;
+    }
+    var num = new Number(6);
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>

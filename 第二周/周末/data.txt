@@ -1,0 +1,6 @@
+[
+     {"name":"田喜","gender":1,"age":30,"height":175,"weight":90},
+     {"name":"韩小波","gender":1,"age":29,"height":179,"weight":80},
+     {"name":"张晓磊","gender":1,"age":28,"height":185,"weight":75},
+     {"name":"耿敏","gender":0,"age":19,"height":165,"weight":50}
+ ]

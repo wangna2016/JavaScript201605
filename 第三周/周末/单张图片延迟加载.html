@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>单张图片延迟加载</title>
+    <style>
+       *{ margin: 0; padding: 0; }
+        #box{ width: 300px; height: 200px; margin: 1300px auto; border:10px solid #000000; border-radius: 5px; box-shadow: red 3px 5px 3px; background: url("images/load.jpg") no-repeat center; }/*box-shadow*/
+        #box img{ display: none; width: 100%; height: 100%; /*transform: ; transition: ; animation: ;*/   }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <img src="" trueSrc="images/1.jpg" alt=""/>
+    </div>
+</body>
+</html>
+<script src="utilsweekend.js"></script>
+<script>
+    /*
+    *   图片延迟加载：提高用户体验
+    *       1 首屏图片(banner)一般图片资源比较大，加载过程比较慢。可能会出现空白状态，所以我们默认给一个背景提示图，然后等图片资源真正加载进来的时候再把图片的src赋值
+    *       2 浏览器有一种机制：缓存，把你曾经打开的网站资源比如：图片等都会缓存到本地一份，下次打开的时候就是获取本地的资源 ==> 第二次打开的图片或者其他资源就会很快
+    * */
+/*
+    var box = document.getElementById('box');
+    var img = box.getElementsByTagName('img')[0];
+    var timer = window.setTimeout(function (){
+        //var newImg = new Image(); //实例创建图片对象
+        var newImg = document.createElement('img');
+        var trueSrc = img.getAttribute('trueSrc');
+        newImg.src = trueSrc; //让这个刚刚创建的图片去获取真实img的图片资源，只要这个资源获取成功也会缓存到本地一份。
+        //如何知道已经成功获取一个图片资源呢
+        newImg.onload = function (){ //加载成功的时候
+            //这里执行代码就是加载成功之后要做的事
+            img.src = this.src;  // this就是刚刚的那个临时图片，我这个赋值动作，相当于才是真正让真实图片去加载资源，由于临时刚刚创建的图片已经加载过一次，那么这一次加载拿到的就是本地缓存
+            img.style.display = 'block'; //默认图片是隐藏的。
+            newImg = null; //成功加载之后临时图片就没用了
+        }
+    },500);
+*/
+
+    //如何判断一张图片已经完全进入到可视窗口: 当前可视窗口的高度+滚出去的高度 > 当前图片盒子的本身高度 + 图片盒子相当于body的上偏移量
+    var box = document.getElementById('box');
+    var img = box.getElementsByTagName('img')[0];
+
+    window.onscroll = function (){ //只要浏览器滚动条滚动的时候就要判断
+        var a = utils.win('scrollTop') + utils.win('clientHeight'); //浏览器底边距离body顶部的距离
+        var b = img.parentNode.offsetHeight + utils.offset(img.parentNode)/*函数执行结束后留下一个对象{left:l,top:t}*/.top;
+        if(a>b){ //图片盒子已经完全进入到可视窗口内
+            if(img.isload) { return; } //只要加载过我就不要再加载了
+            var tempImg = new Image();
+            tempImg.src = img.getAttribute('trueSrc');
+            tempImg.onload = function (){
+                img.src = this.src;
+                utils.setCss(img,'display','block');
+                tempImg = null;
+            }
+            img.isload = true; //我给img添加了一个自定义属性，用来标识当前的图片已经加载过 ==>这个自定义属性只要加载过就添加上。不成功的时候下次加载也不会成功
+        }
+    }
+
+
+
+
+
+
+</script>

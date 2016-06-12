@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/><!--写移动端不能忘记这个-->
+    <title>多张图片延迟加载</title>
+    <style>
+        *{ margin: 0; padding: 0; font-family: 'microsoft yahei'; }
+        #newsList{width: 100%; list-style: none;  padding: 10px; box-sizing: border-box; }
+        #newsList li{ position:relative; width: 100%;  height: 70px; border-bottom: 1px dashed #ccc; padding: 10px;  }
+        #newsList li .left{  position: absolute; left: 10px; top: 10px; width: 60px; height: 60px; background: url("images/default.jpg") no-repeat center; background-size: cover; }
+        #newsList li .left img{ display: none; width: 100%; height: 100%; vertical-align: top; }
+        #newsList li .right{ margin-left: 85px; height: 70px;   }
+        #newsList li .right h2 { font-size: 20px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        #newsList li .right p{ color: #999; }
+    </style>
+</head>
+<body>
+    <ul id="newsList">
+        <li>
+            <div class="left">
+                <img src="images/6.jpg" />
+            </div>
+            <div class="right">
+                <h2>标题标题标题标标题标题标题标标题标题标题标</h2>
+                <p>内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</p>
+            </div>
+        </li>
+        <li>
+            <div class="left">
+                <img src="images/6.jpg" />
+            </div>
+            <div class="right">
+                <h2>标题标题</h2>
+                <p>内容内容内容</p>
+            </div>
+        </li>
+    </ul>
+</body>
+</html>
+<script>
+    //动态获取数据,造数据
+    //数据绑定 ==> 我们要注意img的src别直接给赋值
+    //图片延迟加载
+    //单张图片延迟加载
+    //循环执行单张图片延迟加载
+    //加入渐隐渐现的效果
+</script>

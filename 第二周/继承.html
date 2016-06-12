@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>继承</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    /*
+    *   继承: 在构造函数中子类继承父类的方法
+    *       1 原型链继承  子类的原型指向父类的一个实例  ==> 把父类的公有和私有的都当成子类公有的  （常用）
+    *       2 call继承  在子类的构造函数中 父类.call(this)  ==> 把父类的私有属性当成子类的私有属性
+    *       3 冒充对象继承 在子类的构造函数中，循环遍历父类的实例，并且把遍历出来的属性分别赋值给子类的实例一份  ==> 把父类私有的和公有的人为添加的变成子类私有的
+    *       4 混合继承  一般用原型+call  ==> 父类的私有的变成子类的私有的，父类的公有的和私有的都变成子类的公有的 ==> 其实公有的和私有的都原封不动的继承过来了，但是在子类原型上多了跟私有相同的属性
+    *       5 中间件继承n 把子类的原型的__proto__ 本来应该指向Object.prototype修改成指向父类的原型  ==> 父类的公有方法还是子类的公有方法
+    *       6 寄生继承  Object.create(obj)
+    *
+    * */
+    //原型继承
+    function A(){ //父类
+        this.x = 100; //给所以A这个类的实例添加了私有属性x = 100
+    }
+    A.prototype.getX = function (){ //getX一定是A类实例公有方法
+        console.log(this.x); //这会不知道this是谁
+    }
+    var a = new A(); //a.x = 100; a.getX(定义在原型上的) a.__proto__.getX
+    function B(){ //子类
+        this.x = 200;
+    }
+    B.prototype = new A(); //B的原型再也不是原来的原型了，是一个A的实例,原来在B.prototype上的constructor是不是丢了
+    B.prototype.constructor = B; //为了类的所属关系所以我要人为添加回来
+    var b = new B(); //怎么样能让小b能继承到A类的方法 ==> b如果自己身上没有，b通过自己的__proto__到自己所属类B的原型上去查找
+    //b.getX(); // b在自己的私有属性找不到一个getX，然后去b的原型上去找，b的原型已经是一个A类的一个实例。先看A类实例(a)的私有属性只有一个x=100，再通过a这个实例的__proto__去A的原型上去查找。在A的原型上找到了getX方法
+    //如果A我们认定为父类，B我们认定为子类。 b是子类的一个实例。子类把父类的公有和私有的都当做了公有的
+    console.dir(b);
+
+    //call继承
+    function C(){
+        this.x = 100; //d.x = 100 ==>相当于给d身上直接加了一个私有属性d.x = 100,跟原型没有关系,只是把C当作一个函数执行了
+    }
+    C.prototype.getX = function (){
+        console.log(this.x);
+    }
+    function D(){
+        C.call(this); //这个this是d这个实例,把C函数中的this换成d(d就是call的第一个参数),并且C执行
+    }
+    var d = new D();
+
+
+    //冒充对象继承
+    function E(){
+        this.x = 100;
+        this.y = 100;
+    }
+    E.prototype.getX = function (){
+        console.log(this.x);
+    }
+    function F(){
+        var e = new E();
+        for(var key in e){ //可以遍历出e的私有的还有e的原型上我们自己添加的
+            this[key] = e[key]; //循环遍历出父类实例上的私有的和公有的(自己添加的)都赋值一份给子类的私有的
+        }
+    }
+    var f = new F();
+    console.dir(f);
+
+    //混合继承  原型+call  (常用)
+    function G(){
+        this.x = 100;
+    }
+    G.prototype.getX = function (){
+        console.log(this.x);
+    }
+
+    function H(){
+        G.call(this);
+    }
+    H.prototype = new G();
+    H.prototype.constructor = H;
+
+    var h = new H();
+    console.dir(h);
+
+    //中间件继承
+    function J(){
+        this.x = 100;
+    }
+    J.prototype.getX = function (){
+        console.log(this.x);
+    }
+    function K(){
+
+    }
+    K.prototype.__proto__ = J.prototype;
+    var k = new K();
+
+    //第六种  寄生   Object.create()方法 ==> 是一个不兼容的新方法
+
+</script>

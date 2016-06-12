@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <title>多张图片延迟加载</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .newsList {
+            list-style: none;
+            padding: 10px;
+        }
+
+        .newsList li {
+            position: relative;
+            height: 60px;
+            padding: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+
+        .newsList li > div:nth-child(1) {
+            /*css3样式写法选择器*/
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 60px;
+            height: 60px;
+            background: url("images/default.jpg");
+            background-size: 100% 100%;
+        }
+
+        .newsList li > div:nth-child(1) img {
+            display: none;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+            filter: alpha(opacity = 20);
+        }
+
+        .newsList li > div:nth-child(2) {
+            height: 60px;
+            margin-left: 75px;
+        }
+
+        .newsList li > div:nth-child(2) h2 {
+            font-size: 1rem;
+            line-height: 16px;
+            /*标题一般是一行，不折行*/
+            overflow: hidden;
+            text-overflow: ellipsis; /*文本超出部分用省略号*/
+            white-space: nowrap; /*强制不换行*/
+        }
+
+        .newsList li > div:nth-child(2) p {
+            color: #999;
+            padding: 5px 0;
+            line-height: 14px;
+
+        }
+    </style>
+
+</head>
+<body>
+<ul class="newsList">
+    <li>
+        <div><img src="" trueSrc="images/6.jpg"/></div>
+        <div>
+            <h2>标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题</h2>
+
+            <p>描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描</p> <!--describe,content-->
+        </div>
+    </li>
+</ul>
+</body>
+</html>
+<script src="utilsweekend.js"></script>
+<script>
+    /*
+     *   1 造数据
+     *   2 获取数据
+     *
+     *
+     * */
+
+    //用ajax的方式把数据获取到
+    function getData() {
+        var xhr = new XMLHttpRequest();
+        //niezaoData.txt?abc=  0.1224551515646545
+        //niezaoData.txt?abc=  0.1224551515846545
+        xhr.open('get', 'niezaoData.txt?_=' + Math.random(), false); //缓存问题，如果数据更新了那么我每次请求的都是最新的数据
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && /^2\d{2}$/.test(xhr.status)) {
+                //以开头的200 201 类似于这样的都是成功的标志
+                window.res = utils.jsonParse(xhr.responseText);
+            }
+        }
+        xhr.send(null);
+    }
+    getData();
+    console.log(res);
+
+    //我把刚刚拿回来的数据添加到文档结构中 ==> 数据绑定
+    var newList = utils.getElementsByClass('newsList')[0];
+    var imgList = newList.getElementsByTagName('img');
+
+    console.log(imgList);
+    function dataBind() {
+        var str = '';
+        for (var i = 0; i < res.length; i++) {
+            var curData = res[i];
+            str += '<li>';
+            str += '<div><img src="" trueSrc="' + curData.src + '"/></div>';
+            str += '<div><h2>' + curData.title + '</h2><p>' + curData.desc + '</p></div>';
+            str += '</li>';
+        }
+        newList.innerHTML = str;
+    }
+    dataBind();
+
+    //图片延迟加载
+    function imgDelayLoad(trueImg) { //首先完成单张的图片延迟加载,给一个参数：传哪个图片就给哪个图片做延迟加载
+
+        var tempImg = new Image();
+        tempImg.src = trueImg.getAttribute('trueSrc'); //让这个临时的图片去加载传进来的图片的真实资源路径
+        tempImg.onload = function () {
+            trueImg.src = this.src;
+            utils.setCss(trueImg, 'display', 'block');
+            tempImg = null;
+        }
+        trueImg.isload = true; //只要加载我就给传进来的图片添加一个自定义属性
+    }
+
+    //多张图片延迟加载
+    function allImgDelayLoad() {
+        for (var i = 0; i < imgList.length; i++) { //循环图片列表给这个列表中每一个图片都做图片延迟加载
+            var curImg = imgList[i];
+            if(curImg.isload) continue;
+            //imgDelayLoad(curImg); //这个延迟加载是有条件的，图片完全进入到当前可视窗口才做图片延迟加载
+            var a = utils.win('clientHeight') + utils.win('scrollTop'); //当前浏览器可视窗口的高度+已经滚出去的高度
+            var b = utils.offset(curImg.parentNode).top + curImg.parentNode.offsetHeight;
+            if(a>b){
+                imgDelayLoad(curImg); //完全进入的时候我才给当前图片做延迟加载
+                fadeIn(curImg);
+            }
+        }
+    }
+    window.onscroll = allImgDelayLoad; //当浏览器窗口滚动的时候执行多张图片延迟加载
+    window.setTimeout(allImgDelayLoad,1000); //默认的首屏也要做多张图片延迟加载
+
+    function fadeIn(curImg){ //透明度从0开始渐渐到1的过程
+        var duration = 500;
+        var curOpacity = utils.getCss(curImg,'opacity');
+        var change = 1 - curOpacity; //从当前的透明度运动到1
+        var interval = 10;
+        var speed = change/duration*10;
+        var timer = window.setInterval(function (){
+            var curImgOpacity = utils.getCss(curImg,'opacity'); //每次获取的都是上一次经过累加步长之后的结果，那么如果这个结果大于1，我就可以停止我的定时器了
+            if(curImgOpacity >= 1){
+                utils.setCss(curImg,'opacity',1);
+                window.clearInterval(timer);
+                return;
+            }
+            curImgOpacity += speed;
+            utils.setCss(curImg,'opacity',curImgOpacity);
+        },interval);
+    }
+
+</script>

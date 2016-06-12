@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>回到顶部</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 300%;
+            background: linear-gradient(to bottom, pink 0, lightblue 50%, lightyellow 75%, lightgreen 100%);
+        }
+
+        #btn {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #ccc;
+            border: 2px solid black;
+            border-radius: 50%;
+            line-height: 50px;
+            text-align: center;
+            text-decoration: none;
+            opacity: 0.5;
+            filter: alpha(opacity=50);
+        }
+
+        #btn:hover {
+            opacity: 1;
+            filter: alpha(opacity=100);
+        }
+    </style>
+</head>
+<body>
+<a id="btn" href="javascript: void 0">Top</a><!--阻止a标签的默认行为,跳转动作-->
+</body>
+</html>
+<script src="utilsweekend.js"></script>
+<script>
+    var btn = document.getElementById('btn');
+    btn.onclick = function () {
+        var duration = 500; //在500ms之内滚动条运动到顶部
+        var change = utils.win('scrollTop'); //我要运动的距离,其实就是滚出去的高度
+        var interval = 10;
+        var speed = change / duration * interval; //定时器每执行一次运动的步长
+        var timer = window.setInterval(function () {
+            //用这个定时器不断的驱动scrollTop
+            var curScrollTop = utils.win('scrollTop'); //定时器每次执行的时候都会获取当前的最新的scrollTop
+            if (curScrollTop == 0) { //在已经到达顶部的时候需要把这个定时器清掉
+                window.clearInterval(timer);
+                //到达顶部之后再把丢失的onscroll事件重新绑定上
+                window.onscroll = fn;
+                return;
+            }
+            curScrollTop -= speed; // 把刚刚获取到的这个最新的scrollTop减去步长
+            utils.win('scrollTop', curScrollTop); //再把最新的值重新赋值回去
+        }, interval);
+        utils.setCss(this, 'display', 'none'); //这是让按钮消失的动作
+        window.onscroll = null; //原来这个事件赋值的是一个函数 ==> 其实这就是把事件解除绑定 ==> dir(元素).on... ==> 默认都有一个null,由于定时器是异步的，定时器会在所有代码执行之后执行定时器。在执行定时器的过程中会触发window.onscroll，所以我在定时器执行之前把事件解除绑定,但是第二次继续滚动的时候按钮就不会出现了，因为滚动的事件丢失了
+    }
+    //这个按钮没有必要在第一屏的时候出现，第二屏出现就可以了 ==> 判断滚出去的高度是否大于当前窗口的高度  ==> 只要滚轮的时候，时刻都需要判断
+    window.onscroll = fn;
+    function fn() {
+        //这是浏览器滚动条滚动的时候就会触发
+        //onscroll事件：浏览器是有捕捉频率的。 frequency
+        var curWinHeight = utils.win('clientHeight');
+        var scrollTop = utils.win('scrollTop');
+        if (scrollTop > curWinHeight) { //已经滚出去超过一屏了
+            utils.setCss(btn, 'display', 'block');
+        }
+    }
+
+
+</script>
