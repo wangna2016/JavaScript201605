@@ -109,6 +109,32 @@ var utils = {
                 }
             }
         }
+    },
+    getElementsByClass : function (strClass,context){ //'c1  c2' ==[c1,c2]
+    context = context || document;
+    if('getComputedStyle' in window){
+        return context.getElementsByClassName(strClass);
     }
+
+    var ary = [];
+    var nodeList = context.getElementsByTagName('*');
+    var classArray = strClass.replace(/^ +| +$/g,'').split(/ +/g);
+    for(var i=0; i<nodeList.length; i++){
+        var culTag = nodeList[i];
+        var flag = true;
+        for(var j=0; j<classArray.length; j++){
+            var curClass = classArray[j];
+            var reg = new RegExp('\\b'+curClass+'\\b'); //<div class='c1 c2 '>
+            if(!reg.test(culTag.className)){
+                flag = false;
+                break;
+            }
+        }
+        if(flag){
+            ary.push(culTag);
+        }
+    }
+    return ary;
+}
 };
 //utils.setGropuCss()
