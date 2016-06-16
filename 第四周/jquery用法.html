@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{ margin: 0; padding: 0; list-style: none; }
+        #div1,#div2{
+            width: 300px;
+            height: 300px;
+            background: #ccc;
+            border: 2px solid #008000;
+            padding: 50px;
+        }
+        #div1 p,#div2 p{
+            width: 100px;
+            height: 100px;
+            background: red;
+        }
+        #div1 ul,#div2 ul{
+            margin-top: 5px;
+        }
+        #div1 ul li,#div2 ul li{
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+            border: 1px solid black;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!--
+        jQuery是一个高度封装好的框架
+            1 对dom操作没有任何兼容性问题
+            2 jQuery还可以基于jquery做拓展  ==> 其实也是在jquery这个类的原型上做拓展
+                 funciton jQuery(){}
+            3 jQuery.fn = function (){} ==> 把jquery这个类(函数)本身看成了一个对象。我就可以在对象的身上添加属性(即使你是一个函数)
+    -->
+    <div id="div1" class="c1">
+        <p>我是段落</p>
+        <ul>
+            <li>1</li>
+            <li style="display: none;">珠峰</li>
+            <li>3</li>
+        </ul>
+        <input type="text" value="1"/>
+        <input type="text" name="haha" value="1"/>
+        <input type="radio" value="1"/>
+        <input type="checkbox" value="1"/>
+        <input type="button" value="button"/>
+    </div>
+    <div id="div2" class="c2">
+        <p>我是段落</p>
+        <ul>
+            <li>1</li>
+            <li>珠峰</li>
+            <li>3</li>
+        </ul>
+        <input type="text" value="1"/>
+        <input type="radio" value="1"/>
+        <input type="checkbox" value="1"/>
+        <input type="button" value="button"/>
+    </div>
+</body>
+</html>
+<script src="jquery-1.11.3.min.js"></script>
+<script>
+/*
+    function fn(){}
+    fn.prototype.get = function () {
+
+    }
+    fn.get = function (){}
+    console.log(fn.get);
+*/
+    /*
+    *   用query获取dom常用方法
+    *       $() ==> 用jquery方法获取来的，那么获取都是jquery对象
+    *       $('#id') 通过id获取
+    *       $('.class') 通过类获取
+    *       $('tagName') 通过标签获取
+    *       过滤选择器：:first
+                     :last
+                     :not
+                     :even
+                     :odd
+                     :eq
+                     :gt
+                     :lt
+                     :header
+                     :animated
+             内容过滤选择器：
+                 :contains
+                 :empty
+                 :has
+                 :parent
+             可见性选择器：
+                 :hidden
+                 :visible
+                 ......
+
+    *
+    *
+    * */
+    //var div1 = document.querySelectorAll('#div1');
+    //var $div1 = $('#div1'); //jquery实例对象 ==> 只有jqeruy对象才能调用jqeury方法
+    //console.dir(div1);
+    //$div1.hide(300).show(500); 通过id获取来的
+    //$('.c1').css('width',500); 通过class获取
+    //$('div').css({height: 500});通过标签名获取
+    $('#div1 ul li:visible').css('background','blue').html('我刚刚是隐藏的');  //可以通过层级关系一次性获取
+    //$('#div1 input[type=text][name=haha]').val(2); //这种获取方式还可以支持在众多的标签中通过属性的方式来获取
+    //$('.c1,.c2').css('width',50);
+
+    var div = document.getElementById('div1');
+    //$(div).css("opacity",0.2);
+
+    // 把一个dom对象转换成一个jquery对象只要用$()包含以下就可以  $(div)
+
+    /*
+    *   jquery中的循环: each(function (){
+    *       $(this)==> 代表循环中的每一项
+    *   })
+    *
+    *
+    * */
+    //var lis = document.getElementById('div1').getElementsByTagName('li');
+    var $lis = $('#div1 li');
+    $lis.each(function () {
+       $(this).css('background','red');
+    });
+
+    var ary = [1,2,4];
+    jQuery.each(ary,function (index,item){
+        console.log(index,item);
+    });
+    // $ === jQuery
+
+    /*$.ajax(url,{
+        type: 'get',
+        data: 'json',
+        async: false,
+        success: function ( ) {
+
+        },
+        error: function (){
+
+        }
+    })*/
+
+    //基于jquery拓展自己的方法
+    //这是在在jquery原型上拓展属性
+    $.fn.extend({  //这个就是相当于在jquery的原型上拓展方法,都是实例才能调用
+       haha : function (){
+           alert('我是自己拓展的');
+       }
+    });
+    //$('#div1').haha();
+    //$().haha();
+    //这是直接在jquery这个类身上拓展属性
+    $.extend({
+       xx: function (){
+           alert('我是直接添加在类身上的属性');
+       }
+    });
+    //$.xx();
+
+    //关系属性 ==> 兄弟节点等 siblings   prev next
+
+    //盒子模型 ==> offset等 clientTop
+
+    //事件  通过on方法绑定事件一个事件可以绑定多个函数  ==> addEventListener
+    $('#div1').click(function () {
+        console.log($(this));
+    });
+
+    $('#div1').on('click',function (){
+        console.log('我是通过on方法绑定上来的');
+    })
+    $('#div1').off('click'); //把click事件解除绑定 ==>事件发生的时候解除事件
+
+    $('#div1').on('click',function (){
+        alert('我也是通过on绑定上来的');
+    })
+    //回掉函数
+
+
+
+
+
+
+</script>
