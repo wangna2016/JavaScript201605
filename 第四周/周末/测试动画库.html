@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        html,body,div{ margin: 0; padding: 0;  }
+        #div1{ width: 100px; height: 100px; background: red; position: absolute; left: 0; top: 0; }
+    </style>
+</head>
+<body>
+    <div id="div1"></div>
+</body>
+</html>
+<script src="utilsweekend.js"></script>
+<script src="zhufengTween.js"></script>
+<script>
+    var oDiv = document.getElementById('div1');
+    window.zhufengAnimate(oDiv,{left:300,width:200,height:300,opacity:0.5},1000,['Back','easeIn'],function (){
+        this.style.backgroundColor = 'green';
+        this.innerHTML = '我是this添加的的';
+        zhufengAnimate(this,{left:1148,width:100,height:100,opacity:1},1000);
+    });
+    console.log(utils.css(oDiv,'width'));
+</script>

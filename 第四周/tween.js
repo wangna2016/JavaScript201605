@@ -213,7 +213,7 @@
         for (var attr in target) { //attr第一次循环代表left，第二次循环代表width
             if (target.hasOwnProperty(attr)) { //由于for in循环会遍历到原型上自己添加的属性，所以我需要做这个判断
                 //向begin这个对象中添加target中有的属性
-                begin[attr] = utils.getCss(ele, attr); //??
+                begin[attr] = utils.css(ele, attr); //??
                 change[attr] = target[attr] - begin[attr];
             }
         }
@@ -239,7 +239,7 @@
                 var curWeidu = change[key]; //change['left'] ==> 获取left这个维度的改变值,如果这个改变值为0还有必要运动么？
                 if (curWeidu) { //if(0),如果当前的维度没有值的改变，就没有必要运动了
                     var curPosi = defaultEffect(time, begin[key], change[key], duration);//我要根据time的变化，求出来当前维度我要运动到哪
-                    utils.setCss(ele, key, curPosi);
+                    utils.css(ele, key, curPosi);
                 }
 
             }

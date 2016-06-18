@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        *{ margin: 0; padding: 0; font-family: "microsoft yahei"; font-size: 20px; font-weight: bold; }
+        .div{ width: 100px; height: 100px; background: red; line-height: 100px; text-align: center; position: absolute; left: 0; top: 0; }
+    </style>
+</head>
+<body>
+    <div class="div">红色</div>
+</body>
+</html>
+<script src="utilsweekend.js"></script>
+<script>
+    var oDiv = utils.getElementsByClass('div')[0];
+/*
+    var leftTarget  = 1000;
+    var widhtTarget = 500;
+    var opacity = 0.5;
+*/
+    var target = {
+        left : 1000,
+        width : 500,
+        opacity: 0.5
+    }
+    /*
+    *   多方向多维度动画 ==> 多个单方向维度运动。就把多个方向的运动都放到一个对象里，然后用for in 去遍历这个对象。避免多次设置css样式产生代码冗余
+    *
+    * */
+    var duration = 500;
+    var begin = {
+        left : utils.getCss(oDiv,'left'),
+        width : utils.getCss(oDiv,'width'),
+        opacity : utils.getCss(oDiv,'opacity'),
+    }
+
+    var change = {
+        left :  target.left - begin.left,
+        width :  target.width - begin.width,
+        opacity : target.opacity - begin.opacity,
+
+    }
+
+    var time = 0;
+
+
+    //for in ==> for in 还可以遍历人为添加在原型上的属性
+
+    function linear(t,b,c,d){  //匀速动画的运算公式
+        return b + t/d*c;
+    }
+
+    oDiv.timer = window.setInterval(function (){
+        time += 10;
+        //有要循环遍历了
+        if(time >= duration){ //运动已经截至
+            window.clearInterval(oDiv.timer);
+            /*for(var key in target){ //人为设置到终点,由于target是个对象，所以需要给对象每一组属性都要设置下。 height:300
+                utils.setCss(oDiv,key,target[key]);
+            }*/
+            utils.setGroupCss(oDiv,target);
+            return;
+        }
+        for(var attr in change){
+            var curWeiDu = change[attr];
+            if(curWeiDu){ //获取change里每一个维度的值，如果这个值没有变化。那么当前这个维度就没有必要做任何改变 ==> if(0) 把0转换成布尔类型是不成立的
+                //如果有改变，那么我就计算当前改变的值
+                var curPosi = linear(time, begin[attr], change[attr], duration);
+                var curPosi = linear(time, begin[attr], change[attr], duration);
+                utils.setCss(oDiv, attr, curPosi); //attr ==> left,width,opacity
+            }
+        }
+
+    },10);
+
+
+
+    //通过构造函数的方式添加在原型上的属性没有wen'ti
+/*
+    function Fn(){
+
+    }
+    Fn.prototype.height = 1000;
+    var obj = new Fn();
+
+    Object.prototype.height = 1000;
+    var obj = new Object();
+
+    for(var attr in obj){
+       oDiv.style[attr] = obj[attr] + 'px';
+    }
+
+*/
+</script>
