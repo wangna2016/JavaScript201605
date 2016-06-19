@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>渐隐渐现版</title>
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+    <div class="banner" id="banner1">
+        <div class="bannerInner"></div>
+        <ul class="focusList"></ul>
+        <a  class="left" href="javascript:void 0 ;"></a>
+        <a  class="right" href="javascript:void 0 ;"></a>
+    </div>
+
+    <div class="banner" id="banner2">
+        <div class="bannerInner"></div>
+        <ul class="focusList"></ul>
+        <a  class="left" href="javascript:void 0 ;"></a>
+        <a  class="right" href="javascript:void 0 ;"></a>
+    </div>
+
+
+    <script src="js/utils.finally_this.js"></script>
+    <script src="js/zhufengTween.js"></script>
+    <!--<script src="js/banner.js"></script>-->
+    <script src="js/BannerClass.js"></script>
+    <script>
+        var banner1 = new Banner('banner1','data.txt',2000);
+        var banner2 = new Banner('banner2','data2.txt',1000);
+        console.dir(banner2);
+    </script>
+</body>
+</html>
+<!--
+<script>
+    function fn(){
+        console.log(this);
+    }
+    var obj = {
+        lixiangyu: 'aaaa',
+        fn : fn
+    }
+
+    //obj.fn(); //this == > obj
+    var haha = window.setInterval(obj.fn,1000);
+    //这个定时器中的obj.fn中的this是window
+</script>-->

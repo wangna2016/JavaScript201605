@@ -210,7 +210,6 @@
         if(typeof effect == 'function'){ //如果传的第四个参数是一个函数，那么我理解为师传给回调函数的
             callback = effect;
         }
-        window.clearInterval(ele.timer);
 
         var time = 0;
         //begin这个对象的属性的多少和target的属性多少相同
@@ -225,6 +224,7 @@
             }
         }
         //启动一个定时器
+        window.clearInterval(ele.timer); //每次执行move的时候需要把上一次的定时器清除掉，如果你的两次点击动作小于duration时间间隔，就会有两个定时器同时存在了。所以会有动画累计问题。
         ele.timer =  window.setInterval(function (){
             time += interval; //只要定时器执行一次时间就会增长,只要时间time变化了，就能根据匀速公式导致当前位置的改变
             if(time >= duration){ //运动到终点清定时器

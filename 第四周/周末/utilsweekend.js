@@ -15,6 +15,7 @@ var utils = (function (){
             return a;
         }
     }
+
     function jsonParse(jsonStr) {
         return 'JSON' in window ? JSON.parse(jsonStr) : eval("(" + jsonStr + ")");
     }
@@ -96,6 +97,13 @@ var utils = (function (){
         }
         return pre;
     }
+    function next(ele){
+        var next = ele.nextSibling;
+        while(next && next.nodeType != 1){
+            next = next.nextSibling;
+        }
+        return next;
+    }
     function prevAll(ele){
         var ary = [];
         var pre = ele.previousSibling; //
@@ -106,6 +114,21 @@ var utils = (function (){
             pre = pre.previousSibling; //pre = this.prev(pre);
         }
         return ary;
+    }
+    function nextAll(ele){
+        var ary = [];
+        var next = ele.nextSibling; //
+        while(next){
+            if(next.nodeType == 1){ //
+                ary.push(next);
+            }
+            next = next.nextSibling; //pre = this.prev(pre);
+        }
+        return ary;
+    }
+
+    function siblings(ele){
+        return prevAll(ele).concat(nextAll(ele));
     }
     function index(ele){
         return this.prevAll(ele).length;
@@ -205,11 +228,14 @@ var utils = (function (){
         offset : offset,
         hasClass : hasClass,
         addClass : addClass,
+        removeClass : removeClass,
         prev : prev,
+        next:next,
         prevAll : prevAll,
         index : index,
         setGroupCss : setGroupCss,
         getElementsByClass : getElementsByClass,
+        siblings: siblings,
         css : css
     }
 })();

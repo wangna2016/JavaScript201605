@@ -191,6 +191,7 @@
     };
 
     function move(ele, target, duration, effect, callback) { //把刚刚那个多方向的运动封装成一个函数,让任何元素只要传进来就能运动
+        window.clearInterval(ele.timer);
         var begin = {}; //如何往这个begin对象中添加维度,begin的维度的多少，跟target你传进来的维度多少有关系。所以我需要遍历target这个对象，然后target中有多少组属性，那么begin中也就添加多少组
         var change = {};
         var time = 0;

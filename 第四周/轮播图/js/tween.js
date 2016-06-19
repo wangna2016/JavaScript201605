@@ -217,6 +217,7 @@
                 change[attr] = target[attr] - begin[attr];
             }
         }
+        window.clearInterval(ele.timer);
         var timer = window.setInterval(function () {
             //这里负责就是多维度的动画
             time += interval; //运动每次都要先累加一次花费的时间，这个是每次维度改变的驱动条件
