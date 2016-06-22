@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+#div1{ width:100px; height:100px; position:absolute; left:0; top:100px; background:red;}
+#left,#right{ width:200px; margin-right:100px; height:50px; text-align:center; font-size:24px; position:absolute; background:green; top:250px; left:100px;}
+</style>
+</head>
+
+<body>
+<div id="div1"></div>
+<div id="left">左</div>
+<div id="right" style="left:350px">右</div>
+</body>
+</html>
+<script>
+var ele=document.getElementById("div1");
+var timer=null;
+function move(ele,target){
+	
+	clearTimeout(timer);//如果在同一个时间段内只有一个move方法执行，这行代码没有意义。它什么时候有意义呢？同时执行两个move动作的时候
+	console.log(timer)
+	var speed=(target-ele.offsetLeft)/10;
+	
+	speed=speed>0?Math.ceil(speed):Math.floor(speed);1
+	ele.style.left=ele.offsetLeft+speed+"px";
+	if(target-ele.offsetLeft)//有条件运行
+		timer=window.setTimeout(function(){move(ele,target)},25);
+
+}
+ele.onclick=function(){
+	move(this,1000)
+	//第一次move运行：在里面定义了一个匿名方法，在此匿名方法里用到了move方法里的变量ele和target，则25后匿名方法运行。由于ele和target被下一级作用域里的方法占用了，这次move方法运行的作用域就释放不掉
+	//到第二次运行move的时候，重复第一次move运行的悲剧
+	//move方法要执行49次才结束，则作用域会被循环占用49次
+	
+	
+	}
+left.onclick=function(){
+	move(ele,0)	
+}
+right.onclick=function(){
+	move(ele,1000);
+}
+</script>
+

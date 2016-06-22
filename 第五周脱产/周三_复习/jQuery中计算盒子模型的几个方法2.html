@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+#div1{ height:300px; margin:100px; border:50px solid green; padding:100px; background:#3CC;}
+
+</style>
+</head>
+
+<body>
+<div id="div1">
+据台湾媒体报道，艺人林志玲以模特儿身分出道，陆续跨足主持、电影和综艺节目的演出，演艺成绩表现亮眼，掳获不少观众的心，只不过41岁的她依然小姑独处，近日又传出与马桶小开邱士楷复合无望，让外界相当担心她的感情动向。
+
+林志玲2005年曾与邱士楷有过一段情，虽然最后以分手收场，但2人依然保持联络，多年来复合传言不断，没想到，据媒体报道，最近男方父母亲跳出来反对2人再续前缘，让她决定彻底结束这段纠葛多年的恋情。据悉，邱家原本也相当属意林当媳妇，但是担心女方的演艺圈背景复杂、婚后放不下事业、传宗接代有困难等问题，因此2人确定无缘复合。
+</div>
+</body>
+</html>
+<script src="jquery-1.9.1.js"></script>
+<script>
+//原生JS中，没有直接获得内容宽高的属性，也没有直接获得带margin的宽高属性
+var w1=$("#div1").width();//内容的宽
+var w2=$("#div1").innerWidth()//相当于clientWidth
+var w3=$("#div1").outerWidth();//相当于offsetWidth;
+var w4=$("#div1").outerWidth(true);//相当于offsetWidth+左右的margin;
+
+//$("#div1").width();是可读写的，就是说$("#div1").width(200);相当于$("#div1").css("width",200);//这是在设置div1的宽
+</script>
