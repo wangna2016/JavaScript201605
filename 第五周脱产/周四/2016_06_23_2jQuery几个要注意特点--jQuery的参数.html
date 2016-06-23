@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+div{ margin:20px;}
+</style>
+</head>
+
+<body>
+<div  id="div1">一个</div><div >一个</div><div >一个</div>
+	<div id="container">
+<div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div>
+</div>
+</body>
+</html>
+<script src="jquery-1.9.1.js">
+	
+
+</script>
+
+
+<script>
+//总结一下对象和数组的异同（交一个小作业）
+
+//jQuery的参数有几种形式
+	//1、CSS选择器格式的字符串，表示对应的查找
+	jQuery("#div1+div")//这个等同于$("#div1").next();
+	jQuery("#div1~div")//这个等同于$("#div1").nextAll("div");
+	//2、DOM元素，表示把这个DOM元素包装jQuery对象
+	//$(ele),$(eles);
+	//3、HTML格式的字符串，表示创建DOM元素
+	
+	$("<h1>我是大标题</h1>").appendTo(document.body);
+	$("body").append("<h1>我是大标题2</h1>");
+	
+	$("<h1>我是大标题：前</h1>").prependTo(document.body);
+	$("body").prepend("<h1>我是大标题2：前</h1>");
+	
+	
+	//第四种参数方式 $("selector",context),两个参数的情况，表示第二个参数是第一个参数的查找范围
+	
+	$("div","#container");//document.getElementById("container").getElementsByTagName("div");
+	$("div",document.getElementById("container"));
+	$("#container div");
+	$("#container").find("div");
+	
+	//
+	
+</script>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+div{ margin:20px;}
+</style>
+</head>
+
+<body>
+<div  id="div1">一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div>
+</body>
+</html>
+<script src="jquery-1.9.1.js">
+	
+
+</script>
+
+
+<script>
+//总结一下对象和数组的异同（交一个小作业）
+
+//jQuery的几个必须知道的特点
+	//链式写法的风格，闭包风格
+	//jQuery和js的DOM对象的转换，如果想把一个JS的DOM对象用jQuery操作，要放到$方法中包装一下
+	//第一个问题：DOM原生对象和jQuery对象之间的转换
+	var eles=document.getElementsByTagName("div");
+	var $eles=$(eles);//原生的DOM对象转成jQuery对象
+	//jQuery方法在保存eles的时候，将其保成这样的形式{0:eles[0],1:eles[1],2:eles[2],3:eles[3],length:8}
+	
+	$eles.css("height",200).css("width","200px").css({"background-color":"green",fontSize:48,textAlign:"center"});
+	var ele=document.getElementById("div1");
+	$ele=$(ele);//把单个的JSdom对象转成了jQuery对象
+	
+	//要为什么要把原生的DOM对象转成jQuery：就是为了能用jQuery方法来操作它们
+	
+	
+	//2、把jQuery对象转成DOM的原生对象（其实就是把保存在jQuery对象上的DOM元素找出来的过程 ）
+	//第一种方式，就是用[index]的方式来转化出jQuery对象里保存DOM对象
+	$eles[0].style.backgroundColor="purple";
+	for(var i=0;i<$eles.length;i++){
+		var ele=$eles[i];
+		ele.innerHTML="第"+i+"个";
+		
+	}
+	//第二种方式是get方法（和原生的itme方法很像）
+	eles.item(0)===eles[0];
+	//上述的$eles[0]==$eles.get(0);
+	
+	//但是，一定要注意的是：要区分jQuery的get方法和eq方法的区别，get方法返回的是原生的DOM对象，eq方法返回还是jQuery对象
+	$eles.eq(7).css({backgroundColor:"yellow"}).end().css("color","white")
+	//var obj={name:"rose",'age':22,"gender":false};//JS的对象属性的定义方法是很宽泛的，可以不加引号，也可以加单或双引号
+	//$eles.text("大家好");//innerText
+	//$eles.html("<a href='http://www.zhufengpeixun'>珠峰培训</a>");//
+	
+	//ele-->HTMLDivElement-->HTMLElement--->Element-->Node--->EventTarget---Object;
+	
+	//第二个问题：jQuery的参数有几种形式
+	
+	
+</script>

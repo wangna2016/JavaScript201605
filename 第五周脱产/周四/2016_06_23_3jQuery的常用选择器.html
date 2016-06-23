@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+div{ margin:20px;}
+</style>
+</head>
+
+<body>
+<div  id="div1">一个</div><div >一个二</div><div >一个</div>
+	<div id="container">
+		<div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div>
+</div>
+<p>我是p</p>
+<div>我才是div二</div>
+<div>我还是div二</div>
+</body>
+</html>
+<script src="jquery-1.9.1.js">
+</script>
+<script>
+$("*").filter("div");//同级过滤，表示在前边找到的元素中做一次筛选
+$("*:not(div)");//同级过滤，表示把非div的筛选出来
+
+$("#container div");
+$("#container").find("div");//找所有的后代元素
+
+$("#container>div");
+$("#container").children("div");//只找子元素
+
+$("#container+div");
+$("#container").next("div").css({"color":"red",fontSize:88});//找相邻的第一个弟弟,只找挨着的.挨着的是p，则找不到任何元素
+$("#container~div");
+$("#container").nextAll("div").css({"color":"green",fontSize:88});;//
+
+$("#container").prev();//相邻的一个哥哥
+$("#container").prevAll();//相邻的哥哥们
+
+
+$("div:contains(二)").css("background-color","red");
+
+$("div:first").text("我是所有的div中的第一个，唯一的第一个");
+$("div:first-child").html("<p>所有的div中，是第一个子元素的，也就是说在家里是长子的</p>");
+
+	
+</script>
