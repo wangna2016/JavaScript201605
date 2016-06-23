@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>选项卡</title>
+    <style>
+        html,body,div,ul,li{ margin: 0; padding: 0; font-family: "Microsoft Yahei"; }
+        .clearFix{ zoom: 1 }
+        .clearFix:after{
+            content: '';
+            width: 0;
+            height: 0;
+			
+            clear: both;
+            display: block;
+            visibility: hidden;
+        }
+        ul{ list-style: none; }
+        .tab{ width: 300px; height: 300px; margin: 30px auto; overflow: hidden; }
+       .tab ul li{ width: 80px; height: 30px; line-height: 30px; text-align: center; cursor: pointer; background: #ccc; float: left; margin-left: 20px; }
+        .tab ul li.active{ background: lightblue; }
+        .tab .content{display: none; width: 300px; height: 270px; line-height: 270px; background: lightblue; text-align: center; font-size: 30px; font-weight: bold; }
+        .tab .content.selected{ display: block; }
+    </style>
+<script src="jquery-1.9.1.js"></script>
+<script>
+//一定要充分认识window.onload事件：它是指浏览器所有的资源加载完成之后触发，
+
+window.onload=function(){//这个事件的触发可能需要32s
+	alert("windowLoaded");
+	function changeTab(e) {
+		  $(this).addClass("active").siblings().removeClass("active");
+		  var index=$(this).index();
+		  $(this).parent().nextAll().eq(index).addClass("selected").siblings("div").removeClass("selected"); 
+	}
+	$(".tab>ul>li").click(changeTab);
+}
+window.addEventListener("DOMContentLoaded",function(){alert("contentLoaded");});
+
+$(document).ready(function(e) {//相当于DOMContentLoaded事件，并且已经把IE6/7/8的兼容问题解决了
+
+    
+});
+$(function(){//直接把方法写在$方法里，相当于把此方法绑定在ready事件上。这种写法是$(document).ready的简写。一般情况下在用jQuery做开发的时候，都是这样写，这样写也会自然的形成闭包风格
+	//它的用途：
+	//1、在文档加载完成的时候运行
+	//2、天然形成一个闭包，起到了保护变量的作用
+
+	function changeTab(e) {
+		  $(this).addClass("active").siblings().removeClass("active");
+		  var index=$(this).index();
+		  $(this).parent().nextAll().eq(index).addClass("selected").siblings("div").removeClass("selected"); 
+	}
+	$(".tab>ul>li").click(changeTab);
+	//jQuery的风格之隐式遍历
+});
+/*
+ele.onclick=fn1;
+ele.onclick=fn2;//后者就把前者给覆盖了
+$(ele).click(fn1);
+$(ele).click(fn2);//jQuery的这种绑定事件的方式不会覆盖
+*/
+
+</script>
+</head>
+<body>
+    <div class="tab">
+           <!-- <div id="haha"></div>-->
+            <ul class="clearFix">
+                <li class="active">国际大牌</li>
+                <li id="li2">国妆名品</li>
+                <li>个人护理</li>
+            </ul>
+            <div class="content selected">国际大牌</div>
+            <div class="content">国妆名品</div>
+            <div class="content">个人护理</div>
+    </div>
+    
+     <div class="tab">
+           <!-- <div id="haha"></div>-->
+            <ul class="clearFix">
+                <li class="active">国际大牌</li>
+                <li>国妆名品</li>
+                <li>个人护理</li>
+            </ul>
+            <div class="content selected">国际大牌</div>
+            <div class="content">国妆名品</div>
+            <div class="content">个人护理</div>
+    </div>
+    
+    
+     <div class="tab">
+           <!-- <div id="haha"></div>-->
+            <ul class="clearFix">
+                <li class="active">国际大牌</li>
+                <li>国妆名品</li>
+                <li>个人护理</li>
+            </ul>
+            <div class="content selected">国际大牌</div>
+            <div class="content">国妆名品</div>
+            <div class="content">个人护理</div>
+    </div>
+    
+    
+     <div class="tab">
+           <!-- <div id="haha"></div>-->
+            <ul class="clearFix">
+                <li class="active">国际大牌</li>
+                <li>国妆名品</li>
+                <li>个人护理</li>
+            </ul>
+            <div class="content selected">国际大牌
+            	<ul>
+                	<li>1</li>
+                
+                </ul>
+            
+            </div>
+            <div class="content">国妆名品</div>
+            <div class="content">个人护理</div>
+    </div>
+</body>
+</html>

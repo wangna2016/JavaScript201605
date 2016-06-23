@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>简单的匀速动画</title>
+    <style>
+        *{ margin: 0; padding: 0; font-family: "microsoft yahei"; font-size: 20px; font-weight: bold; }
+        .div{ width: 100px; height: 100px; background: red; line-height: 100px; text-align: center; position: absolute; left: 622px; top: 0; }
+    </style>
+</head>
+<body>
+    <div class="div">红色</div>
+    <div style=" margin: 120px auto; width: 120px;">
+        <input id="left" type="button" value="Left"/>
+        <input id="right" type="button" value="Right"/>
+    </div>
+
+</body>
+</html>
+<script src="utilsweekend.js"></script>
+<script>
+    var oDiv = utils.getElementsByClass('div')[0]; //第二个参数不传就是在整个文档中 获取
+    /*
+    *   动画：  1 时间间隔(在多长时间内完成动画)
+    *           2 距离(要运动都远) ==> opacity  ==> 起点 终点
+    *           3 速度  距离/时间 ==> 1ms运动多远
+    *           4 时间间隔(定时器)
+    * */
+/*
+    var dutation = 500; //时间间隔
+    var target = utils.win('clientWidth')/!*整个屏幕的宽度*!/ - oDiv.offsetWidth/!*盒子宽度*!/;
+    var begin = utils.getCss(oDiv,'left'); //当前元素经过浏览器计算过后的样式
+    var change = target - begin;
+    var interval = 10;
+    var speed = change/dutation*interval; //每10ms运动的距离
+    var timer = window.setInterval(function (){
+        //首先应该获取当前的位置，在当前位置的基础上去累加速度。然后把累加好的值重新赋值给元素的left
+        var curPosi = utils.getCss(oDiv,'left'); //获取的元素的当前位置
+        if(curPosi + speed >= target){ //当前的位置如果大于等于终点那么就需要停止定时器
+            window.clearInterval(timer);
+            utils.setCss(oDiv,'left',target); //由于每次判断都加上了速度，在临近终点时刻如果速度特别大就会有可能造成累加速度最后超出了终点 。所以每次判断是否到达终点的时候都需要累加上速度。但是最后一次可能会出现运动不到终点情况，需要人为设置到终点
+            return;
+        }
+        curPosi += speed; //把速度累加上
+        utils.setCss(oDiv,'left',curPosi); //把累加之后的值重新赋值回去，这样就能改变位置
+    },interval);
+
+*/
+
+
+    //第二种方式去求匀速运动   花费的时间/总时间 = 花费时间运动的距离/总距离
+
+    //当前的位置 = 起始位置 + 花费的时间/总时间 *  距离
+    /*
+    *   t: 花费的时间   b :  开始的位置    c : 距离    d ： 总时间
+    * */
+    function linear(t,b,c,d){
+        return b + t/d*c; //就是当前位置
+    }
+    var duration = 1000;
+    var begin = utils.getCss(oDiv,'left');
+    var target = utils.win('clientWidth') - oDiv.offsetWidth;
+    var change =  target - begin;
+    var time = 0; //起始花费的时间是0
+    var interval = 10;
+    //只要花费的时间变化了，那么我就认为你出发了  ==> 用时间去驱动位置
+
+/*
+     oDiv.timer = window.setInterval(function (){
+        time += interval; //在定时器开始的地方首先驱动时间改变
+        if(time >= duration){ //如果花费的时间已经超过了规定的总时间那么就认为到达终点了
+            window.clearInterval(oDiv.timer);
+
+
+            return;
+        }
+        var curPosi = linear(time,begin,change,duration); //由于time的增加，就导致了linear运算之后的返回值增加
+        utils.setCss(oDiv,'left',curPosi);
+    },interval);
+*/
+
+    /*
+    *   动画：1 需要准备动画的时间 距离  速度  花费的时间 等
+    *         2  设置定时器(别忘记把没用的定时器清除)
+    *         3  过界判断==>是否已经到达终点
+    *         4 定时器可以保存在元素的自定义属性上
+    * */
+
+    //左右按钮运动
+    var speed = 5;
+    var left = document.getElementById('left');
+    var right = document.getElementById('right');
+    var maxLeft = utils.win('clientWidth') - oDiv.offsetWidth;
+    var minLeft = 0;
+    left.onclick = function (){
+        move(minLeft);
+    }
+    right.onclick = function () {
+        move(maxLeft);
+    }
+    function move(target){ //根据终点的不同来区分向左走还是向右走
+        newMove();
+       function newMove(){
+           window.clearTimeout(oDiv.timer);
+           var currentPosition = utils.getCss(oDiv,'left');
+           if(currentPosition < target){ //向右运动
+               if(currentPosition + speed > maxLeft){
+                   window.clearTimeout(oDiv.timer);
+                   utils.setCss(oDiv,'left',maxLeft);
+                   return;
+               }
+               currentPosition += speed;
+               utils.setCss(oDiv,'left',currentPosition);
+           }else if(currentPosition > target){ //向左运动
+               if(currentPosition - speed < minLeft){
+                   window.clearTimeout(oDiv.timer);
+                   utils.setCss(oDiv,'left',minLeft);
+                   return;
+               }
+               currentPosition -= speed;
+               utils.setCss(oDiv,'left',currentPosition);
+           }else{
+               return;
+           }
+           oDiv.timer = window.setTimeout(newMove,10);
+       }
+/*
+        oDiv.timer = window.setTimeout(function(){
+            //这个匿名函数的作用就是为了让move这个方法传参数，如果move不用传参数，并且还能获取到target就能达到目的。
+            move(target);
+        },10);//arguments.callee在函数中就是代表当前函数本身
+*/
+    }
+
+
+
+
+
+
+
+</script>

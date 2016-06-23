@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>动画</title>
+</head>
+<body>
+   <div id="div1" style="width: 100px; height: 100px; background: green; position: absolute; top: 0; left: 400px;"></div>
+   <div style="width: 100px; margin: 120px auto;">
+       <input id="left" type="button" value="L"/>
+       <input id="right" type="button" value="R"/>
+   </div>
+
+</body>
+</html>
+<script src="utils.js"></script>
+<script>
+    /*
+    *   动画： 定时器不断驱动元素的某个属性变化的过程
+    *       1 时间间隔
+    *       2 运动的距离
+    *       3 每次运动的步长
+    *       4 起点
+    *
+    * */
+    //简单匀速动画
+    var div1 = document.getElementById('div1');
+    var duration = 1000; //我要在duration时间间隔内完成动画
+    var change = utils.win('clientWidth') - div1.offsetWidth; //我要运动的距离
+    var interval = 10;
+    var step = interval*change/duration; //每10ms运动的距离=>定时器每执行一次都需要累加这个步长
+/*
+    var timer =  window.setInterval(function (){
+        //不断驱动div1的left的值
+        var curPosi = utils.getCss(div1,'left'); //获取当前的left值也就是当前位置
+        if(curPosi + step >= change){ //我们每次坐过界判断可以先累加上步长然后再判断，这样可以防止滚动条出现
+            window.clearInterval(timer);
+            utils.setCss(div1,'left',change); //人为设置到终点
+            return;
+        }
+        curPosi += step; //在当前的位置上累加一个步长
+        utils.setCss(div1,'left',curPosi); //把累加好的步长赋值回去
+    },10);
+*/
+
+    //可以用setTimeout实现么
+/*
+    var timer = null;
+    function move(){
+        window.clearTimeout(timer); //第一次执行的时候代码运行到这的时候还没有timer
+        var curPosi = utils.getCss(div1,'left');
+        if(curPosi + step >= change){
+            window.clearInterval(timer);
+            utils.setCss(div1,'left',change);
+            return;
+        }
+        curPosi += step;
+        utils.setCss(div1,'left',curPosi);
+        timer = window.setTimeout(move,10); //代码执行的时候又会重新启动一个新的定时器，此时timer不会代表原来的定时器了是代表一个新的定时器
+    }
+*/
+    //move(); //这是第一次执行
+
+
+    //第二种匀速动画
+/*
+    var duration = 1000;
+    var target = utils.win('clientWidth') - div1.offsetWidth;  //我们要运动的终点
+    var begin = utils.getCss(div1,'left'); //我们运动的起点
+    var change =  target - begin; //运动的距离就是终点-起点
+    var time = 0; //花费的时间
+    /!*
+    *   公式： 总距离/运动的距离 = 总时间/花费的时间
+    *   当前的位置： 起点位置+花费的时间/总时间*改变距离
+    * *!/
+    var timer = window.setInterval(function (){
+        time += 10; //我们是不断累加时间，然后通过时间和公式求出来当前位置(起点+已经运动距离)
+        if(time >= duration){ //定时器停止的条件
+            window.clearInterval(timer);
+            utils.setCss(div1,'left',target);
+            return;
+        }
+        //var curPosi = begin +  time/duration*change;
+        var curPosi = linear(time,begin,change,duration); //这个linear函数的返回值就是当前位置,和begin +  time/duration*change代码是相同的，就是放在函数中运算并且返回
+        utils.setCss(div1,'left',curPosi);
+    },10);
+*/
+
+    /**
+     * @param t 花费的时间
+     * @param b 开始位置
+     * @param c 改变的位置
+     * @param d 时间间隔
+     */
+    function linear(t,b,c,d){
+        return b+t/d*c; //返回值是当前的位置
+    }
+
+    //添加两个左右按钮，实现点击L的时候向左运动，点击R的时候向右运动
+    var leftBtn = document.getElementById('left');
+    var rightBtn = document.getElementById('right');
+    //向左或者向右给一个判断的条件==>条件可以给一个终点值，如果值大于我当前的位置那么我就向右运动，小于我就向左运动
+    var minLeft = 0;
+    var maxLeft =  utils.win('clientWidth')-div1.offsetWidth;
+    //var timer = null;
+    function move(target){ //我要运动的终点
+        _move();
+        function _move(){
+            window.clearTimeout(div1.timer); //undefined
+            var curPosi = utils.getCss(div1,'left');
+            if(target > curPosi){
+                if(curPosi + step >= maxLeft){ //过界判断
+                    window.clearInterval(div1.timer);
+                    utils.setCss(div1,'left',maxLeft);
+                    return;
+                }
+                curPosi += step;
+                utils.setCss(div1,'left',curPosi);
+            }else if(target <= curPosi){
+                if(curPosi - step <= minLeft){ //向左运动的时候
+                    window.clearInterval(div1.timer);
+                    utils.setCss(div1,'left',minLeft);
+                    return;
+                }
+                curPosi -= step;
+                utils.setCss(div1,'left',curPosi);
+            }
+            div1.timer = window.setTimeout(_move,10);
+        }
+
+/*
+        timer = window.setTimeout(function (){
+            move(target); //每10ms执行一次这个匿名函数。每次执行的时候都会形成一个作用域,这样虽然效果实现了，但是造成了内存的浪费。
+        },10);
+*/
+
+    }
+
+
+    leftBtn.onclick = function (){
+        move(minLeft); //传一个参数,需要获取当前元素的最小left值
+    }
+    rightBtn.onclick = function (){
+        move(maxLeft); //当前最大的left值
+    }
+
+    /*
+    *   写动画的时候需要注意的事项:
+    *       1 没有用的定时器要及时清
+    *       2 定时器可以赋值给运动元素的自定义属性 div1.timer
+    *       3 过界判断 这是动画的停止条件
+    *       4 优化: _move
+    * */
+
+
+
+
+
+
+
+
+</script>

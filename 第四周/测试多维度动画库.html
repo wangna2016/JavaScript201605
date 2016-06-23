@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>测试多维度动画库</title>
+</head>
+<body>
+    <div id="div1" style="width: 100px; height: 100px; background: red; position: absolute; left: 0; top: 0; opacity: 1;">我是哈哈</div>
+</body>
+</html>
+<script src="utils.js"></script>
+<script src="tween.js"></script>
+<script>
+    var div1 = document.getElementById('div1');
+    window.zhufengAnimate(div1,{left: 500,width: 400,height:250, opacity:0.8,top:300},1000,1,fn);
+    function fn(){
+        div1.style.backgroundColor = 'green';
+        this.innerHTML = 'woshihaha';
+        window.zhufengAnimate(this,{left:0,top:0,width:100,height:100},500);
+    }
+</script>

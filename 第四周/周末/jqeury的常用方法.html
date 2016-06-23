@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>jquery</title>
+    <style>
+        *{margin:0;padding: 0;}
+        .box{ width: 100px; height: 100px; background: red; position: absolute; z-index: 1; top: 0; left: 0; }
+    </style>
+</head>
+<body>
+    <div id="box" class="box" trueSrc="haha">
+        <p class="p">
+
+        </p>
+        <p class="innerP"></p>
+    </div>
+</body>
+</html>
+<script src="jquery-1.11.3.min.js"></script>
+<script>
+    /*
+    *   jQuery: 高度封装好的框架  dom操作  锋利的jQuery==> 案例很多
+    *       1 dom选择器  querySelectorAll('#id')
+     *      2 事件
+     *      3 循环
+     *      4 动画
+     *      5 盒子模型(offset,client,scrollTop)和节点关系属性(siblings,next,prev)
+     *      6 ajax 前后台交互获取数据用的
+     *      7 基于jquery拓展方法 ==> 如何在jquery这个类身上添加方法
+     *      $符号就是jQuery
+     *      //把一个原生对象包装成jQuery对象特别简单，用$(原生对象)就可以.经过包装之后就可以调用jQuery的所有方法了
+     *      //类似于用jqeury对象调用的css方法都是定义在jquery这个类的原型上的。
+    * */
+/*
+        function jQuerymy(){
+            //函数的三种角色： 1 普通函数  2 类  3 Function这个类的一个实例
+        }
+        var $ = jQuerymy;
+        jQuerymy.prototype.css = function (){
+            console.log('我是添加在原型上的')
+        }
+        jQuerymy.ajax = function (){ //在这个jquery添加了一个属性
+            console.log('我是定义在函数身上的属性');
+        }
+        jQuerymy.each = functions (){
+
+        }
+        var $box = new jQuerymy();
+        $box.css();
+        $.ajax();
+*/
+
+    //选择器：
+    var box = document.querySelectorAll('#box'); //
+
+    $('#box') //通过id获取元素
+    $('.box') //通过类名字获取元素
+    $('div') //通过标签获取元素
+    $('.c1,.c2,.c3') //可以放在一起获取
+    $('#box p') //当前id下面所有的p元素无论多少层
+    $('#box>p') //只要当前box的下一级大的p
+    $('#box+') //后去弟弟节点
+    $('#box~') //所有的弟弟
+    $('div:first-child') //第一个
+    $('div:last-child') //最后一个
+    $('div:not(.box)') //包含.box这个类的div不要
+    $('div:even') //偶数
+    $('div:odd') //
+    $('div:eq(0)') //第几个,eq(索引)
+    $('div:gt(0)') //大于索引
+    $('div:lt(6)') //小于
+
+    $('div:contains(放假)') //在div的内容中包含放假这个字符串的拿过来
+    $('div:has(ul)') //div中还有ul的拿过来,有ul孩子的拿过来
+    $('div:empty') //空的
+
+    $('div:hidden') //
+    $('div:visible') //
+
+    $('div[tureSrc=haha]') //把含有truesrc这个属性div过滤出来,支持多层过滤
+    $('div:first-child') //第一个孩子
+
+    $('input:text');
+    $('input:radio');
+    //....
+    //:enabled
+    // :disabled 置灰的
+    //:checked 选中的 多选框
+    //:selected option选中的下拉菜单中的
+
+    //jQuery中的事件
+
+    $('#box').click(function (){
+        alert(1);
+    });
+    //$('#box').click(); //触发事件的方式
+
+    $('#box').on('mouseover',function (){
+        alert(2);
+    });
+    /*$('#box').on('mouseover',function (){
+        console.log(2);
+    });*/
+    //$('#box').trigger('mouseover'); //可以用代码触发事件
+    $('#box').off('mouseover'); //把已经绑定的事件解除绑定
+    $('#box').off('click');
+    //事件委托
+    /*document.body.onclick = function (e){
+        console.log(e.target);
+    }*/
+
+    //循环
+    //$.each // 这是定义在jquery自己身上的属性 $.ajax
+    var ary = ['a','b','c'];
+    $.each(ary,function (index,item){
+
+    });
+
+    $('p').each(function (a,b){
+        //console.log(this);
+        $(this).html(); //如果html(param) 如果有参数就是赋值，如果没有就是获取
+    });
+
+    $.ajax('url',{
+        type:'get', // get/post
+        dataType : 'json',
+        async : true,
+        success : function (){
+            //成功
+        },
+        error : function (){
+            //不成功的时候
+        }
+    });
+
+    //动画
+    $("#box").animate({
+        height: 'toggle', opacity: 'toggle'
+    }, "slow");
+
+    //基于jquery拓展方法
+    $.fn.extend({
+        haha : function (){
+            alert('我是添加在$.fn.extend上的');
+        }
+    }); //在jqeruy的原型上拓展方法  ==> 任何一个jquery实例都可以调用
+    $.extend({
+        haha : function () {
+            alert('我是添加在$.extend上的');
+        }
+    }); //直接在jQuery身上添加属性
+    $().haha(); //实例调用的是原型上的方法
+    $.haha(); //直接调用jquery身上的方法
+
+
+
+
+
+
+
+
+
+
+
+
+</script>

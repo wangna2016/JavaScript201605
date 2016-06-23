@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>多方向的动画</title>
+    <style>
+        *{ margin: 0; padding: 0; }
+        #div{ width: 200px; height: 200px; background: pink; position: absolute; left: 10px; top: 10px; }
+    </style>
+</head>
+<body>
+    <div id="div"></div>
+</body>
+</html>
+<script src="utils.js"></script><!--由于tween.js对utils.js有依赖关系，所以在utils需要在tween之前被引入-->
+<script src="tween.js"></script>
+<script>
+    /*
+    *   多方向动画
+    * */
+    var oDiv = document.getElementById('div'); //要运动的元素
+    var duration = 1000; //多长时间内完成运动
+    var time = 0; //运动已经花费的时间
+    var interval = 10;
+    var begin = {
+        x : utils.getCss(oDiv,'left'),
+        y : utils.getCss(oDiv,'top')
+    }; //运动的起点
+    var target = {
+        x : 500,
+        y : 500
+    }; //运动的终点
+    var change = {
+        x : target.x - begin.x,
+        y : target.y - begin.y
+    }; //运动的距离
+
+    function linear(t,b,c,d){
+        return b + t/d * c;
+    }
+
+    oDiv.timer = window.setInterval(function (){
+        time += interval;
+        if(time >= duration){
+            window.clearInterval(oDiv.timer);
+            for(var attr in target){
+                var targetDirection = attr === 'x' ? 'left' : 'top';
+                utils.setCss(oDiv,targetDirection,target[attr]);
+            }
+            return;
+        }
+        for(var attr in change){ //遍历每一个维度，只要有change就要运动
+            //此时这里的attr分别代表的是x和y
+            var curChange = change[attr]; //代表每次运动的维度
+            var curBegin = begin[attr]; //获取当前的开始位置
+            if(curChange){ //只要这个chrChange有值，不是0那么这条件就是成功的
+                var curPosi = linear(time,curBegin,curChange,duration);
+                //判断：如果是x轴那么就是left的值变化，y: top
+                var direction = attr === 'x' ? 'left' : 'top';
+                utils.setCss(oDiv,direction,curPosi);
+            }
+        }
+    },interval);
+
+
+</script>

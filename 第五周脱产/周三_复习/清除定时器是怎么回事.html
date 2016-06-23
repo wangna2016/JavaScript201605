@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+#div1{ width:100px; height:100px; position:absolute; left:0; top:100px; background:red;}
+#left,#right{ width:200px; margin-right:100px; height:50px; text-align:center; font-size:24px; position:absolute; background:green; top:250px; left:100px;}
+</style>
+</head>
+
+<body>
+<div id="div1"></div>
+<div id="left">左</div>
+<div id="right" style="left:350px">右</div>
+</body>
+</html>
+<script>
+var ele=document.getElementById("div1");
+var timer=null;
+function move(ele,target){
+	
+	clearTimeout(timer);//如果在同一个时间段内只有一个move方法执行，这行代码没有意义。它什么时候有意义呢？同时执行两个move动作的时候
+	console.log(timer);
+	var speed=(target-ele.offsetLeft)/10;
+	
+	//起：0， 终：10  第一步：(10-0)/10,第二步是(10-1)/10,3:（10-1.9）/10
+	
+/*	if(speed>0){
+		speed=Math.ceil(speed)	
+	}else{
+		speed=Math.floor(speed);	
+	}*/
+	
+	//10 ---9
+	//10-9/10==0.1
+	
+	speed=speed>0?Math.ceil(speed):Math.floor(speed);//确保在没有到达目的地的时候，有运动的速度，最小的速度是Math.abs(speed)==1
+	ele.style.left=ele.offsetLeft+speed+"px";
+	
+	if(target-ele.offsetLeft)//有条件运行
+		timer=window.setTimeout(function(){move(ele,target)},25);
+
+		//第一次move执行的时候timer是1，因为第一次setTimeout执行，
+		//过25ms后，第二次move执行，timer是多少？timer是1,但是这个1已经没有意义了，这个排在1这个位置的队列已经执行完了。也就是说执行23行的时候，它是上一次setTimeout的返回值。这一行代码的清除是没有意义的，因为这个1队列已经执行完了。
+		//当执行到41行的时候，timer再次被赋值（一般情况下是2）；
+	
+	
+	
+	
+}
+ele.onclick=function(){
+	move(this,1000)
+	
+	}
+left.onclick=function(){
+	move(ele,0)	
+}
+right.onclick=function(){
+	move(ele,1000);
+}
+</script>
+

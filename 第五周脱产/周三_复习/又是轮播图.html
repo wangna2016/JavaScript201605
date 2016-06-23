@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>又是左右版</title>
+    <style>
+        *{
+            margin: 0;padding: 0;list-style: none;
+        }
+        .banner{
+            width: 1000px;
+            height: 300px;
+            margin: 100px auto;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+
+        }
+        .banner:hover .right,.banner:hover .left{
+            display: block;
+        }
+        .banner .bannerInner{
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5000px;
+            height: 100%;
+        }
+        .banner .bannerInner div{
+
+            width: 1000px;
+            height: 100%;
+            float: left;
+            background: url("img/default.gif");
+			line-height:300px;
+			font-size:48px; 
+			text-align:center;
+			font-weight:bold;
+        }
+        .banner .bannerInner div img{
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .banner ul{
+            width: 150px;
+            height:16px ;
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+        }
+        .banner ul li{
+            float: left;
+            width: 20px;
+            height: 20px;
+            border: 2px solid lawngreen;
+            background: seagreen;
+            border-radius: 50%;
+            margin-left: 5px;
+			text-align:center;
+			line-height:20px;
+			
+        }
+      .banner ul .bg{
+            border:2px solid darkblue;
+            background: slateblue;
+        }
+        .banner .right,.banner .left{
+            display: none;
+            position: absolute;
+            top: 50%;
+            margin-top: -22.5px;
+            width: 26px;
+            height: 50px;
+            background: url("img/pre.png") no-repeat;
+            opacity: .2;
+        }
+        .banner .right{
+            right: 0;
+            background-position: -50px;
+        }
+        .banner .right:hover,.banner .left:hover{
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="banner" id="banner1">
+    <div class="bannerInner">
+      	<div style="background:green; ">一 </div>
+        <div style="background:red; ">二</div>
+        <div style="background:blue; ">三</div>
+        <div style="background:pink; ">四</div>
+        <div style="background:yellow; ">五</div>
+    </div>
+    <ul>
+       <li class="bg">1</li>
+        <li >2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+    </ul>
+    <a class="left" href="javaScript:void 0"></a>
+    <a class="right" href="javaScript:void 0"></a>
+</div>
+</body>
+</html>
+<script src="jquery-1.9.1.js"></script>
+<script>
+    $(function(){
+		$("#banner1>ul>li").click(function(e) {
+			var w=$(".bannerInner").children("div").width();//每张图片的宽
+			var index=$(this).index();//得到li的索引
+            $(".bannerInner").animate({left:-w*index},1500,"easeOutBack");//当前这片图片到达的终点是：当前这张图片的索引*这张图片的宽度（负的）
+			
+			$(this).addClass("bg").siblings().removeClass("bg");
+			clearInterval(autoTimer);//当点一下的时候，让自动播放的停止
+			//autoTimer=setInterval(autoMove,2000);//停两秒之后再运行（自动播放）
+			//新需求：当点一下li的时候，停止5秒钟再往执行自动播放，但是自动播放每次的间隔时间是2秒。如何实现
+			autoTimer=window.setTimeout(function(){
+				autoTimer=window.setInterval(autoMove,2000);
+			},3000)
+			step=index;//启动自动播放的时候，从当前停止的这张图片（div）往下运动
+        });
+	});
+	
+	//jQuery的长项在于查找DOM元素和操作DOM元素
+	//jQuery本身也是JS，只是用JS封装好的库，我们不能把jQuery当成一门和JS不一样的语言
+	var step=0;
+	function autoMove(){
+		step++;
+		var $oLis=$(".banner>ul>li");//因为这些li要被操作两次，则将其保存到变量$oLis中，以便复用
+		if(step>=$oLis.length){
+			step=0;	
+		}
+		
+		var target=-step*1000;
+		var target=-step*$(".bannerInner>div").width();
+		//
+		$(".bannerInner").animate({left:target},700);
+		
+		$oLis.eq(step).addClass("bg").siblings().removeClass("bg");
+	}
+	
+	var autoTimer=setInterval(autoMove,2000);
+</script>
