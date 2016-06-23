@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+div{ margin:20px;}
+</style>
+</head>
+
+<body>
+<div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div>
+</body>
+</html>
+<script>
+	function Query(selector){
+		var regId=/^#([a-z]\w+)$/i;
+		var regClass=/^\.([a-z]\w+)$/i;
+		var regTagName=/^[a-z]\w+$/i;
+		if(regId.test(selector)){
+			var ele=document.getElementById(RegExp.$1);
+			this[0]=ele;
+			this.length=1;
+		}else if(regClass.test(selector)){
+			var eles=document.getElementsByClassName(RegExp.$1);
+			for(var i=0;i<eles.length;i++){
+				this[i]=eles[i];
+			}	
+			this.length=eles.length;
+			
+		}else if(regTagName.test(selector)){
+			var eles=document.getElementsByTagName(selector);
+			for(var i=0;i<eles.length;i++){
+				this[i]=eles[i];
+			}	
+			this.length=eles.length;
+		}
+		
+	}
+	
+	Query.prototype.height=function(value){
+		for(var i=0;i<this.length;i++){
+			this[i].style.height=value+"px";	
+		}
+		return this;
+	}
+	Query.prototype.width=function(value){
+		for(var i=0;i<this.length;i++){
+			this[i].style.width=value+"px";	
+		}
+		return this;
+	}
+	Query.prototype.bgColor=function(value){
+		for(var i=0;i<this.length;i++){
+			this[i].style.backgroundColor=value;	
+		}
+		return this;
+	}
+	Query.prototype.eq=function(index){//返回一个Query类的对象，里面保存着index指定的元素
+		var ele=this[index];//
+		var obj=new Query;//新创建的实例
+		obj[0]=ele;
+		obj.length=1;
+		return obj;
+	}
+	var obj=new Query("div");
+	obj.eq(3);
+	new Query("div").eq(e);//这样eq中的this指向一个匿名实例，一个值（量、数据）可以没有变量名
+	Query.prototype.get=function(index){
+		return this[index]?this[index]:null;
+	}
+</script>
