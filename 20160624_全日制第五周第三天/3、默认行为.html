@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>默认行为</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        a, a:active, a:hover, a:target, a:link, a:visited {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .link {
+            display: block;
+            margin: 20px auto;
+            width: 200px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            background: lightblue;
+        }
+
+        .link:hover {
+            background: orange;
+        }
+
+        .box {
+            margin: 1000px auto;
+            width: 200px;
+            height: 200px;
+            background: red;
+        }
+    </style>
+</head>
+<body>
+<!--
+    默认行为:浏览器为标签设定的默认的或者是天生自带的行为
+    A标签的默认行为
+    ->点击的时候实现页面跳转
+    ->锚点定位:在A标签的HREF中写#ID,这样当点击A的时候会定位到具体ID的位置 ->它的原理其实就是在地址栏后面追加一个#ID,这样只要加载页面就会定位到指定ID的地方
+-->
+<!--<a class="link" id="link" href="http://www.zhufengpeixun.cn/bbs/forum.php">珠峰培训论坛</a>
+<a class="link" id="link2" href="#box">本页面的锚点定位</a>
+<a class="link" id="link3" href="http://www.zhufengpeixun.cn/#course-list" target="_blank">学前端选珠峰,大量精彩视频等你来看~~</a>-->
+
+<!--
+  在项目中我们使用A标签有些时候并不是跳转页面和锚点定位，而仅仅想利用A标签的:hover写一个操作按钮而已，例如：轮播图的左右切换按钮，针对于这种情况我们需要把A的默认行为阻止掉
+    1)在HTML结构上进行默认行为的阻止
+      href="javascript:;" / href="javascript:void 0;"
+
+    2)使用JS阻止默认行为
+      ->给A标签的click事件绑定一个方法,当点击的时候先执行自己绑定的方法,然后在去触发默认的行为操作
+      oLink.onclick = function () {
+         return false;
+      };
+
+      oLink.onclick = function (ev) {
+        ev = ev || window.event;
+        ev.preventDefault ? ev.preventDefault() : ev.returnValue = false;
+      };
+-->
+<a class="link" id="link" href="">我只是一个按钮</a>
+<script type="text/javascript">
+    var oLink = document.getElementById("link");
+    oLink.onclick = function (ev) {
+        ev = ev || window.event;
+        ev.preventDefault ? ev.preventDefault() : ev.returnValue = false;
+    };
+</script>
+
+
+<div class="box" id="box"></div>
+</body>
+</html>

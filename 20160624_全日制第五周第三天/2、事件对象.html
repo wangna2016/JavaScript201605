@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            margin: 1000px auto;
+            width: 100px;
+            height: 100px;
+            background: red;
+            border: 1px solid green;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box"></div>
+
+<script type="text/javascript">
+    var oBox = document.getElementById("box");
+    //    oBox.onclick = function (ev) {
+    //        //->使用arguments或者使用形参变量都可以获取到浏览器给方法传递进来的那个事件对象
+    //        //console.log(arguments[0]);
+    //        //console.log(ev);
+    //
+    //        //->获取的事件对象分为两种:鼠标事件对象(MouseEvent)、键盘事件对象(KeyboardEvent) 不管哪一种都是用来记录当前鼠标(键盘)操作的相关信息的
+    //        console.log(ev);
+    //
+    //        //->ev.clientX/ev.clientY:鼠标触发点距离‘当前窗口’左上角的X/Y轴的坐标
+    //        //->ev.pageX/ev.pageY:鼠标触发点距离‘BODY(第一屏)’左上角的X/Y轴的坐标
+    //        //->我们也可以使用clientX/clientY获取到pageX/pageY的值
+    ////        var pageX = ev.clientX + (document.documentElement.scrollLeft || document.body.scrollLeft);
+    ////        var pageY = ev.clientY + (document.documentElement.scrollTop || document.body.scrollTop);
+    //
+    //        //->ev.type:当前操作的事件类型 例如:"click",说明当前的操作是点击事件
+    //        //->ev.target:事件源,当前操作的是哪个元素,那么事件源就是它
+    //
+    //        //->阻止当前事件的默认行为
+    //        //->ev.preventDefault();
+    //
+    //        //->阻止当前事件的冒泡传播
+    //        //->ev.stopPropagation();
+    //
+    //        this.style.background = "orange";
+    //    };
+
+    //->关于事件对象的兼容问题
+    //    oBox.onclick = function (ev) {
+    //        //->事件对象本身就有兼容问题:标准浏览器下是在执行方法的时候,浏览器通过传递参数值给方法传递进来的，但是在IE6~8下，浏览器并没有给传递形参值，我们想要获取事件对象需要通过window.event来获取
+    //        ev = ev || window.event;
+    //
+    //        //->IE6~8下和标准浏览器中关于事件对象的属性有一些是不兼容的
+    //        if (!ev.target) {//->说明是IE6~8浏览器
+    //            //->不存在pageX/pageY
+    //            ev.pageX = ev.clientX + (document.documentElement.scrollLeft || document.body.scrollLeft);
+    //            ev.pageY = ev.clientY + (document.documentElement.scrollTop || document.body.scrollTop);
+    //
+    //            //->不存在target:需要使用srcElement来代替它,srcElement也是事件源
+    //            ev.target = ev.srcElement;
+    //
+    //            //->阻止默认行为也是不兼容的:IE6~8使用的是ev.returnValue = false;
+    //            ev.preventDefault = function () {
+    //                ev.returnValue = false;
+    //            };
+    //
+    //            //->阻止冒泡传播
+    //            ev.stopPropagation = function () {
+    //                ev.cancelBubble = true;
+    //            };
+    //        }
+    //
+    //        //->在上面已经把IE6~8下和标准不一样的地方都进行了兼容处理,以后在后面不需要考虑是哪个浏览器了,都按照标准的来操作即可
+    //        console.log(ev.target);
+    //        ev.preventDefault();
+    //
+    //        this.style.background = "orange";
+    //    };
+
+    oBox.onclick = function (ev) {
+        ev = ev || window.event;
+        ev.preventDefault ? ev.preventDefault() : ev.returnValue = false;
+        this.style.background = "orange";
+    };
+</script>
+</body>
+</html>

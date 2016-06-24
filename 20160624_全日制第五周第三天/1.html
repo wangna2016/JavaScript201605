@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            margin: 20px auto;
+            width: 100px;
+            height: 100px;
+            background: red;
+            border: 1px solid green;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<a id="link"></a>
+<div class="box" id="box"></div>
+
+<script type="text/javascript">
+    var oBox = document.getElementById("box");
+    oBox.onclick = function () {
+        this.style.background = "orange";
+    };
+    //->oBox:一个DIV元素对象,它是对象数据类型的,包含了很多自己私有的属性;不仅如此,它是HTMLDivElement这个内置类的一个实例
+    //DIV元素对象->HTMLDivElement->HTMLElement->Element->Node->EventTarget->Object
+    //A元素对象->HTMLAnchorElement->HTMLElement...
+    //console.log(oBox.__proto__.constructor);
+</script>
+</body>
+</html>

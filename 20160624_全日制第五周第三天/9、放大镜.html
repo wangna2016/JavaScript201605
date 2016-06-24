@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        img {
+            display: block;
+            border: none;
+        }
+
+        .box {
+            display: inline-block;
+            position: relative;
+            margin: 50px 10px 50px 50px;
+            width: 300px;
+            height: 300px;
+            border: 1px solid #ccc;
+            box-shadow: 3px 3px 10px 0 #000;
+        }
+
+        .box img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .box .mark {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background: #000;
+            opacity: 0.3;
+            filter: alpha(opacity=30);
+            cursor: move;
+            border-radius: 50%;
+        }
+
+        .boxBig {
+            display: none;
+            position: relative;
+            margin-left: 0;
+            overflow: hidden;
+            border-radius: 50%;
+        }
+
+        /*--右侧图片:左侧图片==左侧盒子:左侧MARK--*/
+        /*--左侧的MARK向右移动10PX,右侧大图应该向左移动30PX--*/
+        .boxBig img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300%;
+            height: 300%;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box">
+    <img src="img/iphone.jpg"/>
+
+    <div class="mark" id="mark"></div>
+</div>
+<div class="box boxBig" id="boxBig">
+    <img src="img/iphone_big.jpg"/>
+</div>
+
+<script type="text/javascript">
+    var oBox = document.getElementById("box"),
+            oMark = document.getElementById("mark"),
+            oBoxBig = document.getElementById("boxBig"),
+            oImg = oBoxBig.getElementsByTagName("img")[0];
+
+    oBox.onmouseenter = function (ev) {
+        oMark.style.display = "block";
+        oBoxBig.style.display = "inline-block";
+        computedMarkPosition(ev);
+    };
+    oBox.onmousemove = computedMarkPosition;
+    oBox.onmouseleave = function () {
+        oMark.style.display = "none";
+        oBoxBig.style.display = "none";
+    };
+
+    //->计算MARK盒子的位置
+    function computedMarkPosition(ev) {
+        ev = ev || window.event;
+
+        //->按照需求计算出MARK盒子的TOP和LEFT值
+        var curL = ev.clientX - oBox.offsetLeft - (oMark.offsetWidth / 2);
+        var curT = ev.clientY - oBox.offsetTop - (oMark.offsetHeight / 2);
+
+        //->进行边界判断和处理
+        var minL = 0,
+                minT = 0,
+                maxL = oBox.offsetWidth - oMark.offsetWidth,
+                maxT = oBox.offsetHeight - oMark.offsetHeight;
+        curL = curL < minL ? minL : (curL > maxL ? maxL : curL);
+        curT = curT < minT ? minT : (curT > maxT ? maxT : curT);
+
+        //->把计算好的TOP/LEFT值赋值给MARK的样式属性
+        oMark.style.left = curL + "px";
+        oMark.style.top = curT + "px";
+
+        //->开始让右侧的大图按照MARK相反的方向移动MARK移动距离的三倍
+        oImg.style.left = -curL * 3 + "px";
+        oImg.style.top = -curT * 3 + "px";
+    }
+</script>
+</body>
+</html>

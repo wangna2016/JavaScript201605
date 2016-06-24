@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>事件传播</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #ccc;
+            overflow: hidden;
+        }
+
+        .outer {
+            margin: 20px auto;
+            padding: 50px;
+            width: 100px;
+            height: 100px;
+            background: green;
+            cursor: pointer;
+        }
+
+        .outer .inner {
+            width: 100px;
+            height: 100px;
+            background: red;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="outer" id="outer">
+    <div class="inner" id="inner">
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    var outer = document.getElementById("outer"),
+            inner = document.getElementById("inner");
+
+    document.body.onclick = function (ev) {
+        ev = ev || window.event;
+        console.log("BODY", ev);
+    };
+
+    outer.onclick = function (ev) {
+        ev = ev || window.event;
+        //->阻止冒泡传播
+        //ev.stopPropagation ? ev.stopPropagation() : ev.cancelBubble = true;
+        console.log("OUTER", ev);
+    };
+
+    inner.onclick = function (ev) {
+        ev = ev || window.event;
+        console.log("INNER", ev);
+    };
+
+    //->事件的冒泡传播:
+    //当前元素的某一个事件行为被触发,那么它父级元素以及父级的父级元素...的相关行为都会被触发(例如:点击inner,inner的click事件触发,同时outer、body、html、document的点击事件也会被触发) [从内向外依次传播]
+
+    //->自己回去看传播机制视频了解一下捕获阶段和冒泡阶段,这两个阶段组合在一起才是一个完整的传播机制
+
+
+    //->因为事件的冒泡传播导致：本次鼠标点击会让三个绑定的方法都执行,每一个方法中都会得到一个属标事件对象,但是事件对象存储的就是当前操作的相关信息,而我们是操作一次执行三个方法,所以：“三个方法中获取到的鼠标事件对象存储的值是一模一样的”,事件源是谁和在哪个方法中获取的没有任何的关系，操作的是哪个元素事件源就是谁
+</script>
+</body>
+</html>
