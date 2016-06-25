@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>导航栏</title>
+<link rel="stylesheet" href="css/default.css" type="text/css" />
+
+<!-- 引入 jQuery -->
+<script src="../../scripts/jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+//完成此效果是需要两步：
+//第一步：当click触发在a上的时候，让a的弟弟元素ul显示
+//第二:让a的父元素的兄弟节点的ul子元素隐藏
+
+//在绑定事件的时候，如果qian套的标签里有a的话，尽量把事件绑定给a，便于取消a的默认行为
+	/*
+	$(document).ready(function(){
+		//"DOMContentLoaded"是DOM二级事件，它指文档（这个页面上的HTML）加载完成后触发此事件，它比window.onload事件要早
+		
+		$("li.level1>a").click(function(e) {
+			//$(this).next().show(600).parent().siblings().children("ul").hide(600);
+			//当前元素的弟弟显示-->父节点的兄弟节点的ul子元素隐藏
+			
+			//实现当前的菜单：如果是显示的则隐藏，如果是隐藏的则显示
+			//如何是jQuery方法判断DOM元素的状态：is方法
+			var $ul=$(this).next();
+			
+			//下边是is的用法（返回true或false）
+			$ul.is(":visible")//判断ul是否是可见的
+			$ul.is("ul");//判断ul的标签是否是ul
+			$ul.is(".level1");//判断$ul的的类名是否是level1
+			$ul.is(":animated");//判断$ul是否是在做动画
+			//ele.timer=null
+			
+			if($ul.is(":visible")){//判断二级菜单ul是否是可见的
+				$ul.hide(600);	//如果可见（显示）则隐藏
+			}else{
+				//如果不可见则让其可见，让其它二级菜单ul隐藏
+				$ul.show(600).parent().siblings().children("ul").hide(600);
+			}
+			
+			return false;//取消a的默认的跳转行为（取消事件的默认行为）。这是在DOM0级事件中，取消元素的默认行为的固定用法
+		});
+	});
+	
+	$(function(){});//是$(document).ready(function(){});的简写
+*/
+/*
+	$(function(){
+		$("li.level1>a").click(function() {
+            var $ul=$(this).next();
+			if($ul.is(":visible")){
+				$ul.hide(600);	
+			}else{
+				$ul.show(600).parent().siblings().children("ul").hide(600);	
+			}
+			return false;
+        });	
+	})
+*/
+
+$(function(){
+	$("li.level1").click(function(e) {
+        $(this).children("ul").show().end().siblings().children("ul").hide();
+    });
+	$("li.level1>a").click(function(e) {
+        //return false;//说明在jQuery方法中，写return false不但阻止了默认行为，还把事件传播给取消了
+		e.preventDefault();//只好用专用的取消默认行为的方法
+    });
+});
+</script>
+
+</head>
+<body>
+<p>第三步：优化后：</p>
+
+<div class="box">
+	<ul class="menu">
+		<li class="level1">
+			<a href="http://www.zhufengpeixun.cn">衬衫</a>
+			<ul class="level2">
+				<li><a href="#none">短袖衬衫</a></li>
+				<li><a href="#none">长袖衬衫</a></li>
+				<li><a href="#none">短袖T恤</a></li>
+				<li><a href="#none">长袖T恤</a></li>
+			</ul>
+		</li>
+		<li class="level1">
+			<a href="#none">卫衣</a>
+			<ul class="level2">
+				<li><a href="#none">开襟卫衣</a></li>
+				<li><a href="#none">套头卫衣</a></li>
+				<li><a href="#none">运动卫衣</a></li>
+				<li><a href="#none">童装卫衣</a></li>
+			</ul>
+		</li>
+		<li class="level1">
+			<a href="#none">裤子</a>
+			<ul class="level2">
+				<li><a href="#none">短裤</a></li>
+				<li><a href="#none">休闲裤</a></li>
+				<li><a href="#none">牛仔裤</a></li>
+				<li><a href="#none">免烫卡其裤</a></li>
+			</ul>
+		</li>
+	</ul>
+</div>
+
+</body>
+</html>

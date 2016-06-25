@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>什么是事件</title>
+<style type="text/css">
+body *{ padding:20px; display:block; color:#fff; }
+</style>
+</head>
+
+
+<body>
+<div id="outer" style="width:600px; background:pink; ">
+ 	outer
+	<div id="middle" style="background:red">
+    middle
+    	<div id="inner" style="background:green;">
+        inner
+        	<p id="p1" style="background:yellow;">p1,p1,p1
+            	<a id="a1" href="###" style="background:black; color:#fff;">aaaaaaaa
+                	<span id="span1" style=" background:blue">span,span</span>
+                
+                </a>
+            </p>
+        
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+<script>
+var eles=document.getElementsByTagName("*");
+//请用最优的方法，完成下边的任务：
+//当click事件触发时，弹出它们各自的id名或标签名，
+/*
+for(var i=0;i<eles.length;i++){
+	var ele=eles.item(i);
+	ele.onclick=function(e){
+		alert(this.id||this.tagName);
+		e.stopPropagation();	
+	}
+}
+*/
+
+//下面的方式叫事件委托，是利用的事件传播的机制，根据事件源的不同，完成不同的逻辑执行
+document.documentElement.onclick=function(e){//做顶层绑定
+	//事件源的属性
+	e=e||event;//e=e||window.event;
+	var target=e.target||e.srcElement;//e.target是标准浏览器的事件源.e.srcElement是IE浏览器的事件源属性
+	alert(target.id||target.tagName);
+	return false;
+}
+
+
+//按着高程三这本书上的观点，把一个网页上所有的事件绑定，都用委托的方式来处理，是最优方案（最节省性能）
+
+document.documentElement.onclick=function(e){
+	//选项卡
+	//动画
+	//菜单
+	//以下省略一万个效果
+	//处理选项卡
+	//给标签名叫li，并且它的class叫tab的
+	var target=e.target;
+	if(target.className=="tab"&&target.tagName=="LI"){
+		//这里面写实现选项卡的逻辑	,比如说处理选项的方法叫changeTab
+		//changeTab();
+		changeTab.call(this);//如果changeTab里的this还需要指向li，则这样处理
+	}else if(target.id=="animate"){
+		animate();
+	}
+}
+
+</script>
