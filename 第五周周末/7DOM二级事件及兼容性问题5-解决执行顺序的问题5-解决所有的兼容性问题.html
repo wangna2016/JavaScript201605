@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1" style="height:100px; background:#0FF"><a href="http://www.zhufengpeixun.cn">珠峰培训</a></div>
+</body>
+</html>
+<script src="event.js"></script>
+<script>
+//标准浏览器的DOM2事件
+var ele=document.getElementById("div1");
+var i=0;
+
+//a[i].call(this,e);
+//这个e是run方法得到 var e=window.event;再把e由run传给事件池里的所有方法
+function fn(e){
+	//在IE中，能让IE像火狐那样通过传参得到事件对象
+	//并且在事件对象e上，还支持
+	//e.target,e.pageX,e.pageY,e.preventDefault,e.stopPropagation
+	//
+	e=e||window.event;
+	console.log(e.pageX,e.pageY);
+	e.preventDefault();
+	e.stopPropagation();
+	
+}
+var oA=document.getElementsByTagName("a").item(0);
+on(oA,"click",fn);
+function fn1(e){
+	alert(this.innerHTML+1);
+	
+
+}
+function fn2(e){alert(2);}
+
+
+function fn3(e){
+	i++;
+	if(i==2){
+		off(this,"click",fn1);
+		off(this,"click",fn2);
+		off(this,"click",fn3);	
+		/*
+			数组塌陷问题的产生：
+		如果在off中使用splice方法删除数组，会出现塌陷的问题
+		
+		事件池数组是这样：[fn1,fn2,fn3,fn4,fn5,fn6,fn7,fn8,fn9]
+		//当运行的第二次的时候
+		依次执行fn1,fn2,fn3
+		到执行fn3的时候，出事故
+		是run在执行fn3
+		run里有一个循环
+			for(var i=0;i<a.length;i++){
+					a[i].call(this);
+					//执行fn3的时候,i==2
+				}
+		把这个数组中的前三项[fn1,fn2,fn3,fn4,fn5,fn6,fn7,fn8,fn9]给删掉了
+		[fn4,fn5,fn6,fn7,fn8,fn9]
+		接下来
+		fn3执行完成，要执行下一项，i==3 ,则要运a[3]();
+		
+		//解决的方案是不能这样粗暴把人家删掉，这个方法去掉，但是位置要留下
+		[null,null,null,fn4,fn5,fn6,fn7,fn8,fn9]
+		删除的时候不再用splice了，而是a[i]=null;
+		
+		为什么不能在off方法删除的时候，使用splice删除后，再i--;呢？
+		原因是这是里的i影响不到run里的i。splice在off方法里删除数组项之后就结束了，再i--也没什么意义
+		
+		
+		
+		*/
+		
+		
+	}
+	alert(3);
+}
+function fn4(e){alert(4);}
+function fn5(e){alert(5);}
+function fn6(e){alert(6);}
+function fn7(e){alert(7);}
+function fn8(e){alert(8);}
+function fn9(e){alert(9);}
+
+//重写IE事件模式，需要最少两步，第一步：有一套逻辑把需要绑定的方法事先保存到一个事件池里
+//第二步:当事件触发的时候，要有一个机制（这个机制也是一个方法）去事件池通知事件保存好的那些方法来执行
+//其实就是一个on方法，一个run方法
+
+function on(ele,type,fn){
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+		return;	
+	}
+	
+	if(!ele["aEvent"+type]){
+		ele["aEvent"+type]=[];
+		ele.attachEvent("on"+type,function(){run.call(ele)});//避免run方法被重复绑定到系统的事件上
+	}
+	var a=ele["aEvent"+type];
+	
+	for(var i=0;i<a.length;i++){
+		if(a[i]==fn)return;	//避免fn方法被重复保存到自己定义的事件池中
+	}
+	
+	a.push(fn);
+	
+}
+
+function run(){
+	var e=window.event;	
+	var a=this["aEvent"+e.type];
+	if(a){
+		e.target=e.srcElement;
+		e.pageX=e.clientX+(document.documentElement.scrollLeft||document.body.scrollLeft);
+		e.pageY=e.clientY+(document.documentElement.scrollTop||document.body.scrollTop);
+		e.preventDefault=function(){e.returnValue=false;}
+		e.stopPropagation=function(){e.cancelBubble=true;}
+		for(var i=0;i<a.length;i++){
+			if(typeof a[i]=="function"){
+				a[i].call(this,e);//为了让使用自定义事件模式的那些方法也能够使用 参数e
+			}else{
+				//如果数组中此项为null，则在这里删除，相当于整理数组的长度，把无效的项目清掉
+				a.splice(i,1);
+				i--;
+			}
+			
+		}
+	}
+}
+
+
+function off(ele,type,fn){
+	if(ele.removeEventListener){
+		ele.removeEventListener(type,fn,false);
+		return;	
+	}
+	
+	var a=ele["aEvent"+type];
+	if(a){
+		for(var i=0;i<a.length;i++){
+			if(a[i]==fn){
+				//a.splice(i,1);
+				a[i]=null;
+				return;	
+				/*
+			数组塌陷问题的产生：
+		如果在off中使用splice方法删除数组，会出现塌陷的问题
+		
+		事件池数组是这样：[fn1,fn2,fn3,fn4,fn5,fn6,fn7,fn8,fn9]
+		//当运行的第二次的时候
+		依次执行fn1,fn2,fn3
+		到执行fn3的时候，出事故
+		是run在执行fn3
+		run里有一个循环
+			for(var i=0;i<a.length;i++){
+					a[i].call(this);
+					//执行fn3的时候,i==2
+				}
+		把这个数组中的前三项[fn1,fn2,fn3,fn4,fn5,fn6,fn7,fn8,fn9]给删掉了
+		[fn4,fn5,fn6,fn7,fn8,fn9]
+		接下来
+		fn3执行完成，要执行下一项，i==3 ,则要运a[3]();
+		
+		//解决的方案是不能这样粗暴把人家删掉，这个方法去掉，但是位置要留下
+		[null,null,null,fn4,fn5,fn6,fn7,fn8,fn9]
+		删除的时候不再用splice了，而是a[i]=null;
+		
+		为什么不能在off方法删除的时候，使用splice删除后，再i--;呢？
+		原因是这是里的i影响不到run里的i。splice在off方法里删除数组项之后就结束了，再i--也没什么意义
+		
+		
+		
+		*/
+				
+			}
+		}
+		
+	}
+	
+		
+}
+
+on(ele,"click",fn1);
+
+//到目前为止，确实是把九个方法保存到事件池里了，但是，当click事件触发的时候，这个事件和这个数组不存任何关联啊。所以，即便是事件触发了，这个九个方法也不会执行
+//需要让我们自定义的事件池和系统事件产生关联----由run方法来负责把事件池和系统事件关联在一起
+</script>

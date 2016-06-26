@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+#div1{ width:100px; height:100px; position:absolute; left:100px; top:100px; background:red; cursor:move; -webkit-user-select:none;}
+
+</style>
+</head>
+
+<body>
+<div id="div1"></div>
+</body>
+</html>
+<script src="event2.js"></script>
+<script>
+var ele=document.getElementById("div1");
+//mousedown,mousemove,mouseup
+//mousedown准备拖拽 ，把div的原始位置保存下来，把鼠标的原始坐标也保存下来，把div的mousemove事件绑定好
+//mousemove实施拖拽，拖拽时行 ：move事件触发一次，则重新计算一次DIV的新坐标
+//div新坐标=div原始坐标+（鼠标移动的距离=鼠标的新位置-鼠标的原始位置 ）
+//mouseup的结束拖拽：把mousemove事件和mouseup都释放掉
+
+
+//原则：以下方法由于都会绑定给被拖拽的div，所以方法里的this都会指向div
+function down(e){//拖拽开始
+	this.x=this.offsetLeft;//把盒子开始的位置保存到div的自定义属性x上
+	//this.x=this.style.left;
+	this.y=this.offsetTop;
+	this.mx=e.pageX;//把鼠标开始的时候的坐标保存到div的自定义属性mx和my
+	this.my=e.pageY;
+	if(this.setCapture){//IE和fireFox支持这个方法，这个方法是专门用来解决mousemove事件丢失鼠标焦点的问题的
+		this.setCapture();
+		on(this,"mousemove",move);
+		on(this,"mouseup",up);
+	}else{//chrome用以下方式
+		//call或apply方法
+		var that=this;
+		
+		//以下的处理方式是:move和up这两个方法的功能不变，但是this关键字会被强制指向指定的对象（that）
+		function processThis(fn,obj){//这个方法会返回一个新的方法，这个新方法的功能和fn一样，但fn里的this关键字会强制指向obj
+			return function(e){fn.call(obj,e)}
+			//这个方法的实现原理和47行，50的代码一样，就是在这里把下边实现的方式抽像成了方法
+			}
+		
+		/*this.MOVE=function(e){move.call(that,e);
+		//这个方法的this和move执行的时候的this不一样
+		};//事件绑定的是这个大MOVE方法，当事件触发时，执行这个方法，系统会自动传给这个的e参数一个事件对象，然后大MOVE再把事件对象通过call传给小move方法，这个小move方法也可以得到事件对象了
+		this.UP=function(e){up.call(that,e)}
+		*/
+		
+		this.MOVE=processThis(move,this);
+		this.UP=processThis(up,this);
+		on(document,"mousemove",this.MOVE);
+		on(document,"mouseup",this.UP);
+		
+	}
+	
+}
+
+function move(e){//拖拽进行
+	//div新坐标=div原始坐标+（鼠标移动的距离=鼠标的新位置-鼠标的原始位置 ）
+	this.style.left=this.x+(e.pageX-this.mx)+"px";
+	this.style.top=this.y+(e.pageY-this.my)+"px";
+}
+
+function up(e){//拖拽结束
+	if(this.releaseCapture){
+		this.releaseCapture();
+		off(this,"mousemove",move);
+		off(this,"mouseup",up);
+	}else{
+		off(document,"mousemove",this.MOVE);
+		off(document,"mouseup",this.UP);	
+	}
+	
+}
+
+on(ele,"mousedown",down);
+
+</script>

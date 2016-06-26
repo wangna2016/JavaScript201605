@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1" style="height:100px; background:#0FF"><a href="http://www.zhufengpeixun.cn">珠峰培训</a></div>
+</body>
+</html>
+<script src="event.js"></script>
+<script>
+//标准浏览器的DOM2事件
+var ele=document.getElementById("div1");
+var i=0;
+function fn1(e){
+	alert(this.innerHTML);
+	i++;
+	if(i==1){
+		//表示第一次执行的时候，就把fn1在click事件上移除，第二次再点div的时候，fn1不应该再执行
+		
+		//unbind(this,"click",fn1);	
+	}
+
+}
+function fn2(e){alert(2);}
+
+
+function fn3(e){
+	i++;
+	/*if(i==3){//当第三次点div的时候，把fn1，fn2,fn4移除。这样，当第四次再点div的时候，fn1,fn2就不执行了。fn4这次不执行
+		this.removeEventListener("click",fn1,false);
+		this.removeEventListener("click",fn1,false);
+		this.removeEventListener("click",fn4,false);	
+	}*/
+	alert(3);
+	
+	}
+function fn4(e){alert(4);}
+function fn5(e){alert(5);}
+function fn6(e){alert(6);}
+function fn7(e){alert(7);}
+function fn8(e){alert(8);}
+function fn9(e){alert(9);}
+
+//重写事件模式，需要最少两步，第一步：有一套逻辑把需要绑定的方法事先保存到一个事件池里
+//第二步:当事件触发的时候，要有一个机制（这个机制也是一个方法）去事件池通知事件保存好的那些方法来执行
+//其实就是一个on方法，一个run方法
+
+function on(ele,type,fn){
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+		return ;//停止	
+	}
+	
+	//以下是IE的专用原则 
+	if(!ele["aEvent"+type]){
+		ele["aEvent"+type]=[];
+		ele.attachEvent("on"+type,function(){run.call(ele)});//把真正的事件绑定在这儿，可以确保run方法不会被重复绑定
+	}
+	var a=ele["aEvent"+type];
+	for(var i=0;i<a.length;i++){
+		if(a[i]==fn)return;	
+	}
+	
+	a.push(fn);//最核心的代码是这一句
+	//[fn1,fn2,fn3]
+	//bind(ele,type,run);//on执行一次，bind就会执行一次
+	//ele.attachEvent("on"+type,function(){run.call(ele)});//无论on方法执行多少，run方法只能被绑定一次（这一行代码只能执行一次）
+	
+}
+/*
+//bind的核心代码运行如下：
+ele.addEventListener("click",run,false);//如果chrome则是这样绑定的run
+如果是IE
+	ele.attachEvent("on"+type,function(){run.call(ele)})
+*/
+function run(){
+	//e=e||window.event;
+	var e=window.event;
+	var type=e.type;
+	var a=this["aEvent"+type];
+	
+	for(var i=0;i<a.length;i++){
+		a[i].call(this,e);
+	}	
+}
+	on(ele,"click",fn1);
+	on(ele,"click",fn2);
+	on(ele,"click",fn3);
+
+/*on(ele,"click",fn1);
+on(ele,"click",fn2);
+on(ele,"click",fn3);
+on(ele,"click",fn4);
+on(ele,"click",fn5);
+on(ele,"click",fn6);
+on(ele,"click",fn7);
+on(ele,"click",fn8);
+on(ele,"click",fn9);*/
+//到目前为止，确实是把九个方法保存到事件池里了，但是，当click事件触发的时候，这个事件和这个数组不存任何关联啊。所以，即便是事件触发了，这个九个方法也不会执行
+//需要让我们自定义的事件池和系统事件产生关联----由run方法来负责把事件池和系统事件关联在一起
+</script>
