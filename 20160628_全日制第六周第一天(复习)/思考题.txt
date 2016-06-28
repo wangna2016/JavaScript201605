@@ -1,0 +1,9 @@
+复习今天的内容和学习课时139
+
+->基于String.prototype扩展一个叫做myReplace方法,实现
+  var reg=/\d+/g;
+  var str="zhufeng2016peixun2017yangfan2018qihang2019";
+  str=str.myReplace(reg,function(){
+      return arguments[0]+"年";
+  });
+  //->"zhufeng2016年peixun2017年yangfan2018年qihang2019年";
