@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //一、关于for in循环
+    //in:检测某一个属性名是否属于这个对象的属性(可能是私有的属性,也可能是所属类原型上的公有的属性)
+    //hasOwnProperty:检测某一个属性名是否是这个对象的“私有属性”
+
+    //->for in循环的本意是利用了in的语法,要求把当前对象(实例)所有的属性(既包含私有的也要包含公有的)都遍历到
+    //->但是在内置类原型上天生就存在的方法,我们用其遍历的时候是无法获取的:这个是浏览器的自我保护机制,防止内置的属性被篡改或者造成其它的影响...
+    //->但是在内置类原型上我们自己扩展的属性方法是可以遍历到的
+
+    //    Object.prototype.aa = function () {
+    //
+    //    };
+    //    var obj = {name: "珠峰", age: 7};
+    //    /*for (var key in obj) {
+    //     console.log(key);//->3次 name、age、aa
+    //     }*/
+    //    //->我只想把私有的属性遍历出来
+    //    for (var key in obj) {
+    //        if (obj.hasOwnProperty(key)) {
+    //            console.log(key);//->2次 name、age
+    //        }
+    //    }
+
+
+    Array.prototype.myUnique = function () {
+        //this->我需要进行去重处理的那个数组,在以下代码中我们一直在操作原数组,所以执行完成后原数组会发生改变
+        var obj = {};
+        for (var i = 0; i < this.length; i++) {
+            var curItem = this[i];
+            if (curItem in obj) {//->当前的属性名在OBJ中已经存在,数组中当前项已经重复,我们把这一项删除即可(不使用splice直接的删除,而是把最后一项的值替换到当前要删除的这一项,然后在把最后一项删除,避免删除中间某一项,后面所有项的索引还要重新的计算)
+                this[i] = this[this.length - 1];
+                this.length--;
+                i--;
+                continue;
+            }
+            obj[curItem] = curItem;
+        }
+        obj = null;//->手动释放无效的堆内存
+
+        return this;//->返回去重后的数组(Array的一个实例),实现类似于jQuery一样的链式写法
+    };
+
+
+    var ary = [1, 12, 23, 12, 13, 11, 2, 23, 4, 2, 3, 1, 2, 3, 4, 5, 3, 2, 4, 3, 2, 1];
+    //    ary.myUnique();
+    //    ary.sort(function (a, b) {
+    //        return a - b;
+    //    });
+
+    //    ary.myUnique().sort(function (a, b) {
+    //        return a - b;
+    //    });//->Uncaught TypeError: Cannot read property 'sort' of undefined 因为此时的myUnique执行完成没有写返回值,默认的返回值是undefined,也就是我们用的是undefined.sort...结果肯定会报错
+
+    //->如果我们想实现链式写法,需要保证myUnique方法执行完成的返回结果是Array的一个实例,也就是一个数组,这样才可以继续调用Array.prototype上的方法...
+    //    ary.myUnique().sort(function (a, b) {
+    //        return a - b;
+    //    });
+
+    //    ary.sort(function (a, b) {
+    //        return a - b;
+    //    }).reverse().push("珠峰").shift();//->Uncaught TypeError: ary.sort(...).reverse(...).push(...).shift is not a function 执行完成push后返回的是新增后数组的长度,它是一个数字,不能继续调取数组shift方法...
+    //    console.log(ary);
+
+
+    //->以下不管是哪一种方式,我们都是先找到原型上的myUnique方法,然后让myUnique方法执行
+    //    ary.myUnique();//->ary.myUnique:首先找自己私有的属性,没有的话在到原型上找公有的属性,此时我们已经把方法找到了,然后后面加上小括号,意思是让此方法执行,此时这个方法中的this是ary
+    //    ary.__proto__.myUnique();//->不找私有的,直接到原型上找到方法并且让其执行,此时方法执行中的this是ary.__proto__(__proto__在IE浏览器中屏蔽了,我们不能使用,使用就会报错)
+    //    Array.prototype.myUnique();//->直接到原型上找到方法并且让其执行,此时方法中的this是Array.prototype(和ary.__proto__一样的)；如果想让这种写法执行时,方法中的this依然是ary的话,我们这样处理：Array.prototype.myUnique.call(ary);
+
+</script>
+</body>
+</html>
