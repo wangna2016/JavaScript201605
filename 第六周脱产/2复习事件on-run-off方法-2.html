@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1">我是div1</div>
+</body>
+<script>
+//bind ,unbind方法
+function fn1(){console.log(this.innerHTML+"fn1");};
+function fn2(){console.log("fn2");};
+function fn3(){console.log("fn3");};
+function fn4(){console.log("fn4");};
+function fn5(){console.log("fn5");};
+function fn6(){console.log("fn6");};
+function fn7(){console.log("fn7");};
+function fn8(){console.log("fn8");};
+function fn9(){console.log("fn9");};
+
+function on(ele,type,fn){//用on方法绑定的事件是伪绑定，没有真正的把fn方法绑定给ele的type事件
+	//把fn保存到一个数组里，这个数组定义在什么地方
+	//ele;//要把事件池定义在on,run,off这三个方法共同操作的对象上，
+	
+	if(!ele["aEvent"+type]){//不存在此数组则定义，但是这数组不能被反复定义，以免被覆盖
+		ele["aEvent"+type]=[];
+	}
+	var a=ele["aEvent"+type];
+	for(var i=0;i<a.length;i++){
+		if(a[i]==fn)return;//如果此条件为真，说明事件池中已经存在此方法了，则不必再往下执行保存的操作了	
+		//这里面不需要给fn加photo属性，因为不需要把fn重装改造成一个新方法
+	}
+	a.push(fn);
+	//在这里绑定run方法
+	bind(ele,type,run);//只要是有fn方法被“伪”绑定的ele的type事件上了，则在这儿把run方法真正的绑定到ele的type事件上。
+	//要理解的是run会被不断的绑定到ele的type事件，但是，只有第一次绑定有效，因为bind方法里有避免重复绑定的判断
+}
+
+//也就是说当事件触发的时候，真正执行的方法是run，就需要在真正的事件上绑定run方法
+
+function processThis(fn,obj){
+	return function(e){fn.call(obj,e)}	
+}
+var fnTemp=processThis(run,ele);
+ 
+function run(e){
+	//负责遍历对应的数组，按顺序执行保存到数组里的方法
+	ele["aEvent"+type]
+	this;//在on方法里的第37行，把run绑定到ele的事件上了，则当run方法运行的时候，run里的this指向被绑定的元素，这个元素就是on方法里的ele，现在on方法的ele和这里的this是同一个对象。
+	var e=window.event;
+	var type=e.type;//当某个事件触发的时候，事件对象上会自动保存当前事件的类型，就是这个e.type
+	type
+	var a=this["aEvent"+type];
+	if(a){
+		for(var i=0;i<a.length;i++){
+			a[i].call(this);//a	
+		}
+	}
+	
+	
+	
+}
+
+
+function off(ele){
+	
+}
+</script>

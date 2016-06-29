@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1"></div>
+</body>
+</html>
+<script>
+var ele=document.getElementById("div1");
+function fn(e){
+	
+}
+//绑定在事件上，被事件执行（触发执行）的方法，无法人为的得到实参
+ele.onclick=fn;
+ele.addEventListener("click",fn,false);
+
+</script>

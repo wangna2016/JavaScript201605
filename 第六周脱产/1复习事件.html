@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+浏览器的事件兼容性问题你能记住那些
+1、得到事件对象本身的方式不一样，标准浏览器中用浏览器自动传给（绑定在此事件上的）方法的参数做为事件对象，IE用的全局的window.event是事件对象
+function fn(e){
+	e=e||window.event;
+}
+ele.onclick=fn;//当事件触发的时候浏览器会自动的传一个事件对象给fn，形参e会接收到这个事件对象，这是标准浏览器。IE浏览器中的事件对象是用的window.event这个全局对象
+ chrome浏览器中的事件对象，用这两种方式都可以得到
+2、事件传播，标准浏览器是有两个阶段，捕获和冒泡，IE浏览只有冒泡。
+3、阻止事件传播，标准浏览器是用e.stopPropagation方法，IE是用e.cancelBubble=true这个属性
+4、阻止事件默认行为：标准浏览器是e.preventDefault()方法，IE是用e.returnValue=false,或在方法里写一个return false都可以
+5、e.pageX,e.pageY 是指鼠标相对于文档的距离，它比e.clientX,e.clientY多滚动条滚出的距离。e.pageX,e.pageY是IE不支持的
+6、事件源不一样，标准浏览器中用e.target属性来得到事件源，IE中用e.srcElement得到事件源
+7、DOM二级事件中，绑定事件的方法不一样，标准浏览器是用ele.addEventListener，移除事件的绑定是ele.removeEventListener;在IE浏览器中，ele.attachEvent,移除事件绑定用ele.detachEvent;
+	7.1 IE的方法中，事件类型字符是加"on"
+    7.2 IE的被绑定的方法执行的时候，this是window
+    7.3 IE的DOM2级事件，一个方法可以重复绑定
+    7.4 IE的DOM2级事件，绑定的方法在执行的时候，是无序的
+
+8.setCapture这个方法，是专门用来处理mousemove事件中，鼠标移动太快会丢失的问题的。这个方法IE先支持的，后来火狐中也实现了这个方法，chrome一直不支持。这个方法是DOM元素上的方法，不是事件对象上的方法
+
+</body>
+</html>
+
+<script>
+//一、在解决事件的兼容问题的时候，是先解决第7个问题，就是写一个bind方法，能够让浏览器自动识别能用那种方法来绑定事件
+function bind(ele,type,fn){
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+	}else if(ele.attachEvent){
+		ele.attachEvent("on"+type,fn);
+	}
+}
+
+function unbind(ele,type,fn){
+	if(ele.removeEventListener){
+		ele.reoveEventListener(type,fn,false);
+	}else if(ele.detachEvent){
+		ele.detachEvent("on"+type,fn);
+	}
+}
+
+//二、解决this的问题（被绑定的方法在被事件触发后执行的时候，this关键字指向window的问题）
+function bind(ele,type,fn){
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+	}else if(ele.attachEvent){
+		var fnTemp=function (){fn.call(ele)};//
+		var fnTemp=processThis(fn,ele);
+		
+		//经常需要让一个方法在执行的时候，功能不变，这个方法里的this关键要强制指向指定的元素obj，根据这样的逻辑实现了下面的方法
+		function processThis(fn,obj){
+			return function (e){fn.call(obj,e)}
+		}
+		
+		ele.attachEvent("on"+type,fnTemp);
+	}
+}
+
+
+function unbind(ele,type,fn){
+	if(ele.removeEventListener){
+		ele.reoveEventListener(type,fn,false);
+	}else if(ele.detachEvent){
+		//用bind绑定的时候，绑定的是fn的变形的方法（做了手术的fn方法）fnTemp
+		
+		//参数传进来的是fn，真正绑定的是fnTemp，则需要用fn把fnTemp识别出来（当然第一步是在bind里面，先要把fnTemp引用保存下来，然后再在这里逐一对比，加一识别）
+		ele.detachEvent("on"+type,fn);
+	}
+}
+
+//三、继上一步，this关键字解决了，还要在移除绑定的时候，能够准确的将变形那个fn方法移除掉
+
+function processThis(fn,obj){
+			return function (e){fn.call(obj,e)}
+		}
+function bind(ele,type,fn){
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+	}else if(ele.attachEvent){
+		
+		/*
+		//就是以事件做区分的依据，把绑定不同的事件上的方法，存到以这个事件类型为标识的那个自定义属性的数组里.原则是这样，但是不能直接用事件类型做属性
+		
+		click,mousemove
+		ele[type]=[]
+		ele.click;//在元素已经有一个法定属性就叫click，再由开发者去定义这样一个属性则无效
+		ele.click=[];//这样是无效的，所以才在字符串click前边加前缀，
+		ele.onclick//这是一个事件属性，用来给click事件绑定一个方法
+		ele.submit();//这个是方法，它是使表单产生提交的行为
+		ele.onsubmit;//这是个事件属性
+		ele.click();//这是个方法，它的作用是模拟ele元素被点击了一下
+		*/
+		if(!ele["aBind"+type]){//以某个字符串为前缀，以事件类型为区分符，来定义这个数组。前边的aBind是可以随便写的，目的是让这个自定义属性足够复杂，以避免和系统原有的属性冲突
+			ele["aBind"+type]=[];
+			//比如说type是click这个事件类型，则相当于执行了下一行代码
+			//ele.aBindclick=[]	
+		}
+		var fnTemp=processThis(fn,ele);
+		fnTemp.photo=fn;
+		ele["aBind"+type].push(fnTemp);
+		ele.attachEvent("on"+type,fnTemp);
+	}
+}
+/*bind(ele,"click",fn1);
+bind(ele,"mousemove",fn1);
+bind(ele,"click",fn2)*/
+
+
+function unbind(ele,type,fn){
+	if(ele.removeEventListener){
+		ele.reoveEventListener(type,fn,false);
+	}else if(ele.detachEvent){
+		//用bind绑定的时候，绑定的是fn的变形的方法（做了手术的fn方法）fnTemp
+		
+		//参数传进来的是fn，真正绑定的是fnTemp，则需要用fn把fnTemp识别出来（当然第一步是在bind里面，先要把fnTemp引用保存下来，然后再在这里逐一对比，加一识别，把对应的那个fnTemp找出来）
+		var a=ele["aBind"+type];
+		if(a){
+			for(var i=0;i<a.length;i++){
+				if(a[i].photo==fn){
+					ele.detachEvent("on"+type,a[i]);
+					a.splice(i,1);
+					return;
+				}
+			}
+		}
+		//ele.detachEvent("on"+type,fn);
+	}
+}
+
+//四、避免重复绑定
+
+function bind(ele,type,fn){
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+	}else if(ele.attachEvent){
+		
+		if(!ele["aBind"+type]){
+			ele["aBind"+type]=[];
+		}
+		for(var i=0;i<ele["aBind"+type].length;i++){
+			if(ele["aBind"+type][i].photo==fn){//通过photo属性的判断，识别出fn方法是否原来被保存并绑定过
+				return;	
+			}
+		}
+		var fnTemp=processThis(fn,ele);
+		fnTemp.photo=fn;
+		ele["aBind"+type].push(fnTemp);
+		ele.attachEvent("on"+type,fnTemp);
+	}
+}
+
+function unbind(ele,type,fn){
+	if(ele.removeEventListener){
+		ele.reoveEventListener(type,fn,false);
+	}else if(ele.detachEvent){
+		//用bind绑定的时候，绑定的是fn的变形的方法（做了手术的fn方法）fnTemp
+		
+		//参数传进来的是fn，真正绑定的是fnTemp，则需要用fn把fnTemp识别出来（当然第一步是在bind里面，先要把fnTemp引用保存下来，然后再在这里逐一对比，加一识别，把对应的那个fnTemp找出来）
+		var a=ele["aBind"+type];
+		if(a){
+			for(var i=0;i<a.length;i++){
+				if(a[i].photo==fn){
+					ele.detachEvent("on"+type,a[i]);
+					a.splice(i,1);
+					return;
+				}
+			}
+		}
+	}
+}
+
+</script>

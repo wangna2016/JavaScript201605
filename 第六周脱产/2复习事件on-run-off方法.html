@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1">我是div1</div>
+</body>
+<script>
+//bind ,unbind方法
+function fn1(){console.log(this.innerHTML+"fn1");};
+function fn2(){console.log("fn2");};
+function fn3(){console.log("fn3");};
+function fn4(){console.log("fn4");};
+function fn5(){console.log("fn5");};
+function fn6(){console.log("fn6");};
+function fn7(){console.log("fn7");};
+function fn8(){console.log("fn8");};
+function fn9(){console.log("fn9");};
+
+var a=[];//先浏览器原来有的事件模式抛弃掉，我们自己重新创建一个事件池，
+a.push(fn1);//把需要绑定的方法不再用attachEvent直接绑定到元素，而是先放到这个事件池（数组）
+a.push(fn2);
+a.push(fn3);
+a.push(fn4);
+a.push(fn5);
+a.push(fn6);
+a.push(fn7);
+a.push(fn8);
+a.push(fn9);
+
+//当事件触发的时候，由另外一个方法来执行已经保存到这个事件池里的这些方法，比如执行这九个方法的方法叫run
+
+function run(){
+	var e=window.event;
+	
+	for(var i=0;i<a.length;i++){
+		a[i].call(this);	
+	}
+}
+
+//也就是说fn1---fn9这九个方法并没有真正的绑定到事件上，真正的绑定到事件上的方法是run，当事件触发的时候，run运行，然后再由run去数组a中（数组a就是那个事件池）按顺序执行数组里的方法
+
+bind(ele,"click",run);
+
+
+//以上逻辑分成两步：
+//一、把需要绑定的方法，保存一个合理的事件池中（数组中）
+//二、当事件触发的时候，由run统一去遍历执行（按保存的顺序执行）对应的事件池里的方法
+
+//三、当然，还需要一个移除事件绑定的方法
+
+//on --- run ---- off
+
+
+
+
+</script>
