@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+div{ width:150px; height:150px; position:absolute; top:150px; left:150px; background:#6FC; cursor:move; -webkit-user-select:none;}
+</style>
+</head>
+
+<body>
+<div id="div1"><img width="150" height="150" style="width:150px" src="../img/12.png"></div>
+<div id="div2"  style="left:600px; top:500px;"><img width="150" height="150"  src="../img/6.png"></div>
+<div id="div3" style=" left:310px;">我是第三个div</div>
+
+</body>
+</html>
+<script src="event2.js"></script>
+<script>
+//JS是一种强于逻辑，弱于管理（在规划、组织代码方面）。JS语言本身不复杂，弱类型
+
+//面向对象是长管理、长于代码或整个工程化的管理和组织
+
+//JS中那些地方用到了面向对象：最典型的是DOM的实现、jQuery的实现
+
+//产品化
+//很容易开发，很容易做到代码管理
+//很容易的做到升级
+//还要做和低版本兼容
+
+
+
+
+//如果只是实现一些单一或简单的功能，面向对象没有优势可言
+
+//什么叫面向对象:OOP 以对象这种数据的特点，为导向的编程方式
+//为什么需要面向对象，其实是社会化大生产的需要，
+//它是一种复合的数据载体，
+//面向对象是一种世界观
+
+//把拖拽的这些逻辑写成面向对象，就不合适，只有麻烦和牵强
+//如果想让拖拽模块产品化
+
+//在使用面向对象风格之前，先要确定一个原则：类的方法里的this是表示这个当前的实例。这是一个原则，如果有这个原则冲突了，强制执行这个原则。
+//在事件绑定的时候，经常会和这个原则冲突，经常需要把this.move,this.down,this.up绑定到元素的事件上，方法里的this会采用事件绑定中的原则，这样就冲突了。这时候就需要强制把this再改回来
+
+function Drag(ele){//构造函数，ele是被拖拽的元素。
+	//构造函数起初始化的作用，在这里面把以后用到的私有属性都准备好
+	this.x=null;
+	this.y=null;
+	this.mx=null;
+	this.my=null;
+	this.ele=ele;//把被拖拽元素保存到当前实例的叫ele的属性上
+	
+	
+	
+	//on(this.ele,"mousedown",this.down);//当这个down在执行的时候，它里的this就是被拖拽的这个元素ele了。这和我们面向对象里this的指向冲突了。
+	
+	/*
+	//this.down，通过this找到这个down，这是在找down的定义，只是找到了一个定义的地址，和运行还没有一点关系呢，而运行的时候，是这个方法的定义在运行，和找它的时候的这个this就没关系了
+	张三.三叔.四姑.小叔子.吃饭
+	*/
+	
+	this.DOWN=processThis(this.down,this);
+	this.MOVE=processThis(this.move,this);
+	this.UP=processThis(this.up,this);
+	
+	on(this.ele,"mousedown",this.DOWN);
+	
+}
+
+Drag.prototype.down=function(e){
+	
+	this.x=this.ele.offsetLeft;
+	this.y=this.ele.offsetTop;
+	this.mx=e.pageX;
+	this.my=e.pageY;
+	if(this.ele.setCapture){
+		on(this.ele,"mousemove",this.MOVE);
+		on(this.ele,"mouseup",this.UP);
+		this.ele.setCapture();	
+	}else{
+		on(document,"mousemove",this.MOVE);
+		on(document,"mouseup",this.UP)
+	}
+	e.preventDefault();
+}
+
+Drag.prototype.move=function(e){
+	this.ele.style.left=this.x+(e.pageX-this.mx)+"px";
+	this.ele.style.top=this.y+(e.pageY-this.my)+"px";
+}
+
+Drag.prototype.up=function(e){
+	if(this.ele.releaseCapture){
+		off(this.ele,"mousemove",this.MOVE);
+		off(this.ele,"mousup",this.UP);
+	}else{
+		off(document,"mousemove",this.MOVE);
+		off(document,"mouseup",this.UP);
+	}
+}
+
+
+new Drag(div1);//如果想拖拽div1，则把div1做参数传给Drag，然后new 一个实例，就可以实现对div1的拖拽了
+new Drag(div2);
+new Drag(div3);
+
+
+
+
+
+</script>
