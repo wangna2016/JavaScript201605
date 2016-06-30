@@ -1,0 +1,216 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+ul,li{ margin:0; padding:0; list-style:none;}
+li{ padding-left:20px;}
+span{ display:block; margin:10px;}
+#menu{ width:400px; background:#9FC; margin:30px auto; padding:10px;}
+#menu .end{ background:red; color:white;}
+#menu .end::before{content:"o"}
+#menu .close{ background:green; }
+#menu .close::before{ content:"+"; font-size:16px; text-align:center;}
+#menu .open{ background:green;}
+#menu .open::before{ content:"-";}
+
+</style>
+
+
+</head>
+
+<body>
+<ul id="menu">
+	<li><span>第一级第一项</span>
+    	<ul>
+        	<li><span>第二级第一项</span></li>
+    		<li><span>第二级第二项</span>
+            	<ul>
+                	<li><span>第三级第一项</span></li>
+    				<li><span>第三级第二项</span></li>
+    				<li><span>第三级第三项</span></li>
+    				<li><span>第三级第四项</span></li>
+    				<li><span>第三级第五项</span>
+                    	<ul>
+                        	<li><span>第四级第一项</span></li>
+                            <li><span>第一级第二项</span></li>
+                            <li><span>第一级第三项</span></li>
+                            <li><span>第一级第四项</span></li>
+                            <li><span>第一级第五项</span></li>
+                        
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+    		<li><span>第二级第三项</span></li>
+    		<li><span>第二级第四项</span></li>
+    		<li><span>第二级第五项</span></li>
+        </ul>
+    </li>
+    <li><span>第一级第二项</span>
+    	<ul>
+        	<li><span>第二级第一项</span></li>
+    		<li><span>第二级第二项</span>
+            	<ul>
+                	<li><span>第三级第一项</span></li>
+    				<li><span>第三级第二项</span></li>
+    				<li><span>第三级第三项</span></li>
+    				<li><span>第三级第四项</span></li>
+    				<li><span>第三级第五项</span>
+                    	<ul>
+                        	<li><span>第四级第一项</span></li>
+                            <li><span>第一级第二项</span></li>
+                            <li><span>第一级第三项</span></li>
+                            <li><span>第一级第四项</span></li>
+                            <li><span>第一级第五项</span></li>
+                        
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+    		<li><span>第二级第三项</span></li>
+    		<li><span>第二级第四项</span></li>
+    		<li><span>第二级第五项</span></li>
+        </ul>
+    </li>
+    <li><span>第一级第三项</span>
+    	<ul>
+        	<li><span>第二级第一项</span></li>
+    		<li><span>第二级第二项</span>
+            	<ul>
+                	<li><span>第三级第一项</span></li>
+    				<li><span>第三级第二项</span></li>
+    				<li><span>第三级第三项</span></li>
+    				<li><span>第三级第四项</span></li>
+    				<li><span>第三级第五项</span>
+                    	<ul>
+                        	<li><span>第四级第一项</span></li>
+                            <li><span>第一级第二项</span></li>
+                            <li><span>第一级第三项</span></li>
+                            <li><span>第一级第四项</span></li>
+                            <li><span>第一级第五项</span></li>
+                        
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+    		<li><span>第二级第三项</span></li>
+    		<li><span>第二级第四项</span></li>
+    		<li><span>第二级第五项</span></li>
+        </ul>
+    </li>
+    <li><span>第一级第四项</span></li>
+    <li><span>第一级第五项</span>
+    	<ul>
+        	<li><span>第二级第一项</span></li>
+    		<li><span>第二级第二项</span>
+            	<ul>
+                	<li><span>第三级第一项</span></li>
+    				<li><span>第三级第二项</span></li>
+    				<li><span>第三级第三项</span></li>
+    				<li><span>第三级第四项</span></li>
+    				<li><span>第三级第五项</span>
+                    	<ul>
+                        	<li><span>第四级第一项</span>
+                            	<ul>
+                                	<li><span>end</span></li>
+                                <li><span>end</span></li>
+                                <li><span>end</span></li>
+                                <li><span>end</span></li>
+                                <li><span>end</span></li>
+                                
+                                </ul>
+                            </li>
+                            <li><span>第四级第二项</span></li>
+                            <li><span>第四级第三项</span></li>
+                            <li><span>第四级第四项</span></li>
+                            <li><span>第四级第五项</span></li>
+                        
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+    		<li><span>第二级第三项</span></li>
+    		<li><span>第二级第四项</span></li>
+    		<li><span>第二级第五项</span></li>
+        </ul>
+    
+    </li>
+
+</ul>
+</body>
+</html>
+
+<script >
+//分清终极菜单：没有子菜单的项目
+//先要初始化，把终级菜单设成红背景，并且前边用o来修饰，表示不要点，再点也没有意义
+//如果是非终级菜单，设成绿背景，但是还要区分，区分为：开打的和关闭的，如果是关闭的则用+来修饰，如果是打开的，则用-来修饰
+
+//把子菜单关掉，只留下一级菜单显示 
+//找到menu中所有的li，如果li中有ul，说明此li不是终极菜单，则将ul display:none;再将它的子元素span设为非终极菜单（.close的样式）。如果没有ul，则说明这是终级菜单，是将span设为 .end样式
+
+function next(ele){
+	if(ele.nextElementSibling){
+		return ele.nextElementSibling;	
+	}else{
+		var next=ele.nextSibling;
+		while(next){
+			if(next.nodeType==1){
+				return next;	
+			}
+			next=next.nextSibling;
+		}
+		return null;
+	}
+}
+
+var oLis=document.getElementsByTagName("li");
+for(var i=0;i<oLis.length;i++){
+	var oLi=oLis.item(i);
+	if(oLi.getElementsByTagName("ul").length){
+		//非终极菜单
+		var oUl=oLi.children[1];
+		oUl.style.display="none";//让下级菜单关闭
+		var oSpan=oLi.children[0];
+		oSpan.className="close";
+		
+	}else{
+		//表示终极菜单
+		oLi.children[0].className="end";//终极菜单加end类样式
+	}
+		
+}
+
+
+//
+document.getElementById("menu").onclick=function(e){
+	e=e||window.event;
+	var target=e.target||e.srcElement;
+	//target一定是span
+	//判断target有没有ul弟弟元素，如果有ul弟弟，则判断ul的display是block,还是none。如果是block则将其置为none,否则置为block
+	var oUl=next(target);//找span的弟弟ul.如果next方法没有写出来，先出target.nextElementSibling代替
+	if(oUl){
+		if(oUl.style.display=="none"){
+			oUl.style.display="block";	
+			target.className="open";
+		}else{
+			oUl.style.display="none";	
+			target.className="close";
+			
+			//如果顶级菜单关了，则以下各级菜单都应该关闭
+			var oUls=target.parentNode.getElementsByTagName("ul");
+			
+			for(var i=0;i<oUls.length;i++){
+				oUls[i].style.display="none";//让子菜单都关闭
+				oUls[i].previousElementSibling.className="close";//并且让ul上边的span的类样式改成.close
+			}
+			
+			
+		}
+	}
+		
+}
+
+
+</script>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul, li {
+            list-style: none;
+        }
+
+        body {
+            font-size: 14px;
+            font-family: "\5FAE\8F6F\96C5\9ED1", Helvetica, sans-serif;
+        }
+
+        .box {
+            margin: 20px auto;
+            width: 500px;
+        }
+
+        .box .tab {
+            position: relative;
+            top: 1px;
+        }
+
+        .box .tab li {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 0 15px;
+            height: 30px;
+            line-height: 30px;
+            border: 1px solid green;
+            cursor: pointer;
+        }
+
+        .box .tab li.bg {
+            background: #e1e1e1;
+            border-bottom-color: #e1e1e1;
+        }
+
+        .box .content {
+            display: none;
+            padding: 10px;
+            height: 130px;
+            border: 1px solid green;
+        }
+
+        .box .content.bg {
+            display: block;
+            background: #e1e1e1;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box">
+    <ul class="tab">
+        <li class="bg">电影</li>
+        <li>电视剧</li>
+        <li>综艺</li>
+        <li>热门动漫</li>
+    </ul>
+    <div class="content bg">魔兽争霸电影</div>
+    <div class="content">好先生</div>
+    <div class="content">极限挑战</div>
+    <div class="content">海贼王</div>
+</div>
+
+<div class="box" id="box2">
+    <ul class="tab">
+        <li class="bg">电影</li>
+        <li>电视剧</li>
+        <li>热门动漫</li>
+    </ul>
+    <div class="content bg">魔兽争霸电影</div>
+    <div class="content">好先生</div>
+    <div class="content">海贼王</div>
+</div>
+
+<script charset="utf-8" type="text/javascript" src="js/utils.min.js"></script>
+<script type="text/javascript">
+    function tabModule(selector) {
+        var oBox = document.getElementById(selector);
+        oBox.onclick = function (ev) {
+            ev = ev || window.event;
+            var tar = ev.target || ev.srcElement,
+                    tarTag = tar.tagName.toUpperCase();
+            if (tarTag === "LI" && tar.parentNode.className === "tab") {
+                var tarSiblings = utils.siblings(tar);
+                for (var i = 0; i < tarSiblings.length; i++) {
+                    utils.removeClass(tarSiblings[i], "bg");
+                }
+                utils.addClass(tar, "bg");
+
+                var tarDivs = utils.nextAll(tar.parentNode),
+                        index = utils.index(tar);
+                for (var k = 0; k < tarDivs.length; k++) {
+                    k === index ? utils.addClass(tarDivs[k], "bg") : utils.removeClass(tarDivs[k], "bg");
+                }
+            }
+        };
+    }
+
+    tabModule("box");
+    tabModule("box2");
+</script>
+</body>
+</html>

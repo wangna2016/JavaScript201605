@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1" style="height:100px; background:#0FF"><a href="http://www.zhufengpeixun.cn">珠峰培训</a></div>
+</body>
+</html>
+<script>
+//标准浏览器的DOM2事件
+var ele=document.getElementById("div1");
+var i=0;
+function fn1(e){
+	alert(this.innerHTML);
+	i++;
+	if(i==1){
+		//表示第一次执行的时候，就把fn1在click事件上移除，第二次再点div的时候，fn1不应该再执行
+		
+		unbind(this,"click",fn1);	
+	}
+
+}
+function fn2(e){alert(2);}
+
+
+function fn3(e){
+	i++;
+	/*if(i==3){//当第三次点div的时候，把fn1，fn2,fn4移除。这样，当第四次再点div的时候，fn1,fn2就不执行了。fn4这次不执行
+		this.removeEventListener("click",fn1,false);
+		this.removeEventListener("click",fn1,false);
+		this.removeEventListener("click",fn4,false);	
+	}*/
+	alert(3);
+	
+	}
+function fn4(e){alert(4);}
+function fn5(e){alert(5);}
+function fn6(e){alert(6);}
+function fn7(e){alert(7);}
+function fn8(e){alert(8);}
+function fn9(e){alert(9);}
+
+//要把fn1.....fn9绑定到click事件
+//需要把IE的事件模式抛弃掉，然后自己组织一套模式
+//不直接把这些绑定给bind，而是把这些方法先放到一个数组里，把这个过程叫“假”绑定
+//用这种方式把fn1--fn9绑定给了ele的click事件
+var a=[];
+
+a.push(fn1);
+a.push(fn2);
+a.push(fn3);
+a.push(fn4);
+a.push(fn5);
+a.push(fn6);
+a.push(fn7);
+a.push(fn8);
+a.push(fn9);
+
+
+function run(e){//由run方法去遍历执行a这个数组，这样被保存到数组a中的这九个方法是不是就按着保存的顺序来执行了呢？
+	//先
+	for(var i=0;i<a.length;i++){
+		a[i].call(this,e);//先确定run里的this是谁。让a[i]在执行的时候，它里面的this指向run里的this。这样运行的数组里的方法，this是是谁？答案
+		//a[i]();	//如果数组里的方法直接这样执行，那执行的时候this会是谁呢？
+	}
+}
+
+bind(ele,"click",run);
+</script>

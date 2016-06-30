@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            position: relative;
+            margin: 50px auto;
+            width: 300px;
+            height: 300px;
+            background: green;
+        }
+
+        .box .mark {
+            position: absolute;
+            top: 100px;
+            left: 80px;
+            width: 100px;
+            height: 100px;
+            background: red;
+        }
+    </style>
+</head>
+<body>
+<div class="box" id="box">
+    <div class="mark" id="mark"></div>
+</div>
+<script type="text/javascript">
+    var oBox = document.getElementById("box");
+
+    //->onmouseover:鼠标悬停在绿盒子上触发一次事件;鼠标悬停在红盒子上,红盒子的mouseover事件触发,传播到绿盒子上,绿盒子的mouseover事件也会被触发一次;从红盒子中出来重新的悬停在绿盒子上,也会重新的触发绿盒子的mouseover...
+    //    var oMark = document.getElementById("mark");
+    //    oMark.onmouseover = function (ev) {
+    //        ev = ev || window.event;
+    //        ev.stopPropagation ? ev.stopPropagation() : ev.cancelBubble = true;
+    //    };
+    //    oBox.onmouseover = function (ev) {
+    //        console.log("ok");
+    //    };
+
+
+    //->onmouseenter:已经默认阻止了元素事件之间的冒泡传播;从子元素中重新进入绿盒子,并不会重新的触发绿盒子的mouseenter(因为鼠标在子元素中也相当于在绿盒子中)
+    oBox.onmouseenter = function (ev) {
+        console.log("ok");
+    };
+</script>
+</body>
+</html>

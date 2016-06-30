@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+#menu{ width:200px; height:400px; background:#9F9; text-align:center; position:absolute;}
+</style>
+</head>
+
+<body style="height:3000px;">
+<a href="http://www.zhufengpeixun.cn">珠峰培训</a>
+
+<form >
+<input type="text" name="name" value="abcd">
+<input type="submit" name="btn" value="按钮">
+<!--- 当点击submit的时候，会触发form的submit行为（向后台提交数据的行为） -->
+</form>
+</body>
+</html>
+<script >
+//1、常见的事件默认行为和阻止事件的默认行为
+//2、阻止事件传播
+//3、事件对象本身的兼容性
+	//老版的IE只能用window.event，新版的IE和chrome是参数和window.event都支持
+//4、事件源 e.target||e.srcElment
+//5、常用的事件属性:
+	//e.type 事件类型（用来动态得到事件类型的属性）
+	//e.pageX,e.pageY,e.clientX,e.clientY,
+	//e.altKey,e.ctrlKey,e.shiftKey是用来判断相应这三个键是否被按下的属性
+document.oncontextmenu=function(e){
+	var ele=document.createElement("div");
+	ele.id="menu"
+	ele.innerHTML="我是自定义右键菜单";
+	document.body.appendChild(ele);
+	ele.style.left=e.pageX+"px";
+	ele.style.top=e.pageY+"px";
+	return false;	
+}
+
+//阻止鼠标的滚轮事件
+function fn(e){
+	e=e||window.event;
+	//把fn绑定在DOM2事件上，阻止事件默认行为必须用下面的方法，标准浏览器是这样。IE浏览器中阻止事件的默认行为，无论是DOM0还是DOM2,都可以用return false的方式
+	if(e.preventDefault){ 
+		e.preventDefault()
+	} else{
+		e.returnValue=false
+	};
+	/*
+	//不要用以下的方法来做判断,如果不是对象类型，请不要直接用if(属性)的方式来判断，因为属性有可能是被支持的，但是它的值有可能是0,false,空字符串
+	if(e.returnValue){
+		
+	}else{
+		e.preventDefault();
+	}
+	*/	
+	
+	
+	return false;	
+};
+document.onmousewheel=fn;;//火狐不支持mousewheel事件
+//取消鼠标滚轮事件，在chrome和IE中，用上边的方法就可以。但是火狐就不支持了。如果是火狐必须用DOM2级的"DOMMouseScroll"事件，并且必须用addEventListener来绑定
+	if(document.addEventListener)document.addEventListener("DOMMouseScroll",fn,false);
+	
+//取消表单的默认的submit行为，当再点击submit按钮的时候，表单就不会给后台发送数据了
+document.forms.item(0).onsubmit=function(){
+	return false;	
+	//最可靠的阻止form元素的submit行为的方法是：把submit按钮改成普通的button按钮
+}
+
+//下边是使用回车代替submit按钮，模拟表单的提交行为
+document.forms.item(0).onkeydown=function(e){
+	if(e.keyCode==13){
+		this.submit();//人为的，手动的触发它的提交行为
+		//ele.click();
+	}
+}
+
+//二、阻止事件传播
+ele.onclick=function(e){
+	e=e||window.event;
+	if(e.stopPropagation){//标准浏览器中阻止事件传播的方法
+		e.stopPropagation();	
+	}else{
+		e.cancelBubble=true;	
+		//最准确的判断方式是：if(typeof e.cancelBubble =="undefined"),如果为true则表示事件对象不支持此属性
+	}
+}
+</script>

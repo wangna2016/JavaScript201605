@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>什么是事件</title>
+<style type="text/css">
+#div1{ width:300px; height:300px; background:green; margin:100px auto;}
+</style>
+</head>
+
+<body>
+<div id="div1"></div>
+</body>
+</html>
+<script>
+//事件是不是特别像人的神经感知系统
+//事件也是神秘的，看不到它怎么来的，但是我们可以直接用
+
+div1.onmousemove=function(){
+	var e=arguments[0];//当事件触发的时候，浏览器天生就会有一个事件对象，传给绑定到当前事件上的方法
+	console.log("X:"+e.pageX,"Y:"+e.pageY);//pageX是众多的事件属性之一，它表示鼠标距离网页的原点距离。和e.pageX,e.pageY相对应的还有一对属性叫，e.clientX,e.clientY，表示鼠标相对于浏览器的坐标。如果网页（文档）没有滚动条，则这两对值相等。IE不支持e.pageX，e.pageY
+	//事件对象只能在事件触发时由浏览器自动传给绑定在事件上的方法，不能人为得到
+	
+}
+
+window.onkeydown=function(e){
+	console.log(e.keyCode)
+}
+
+
+</script>

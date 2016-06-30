@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>常用的内置方法回调函数深入解读</title>
+</head>
+<body>
+<script type="text/javascript">
+    //->什么是回调函数:只要是把一个函数(不管是实名还是匿名)当做一个值传递给另外一个方法,那这种模式我们就称之为回调函数模式
+    //    function A(callback) {
+    //        if (typeof callback === "function") {
+    //            callback();
+    //        }
+    //        console.log("A");
+    //    }
+    //    function B() {
+    //        console.log("B");
+    //    }
+    //    A(B);
+
+
+    //->回掉函数fn执行多次:有些情况下是根据数组的长度来确定的,此时数组中的长度是6,我们的回调函数fn执行5次(这个不是所有情况都是这样的)
+    //->每一次执行都会给fn传递两个参数值:a,b  a是每一次找到的当前项,b就是当前项的后一项
+    //->在fn中我们每一次执行完成后都会向外返回一个值,这个值分为两种情况：第一种情况返回的结果是>0的,这样的话会让"当前项a"和"后一项b"两者的位置进行交换；相反如果返回的结果<=0，a和b的位置保持不变...
+    //    var ary = [12, 23, 14, 24, 110, 11];
+    //    function fn(a, b) {
+    //        return b - a;
+    //    }
+    //    ary.sort(fn);
+
+    //    var ary = [{
+    //        "id": 10,
+    //        "name": "珠峰"
+    //    }, {
+    //        "id": 2,
+    //        "name": "培训"
+    //    }, {
+    //        "id": 5,
+    //        "name": "杨帆"
+    //    }, {
+    //        "id": 12,
+    //        "name": "起航"
+    //    }];
+    //    //    ary.sort(function (a, b) {
+    //    //        return a["id"] - b["id"];
+    //    //    });
+    //    ary.sort(function (a, b) {
+    //        return a["name"].localeCompare(b["name"]) * -1;
+    //    });
+    //    console.log(ary);
+
+
+    //->字符串的replace:字符串的替换
+    //var str = "zhufeng2015zhufeng2016";
+    //str = str.replace("zhufeng", "珠峰").replace("zhufeng", "珠峰");
+    //str = str.replace(/zhufeng/g, "珠峰");
+    //console.log(str);
+
+    //    var reg = /\d+/;//->lastIndex:下一次捕获的开始索引位置 如果不加全局修饰符g的话,不管执行多少次捕获操作,每一次都是从索引0的位置开始，所以永远只能把第一个符合正则条件捕获到,后面符合条件的是无法捕获到的-“正则捕获的懒惰性”
+    //    console.log(reg.lastIndex);//->0
+    //    console.log(reg.exec(str));
+    //    console.log(reg.lastIndex);//->0
+    //    console.log(reg.exec(str));
+    //    console.log(reg.lastIndex);//->0
+
+    //    var str = "zhufeng2015zhufeng2016";
+    //    var reg = /\d+/g;
+    //    console.log(reg.lastIndex);//->0
+    //    console.log(reg.exec(str));
+    //    console.log(reg.lastIndex);//->11
+    //    console.log(reg.exec(str));
+    //    console.log(reg.lastIndex);//->22
+    //    console.log(reg.exec(str));//->null 当有一次捕获到的结果为null时说明当前已经捕获到最后的位置了,如果下面继续开始捕获,那么正则又会从索引0的位置开始查找...
+    //    console.log(reg.lastIndex);//->0
+    //    console.log(reg.exec(str));
+
+    //->分组捕获:每一次捕获的时候不仅仅可以把大正则匹配的内容捕获到,还可以在此基础上把大正则中每一个小分组所匹配的内容捕获到
+    //    var str = "zhufeng2015~~~zhufeng2016";
+    //    var reg = /[a-zA-Z]+(\d+)/g;
+    //    console.log(reg.exec(str));//->["zhufeng2015", "2015"...]
+    //    console.log(reg.exec(str));//->["zhufeng2016", "2016"...]
+
+    //->Match捕获:只需要执行一次就可以把大正则匹配的内容都捕获到,但是相对于exec来说,如果大正则加上了全局修饰符g,那么match方法只能捕获到大正则匹配的,对于小分组匹配的是无法获取的...
+    //    var str = "zhufeng2015~~~zhufeng2016";
+    //    var reg = /[a-zA-Z]+(\d+)/g;
+    //    console.log(str.match(reg));//->["zhufeng2015", "zhufeng2016"]
+
+    //->但是如果正则不加修饰符g,match捕获到的结果和exec是相同的
+    //    var str = "zhufeng2015~~~";
+    //    var reg = /[a-zA-Z]+(\d+)/;
+    //    console.log(str.match(reg));//->["zhufeng2015", "2015"...]
+    //    console.log(reg.exec(str));//->["zhufeng2015", "2015"...]
+
+    //    var str = "zhufeng2015~~~";
+    //    var reg = /[a-zA-Z]+(?:\d+)/;//->分组中出现的?:是只匹配不捕获
+    //    console.log(str.match(reg));//->["zhufeng2015"]
+    //    console.log(reg.exec(str));//->["zhufeng2015"]
+
+
+    //->如果正则中添加了全局的修饰符g,不管是test还是exec方法每一次的执行都会修改reg.lastIndex的值,导致后面捕获是从前面累加下来的值开始查找的
+    //    var str = "zhufeng2015~~~zhufeng2016";
+    //    var reg = /[a-zA-Z]+(\d+)/g;
+    //    console.log(reg.lastIndex);//->0
+    //    reg.test(str);
+    //    console.log(RegExp.$1);//->2015 获取本次匹配/捕获到的第一个分组的内容
+    //    console.log(reg.lastIndex);//->11
+    //    console.log(reg.exec(str));//->["zhufeng2016", "2016"...]
+
+    //replace:当第一个参数为正则,第二个参数为一个回调函数(cb)
+    //->cb执行几次取决于正则和字符串所匹配的个数（次数），在下面的案例中，正则和字符串匹配2次，我们的cb执行两次
+    //->每一次执行cb都会给其传递对应的参数值，而且这个参数值和每一次执行exec获取到的结果一模一样:都是一个数组或者类数组，并且第一项都是当前大正则捕获的内容，后面包含的是小分组本次捕获的内容、开始的索引、原始的字符串...
+    //->每一次执行cb我们可能会返回一些内容(RETURN)，我们在cb中return的是啥，那么都相当于把当前大正则匹配的内容替换成啥
+    //    var str = "zhufeng2015~~~zhufeng2016";
+    //    var reg = /[a-zA-Z]+(\d+)/g;
+    //    //str.replace(reg, "@");//->把所有和正则匹配的内容替换成@
+    //    str = str.replace(reg, function () {
+    //        //return "珠峰" + arguments[1];
+    //        return arguments[0];//->把大正则匹配的内容在原版替换回去,这样并没有发生任何改变
+    //    });
+    //    console.log(str);
+
+    //    window.setTimeout(function () {
+    //
+    //    }, 1000);
+    //    document.addEventListener("click", function (ev) {
+    //
+    //    }, false);
+</script>
+</body>
+</html>

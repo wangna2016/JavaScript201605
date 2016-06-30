@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #ccc;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+    //->在回调函数模式中,我们的回调函数在另外一个方法中基本上是想怎么操作就怎么操作
+    //->可以在另外一个方法的任何位置触发回调函数的执行
+    //->还可以把回掉函数执行零到多次
+    //->还可以给回调函数传递参数值
+    //->还可以把回调函数中的this进行修改
+    //->还可以接收到回调函数中的返回值
+    //...
+
+    //Array.prototype:forEach、map
+    var ary = [12, 23, 34];
+
+    //forEach:循环遍历数组中的每一项的(在IE6~8浏览器中不兼容)
+    //->数组中有几项,回调函数就执行几次
+    //->回调函数中的arguments:每一次执行回调函数都会给其传递三个参数值
+    //->回调函数中的this默认是window(不仅这个方法是,其他的支持回调函数的方法,里面传递进来的回调函数中的THIS大部分都默认是window)；但是forEach支持第二个参数,第二个参数的意思是把回掉函数中的THIS进行改变；
+    //    ary.forEach(function (item, index, input) {
+    //        //item->本次循环数组中的当前项
+    //        //index->当前项的索引
+    //        //input->原始的数组
+    //        //this->window
+    //        //console.log(this);
+    //    }, {name: "珠峰"});
+
+    ~function (pro) {
+        //->myForEach:模拟Array.prototype上内置的forEach方法,实现数组中每一项的遍历,达到兼容所有浏览器的目的
+        function myForEach(callback, context) {
+            //->context:用来改变回调函数callback中的THIS指向的,不传默认是window
+            context = context || window;
+
+            //->如果当前的浏览器支持forEach,我们直接使用即可,不需要自己在单独处理了
+            if ("forEach" in Array.prototype) {
+                this.forEach(callback, context);
+                return;
+            }
+
+            //->myForEach方法中的THIS是我们当前要遍历的那个数组,接下来我们循环数组中的每一项,每当循环一次都要把回调函数执行一次,不仅执行还要给其传递三个参数值:数组中的当前项，当前项的索引，原始的数组
+            for (var i = 0, len = this.length; i < len; i++) {
+//                if (typeof callback === "function") {
+//                    callback(this[i], i, this);//->当前项、当前项索引、原始数组
+//                }
+                callback && callback.call(context, this[i], i, this);//->不仅仅传参还要把回调函数中的this修改为context
+            }
+        }
+
+        pro.myForEach = myForEach;
+    }(Array.prototype);
+
+    ary.myForEach(function (item, index, input) {
+        console.log(item, index);
+    });
+
+
+    //    ary.sort(function () {
+    //        //console.log(this);//->window
+    //    });
+    //
+    //    "asdf".replace(/./g, function () {
+    //        //console.log(this);//->window
+    //    });
+    //
+    //    window.setTimeout(function () {
+    //        console.log(this);//->window
+    //    }, 100);
+    //
+    //    document.body.addEventListener("click", function () {
+    //        console.log(this);//->BODY
+    //    }, false);
+</script>
+</body>
+</html>

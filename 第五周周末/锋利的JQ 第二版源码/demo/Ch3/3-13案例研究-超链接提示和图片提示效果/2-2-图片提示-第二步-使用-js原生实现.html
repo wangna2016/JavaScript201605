@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>图片提示</title>
+ <!--   引入jQuery -->
+<style type="text/css">
+body{
+	margin:0;
+	padding:40px;
+	background:#fff;
+	font:80% Arial, Helvetica, sans-serif;
+	color:#555;
+	line-height:180%;
+}
+img{border:none;}
+ul,li{
+	margin:0;
+	padding:0;
+}
+li{
+	list-style:none;
+	float:left;
+	display:inline;
+	margin-right:10px;
+	border:1px solid #AAAAAA;
+}
+
+/* tooltip */
+#tooltip{
+	position:absolute;
+	border:1px solid #ccc;
+	background:#333;
+	padding:2px;
+	display:none;
+	color:#fff;
+}
+</style>
+
+
+</head>
+<body>
+<h3>有效果：</h3>
+	<ul id="ul1">
+		<li><a href="images/apple_1_bigger.jpg" class="tooltip" title="苹果 iPod"><img src="images/apple_1.jpg" alt="苹果 iPod" /></a></li>
+		<li><a href="images/apple_2_bigger.jpg" class="tooltip" title="苹果 iPod nano"><img src="images/apple_2.jpg" alt="苹果 iPod nano"/></a></li>
+		<li><a href="images/apple_3_bigger.jpg" class="tooltip" title="苹果 iPhone"><img src="images/apple_3.jpg" alt="苹果 iPhone"/></a></li>
+		<li><a href="images/apple_4_bigger.jpg" class="tooltip" title="苹果 Mac"><img src="images/apple_4.jpg" alt="苹果 Mac"/></a></li>
+	</ul>
+
+
+<br/><br/><br/><br/>
+<br/><br/><br/><br/>
+
+
+<h3>无效果：</h3>
+<ul>
+		<li><a href="images/apple_1_bigger.jpg" title="苹果 iPod"><img src="images/apple_1.jpg" alt="苹果 iPod" /></a></li>
+		<li><a href="images/apple_2_bigger.jpg" title="苹果 iPod nano"><img src="images/apple_2.jpg" alt="苹果 iPod nano"/></a></li>
+		<li><a href="images/apple_3_bigger.jpg" title="苹果 iPhone"><img src="images/apple_3.jpg" alt="苹果 iPhone"/></a></li>
+		<li><a href="images/apple_4_bigger.jpg" title="苹果 Mac"><img src="images/apple_4.jpg" alt="苹果 Mac"/></a></li>
+	</ul>
+</body>
+</html>
+<script>
+var oLis=document.getElementById("ul1").getElementsByTagName("li");
+for(var i=0;i<oLis.length;i++){
+	var oLi=oLis.item(i);
+	oLi.onmouseover=function(e){
+		e=e||window.event;
+		
+		var oTooltip=document.createElement("div");
+		oTooltip.id="tooltip";
+		//创建div里的img
+		//以下两行是用字符串拼的
+		oTooltip.innerHTML="<img src='"+this.children[0].href+"'><br>";
+		oTooltip.innerHTML+=this.children[0].children[0].alt;
+		
+		/*
+		//以下是用DOM方法创建的
+		var oImg=document.createElement("img");
+		oImg.src=this.children[0].href;
+		//创建div里的提示文字
+		var oBr=document.createElement("br");
+		var oText=document.createTextNode(this.children[0].children[0].alt);
+		//把a上的提示条去掉
+		this.children[0].tilte="";
+		oTooltip.appendChild(oImg);
+		oTooltip.appendChild(oBr);
+		oTooltip.appendChild(oText);
+		//$("<div id='tooltip'><img src=''><br>提示文字</div>");
+		*/
+		this.appendChild(oTooltip);
+		oTooltip.style.left=e.clientX+10+"px";
+		oTooltip.style.top=e.clientY+20+"px";
+		oTooltip.style.display="block";
+	}
+	
+	
+	oLi.onmousemove=function(e){
+		e=e||window.event;
+		var oTooltip=document.getElementById("tooltip");
+		if(oTooltip){
+			oTooltip.style.left=e.clientX+10+"px";
+			oTooltip.style.top=e.clientY+20+"px";
+		}
+	}
+	oLi.onmouseout=function(e){
+		var oTooltip=document.getElementById("tooltip");
+		if(oTooltip){
+			oTooltip.parentNode.removeChild(oTooltip);	
+			
+			//$("#tooltip").remove();
+		}
+	}
+}
+
+</script>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1">我是div1</div>
+</body>
+<script>
+//bind ,unbind方法
+function fn1(){console.log(this.innerHTML+"fn1");};
+function fn2(){console.log("fn2");};
+function fn3(){console.log("fn3");};
+function fn4(){console.log("fn4");};
+function fn5(){console.log("fn5");};
+function fn6(){console.log("fn6");};
+function fn7(){console.log("fn7");};
+function fn8(){console.log("fn8");};
+function fn9(){console.log("fn9");};
+
+//IE的有问题，则把IE的事件模式推翻，然后自己创建一个事件模式：事件池，把方法保存到这个自定义的事件池里，当事件触发的时候，真正触发的不是被on保存的这些方法，而是run方法
+//由run方法去自定义的事件池，遍历执行由on保存的那些方法
+//就是说系统和ele["aEvent"+type]数组没有关系，run方法和它才有关系呢
+function on(ele,type,fn){
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+		return;	
+	}
+	
+	if(!ele["aEvent"+type]){
+		ele["aEvent"+type]=[];
+		ele.attachEvent("on"+type,function(){run.call(ele)});
+	}
+	
+	var a=ele["aEvent"+type];
+	for(var i=0;i<a.length;i++){
+		if(a[i]==fn)return ;//bind方法里有避免重复绑定的判断，为什么这儿还需要呢
+	}
+	a.push(fn);
+}
+
+function run(){
+	//run里的this是：把run绑定给了谁，它就是谁
+	var e=window.event;
+	var type=e.type;
+	var a=this["aEvent"+type];
+	
+	if(a){
+		for(var i=0;i<a.length;i++){
+			a[i].call(this,e);//为了让IE采用 标准浏览器得到事件对象的方式
+		}
+	}
+	
+}
+
+function off(ele,type,fn){
+	if(ele.removeEvenetListener){
+		ele.removeEventListener(type,fn,false);
+		return;	
+	}
+	
+	var a=ele["aEvent"+type];
+	if(a){
+		for(var i=0;i<a.length;i++){
+			if(a[i]==fn){
+				a.splice(i,1)
+				
+				return;	
+			}
+		}
+	}
+}
+
+function fn10(e){
+	//e=e||window.event;
+	//我们的解决方案的原则是：IE浏览器也不用window.event做为事件对象，而是让它像标准浏览器一样，通过这个e参数得到事件对象
+	console.log(e.pageX,e.pageY);
+	
+}
+</script>

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+ <link rel="stylesheet" type="text/css" href="css/default.css" /> 
+<!-- 引入jQuery -->
+<script src="../../scripts/jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+//首先第一步，把HTML结构搞清，那些标签是需要被JS控制的
+//第二步(初始化)：把索引从6开始，到最后一个之前的li取得，让其隐藏
+//给按钮绑定事件，如果这些li显示，则让其隐藏，如果它们是隐藏的，则让其显示
+//第四步：切换按钮的文字，当Li全部展开的时候，按钮的提示文字变成：精减显示，否则变成全部显示 
+//第五步：切换按钮上的背景图片，li全部展开的时候，箭头向上的图片，否则是箭头向下的图片
+
+$(function(){
+	var $li=$(".SubCategoryBox>ul>li");
+	var $ctrlLi=$li.filter(":gt(5):not(:last)");//平级过滤的方法，就是在找到的元素中筛选过滤的意思。:gt（index）是指把索引大于index的元素筛选出来，和它相对的选择器是：lt（index）。：not是指把指定的排除掉
+	$ctrlLi.hide();
+	
+	$("div.showmore>a").click(function(e) {
+        if($ctrlLi.is(":visible")){//判断其是否显示
+			$ctrlLi.hide();//如果显示则让其隐藏
+			//这样li就隐藏，则按钮的文字变成：全部显示
+			//$(this).children().text("全部显示");
+			$("span",this).text("全部显示").css("background-image","url(img/down.gif)");
+			
+			$li.removeClass("promoted");//移除高亮样式的时候就可以偷懒了，直接写$li.removeClass()就可以，因为……
+				
+		}else{
+			$ctrlLi.show();	//如果隐藏则让其显示
+			$("span",this).text("精减显示").css("background-image","url(img/up.gif)");
+			
+			$li.filter(":contains(尼康),:contains(佳能),:contains(爱国者)").addClass("promoted");
+		}
+		e.preventDefault();
+		//return false;
+    });
+	
+})
+</script>
+</head>
+<body>
+<div class="SubCategoryBox">
+<ul>
+<li ><a href="#">佳能</a><i>(30440) </i></li>
+<li ><a href="#">索尼</a><i>(27220) </i></li>
+<li ><a href="#">三星</a><i>(20808) </i></li>
+<li ><a href="#">尼康</a><i>(17821) </i></li>
+<li ><a href="#">松下</a><i>(12289) </i></li>
+<li ><a href="#">卡西欧</a><i>(8242) </i></li>
+<li ><a href="#">富士</a><i>(14894) </i></li>
+<li ><a href="#">柯达</a><i>(9520) </i></li>
+<li ><a href="#">宾得</a><i>(2195) </i></li>
+<li ><a href="#">理光</a><i>(4114) </i></li>
+<li ><a href="#">奥林巴斯</a><i>(12205) </i></li>
+<li ><a href="#">明基</a><i>(1466) </i></li>
+<li ><a href="#">爱国者</a><i>(3091) </i></li>
+<li ><a href="#">其它品牌相机</a><i>(7275) </i></li>
+</ul>
+    <div class="showmore">
+    <a href="#"><span>显示全部品牌</span></a>
+    </div>
+</div>
+</body>
+</html>

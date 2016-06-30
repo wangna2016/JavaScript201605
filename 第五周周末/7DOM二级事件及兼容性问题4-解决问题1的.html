@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1" style="height:100px; background:#0FF"><a href="http://www.zhufengpeixun.cn">珠峰培训</a></div>
+</body>
+</html>
+<script>
+//标准浏览器的DOM2事件
+var ele=document.getElementById("div1");
+var i=0;
+function fn1(e){alert(this.innerHTML)}
+function fn2(e){alert(2);}
+
+
+function fn3(e){
+	i++;
+	/*if(i==3){//当第三次点div的时候，把fn1，fn2,fn4移除。这样，当第四次再点div的时候，fn1,fn2就不执行了。fn4这次不执行
+		this.removeEventListener("click",fn1,false);
+		this.removeEventListener("click",fn1,false);
+		this.removeEventListener("click",fn4,false);	
+	}*/
+	alert(3);
+	
+	}
+function fn4(e){alert(4);}
+function fn5(e){alert(5);}
+function fn6(e){alert(6);}
+function fn7(e){alert(7);}
+function fn8(e){alert(8);}
+function fn9(e){alert(9);}
+//ele.addEventListener("click",fn1,false);
+
+function bind(ele,type,fn){//负责用DOM2的方法来绑定事件，ele是被绑定事件的元素，type是事件类型,fn绑定的方法
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+	}else{
+		ele.attachEvent("on"+type,fn);
+	}
+	
+}
+
+function unbind(ele,type,fn){//移除绑定的方法
+	if(ele.removeEventListener){
+		ele.removeEventListener(type,fn,false);	
+	}else{
+		ele.detachEvent("on"+type,fn);
+	}
+	
+}
+
+//依次解决
+//1、绑定的this关键字指向问题：this要指向ele（指向被绑定的元素）
+//2、方法被重复绑定的问题
+//3、执行顺序的问题
+</script>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+div{ margin:20px;}
+</style>
+</head>
+
+<body>
+<div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div><div >一个</div>
+</body>
+</html>
+<script>
+//复习面向对象
+//如何理解对象是复合的数据载体
+//加深对构造函数的理解
+//加深对this关键字的理解，在类上的方法中，this都是指的当前类的实例
+//链式写法的原理
+//加深对jQuery一些方法的理解，透彻理解jQuery对象和DOM原生对象的区别
+
+//jQuery的基本功能：DOM元素的查找、保存、操作、链式写法的风格
+
+//最终实现的结果要达到：
+//$("div").height(100).width(100).bgColor("red").eq(3).bgColor("green").get(0).style.width="200px";
+//这句表达式会把所有的div高设成100，宽设成100，背景设成red，然后把这些div中索引为3的div单独设为green背景，然后再将其转化为DOM原生对象，用原生的方法将其宽度设为200px
+
+//我把自己模拟的这个jQuery的实现的类名定义成Query
+
+function Query(selector){//类名，构造函数.selector是参数，是css选择器格式的参数
+	//构造函数起了查找并且保存的DOM元素的作用，就是找到这些元素并且保存到当前类的实例上
+	
+	//selector只是id名，或标签名，或类名
+	"div","#div1",".class1";
+	var regId=/^#([a-z]\w+)$/i;//匹配id名的正则
+	var regClass=/^\.([a-z]\w+)$/i;//匹配类名
+	var regTagName=/^[a-z]\w+$/i;//匹配标签名
+	
+	if(regId.test(selector)){
+		var ele=document.getElementById(RegExp.$1);//"#div1"
+		this[0]=ele;//表示存到0这个位置
+		this.length=1;//表示当前这个对象存的元素的个数
+		
+	}else if(regClass.test(selector)){
+		var eles=document.getElementsByClassName(RegExp.$1);
+		for(var i=0;i<eles.length;i++){
+			this[i]=eles[i];
+		}
+		this.length=eles.length;
+	}else if(regTagName.test(selector)){
+		var eles=document.getElementsByTagName(selector);
+		for(var i=0;i<eles.length;i++){
+			this[i]=eles.item(i);	
+		}
+		this.length=eles.length;
+	}
+	
+}
+//当new运算符执行的时候，浏览器干了那些事？（系统发生了那些事）
+//以当前的类名为标识创建一个实例，就是创建了一个以构造函数为名的实例
+//把这个实例返回
+//并且以这个实例为上下文运行构造函数（自动执行）
+//这个实例上默认有__proto__属性，也就是说这个实例可以访问定义这个属性的上方法或属性
+
+Query.prototype.width=function(value){
+	
+}
+Query.prototype.height=function(value){
+	
+}
+
+Query.prototype.bgColor=function(value){
+	
+}
+
+Query.prototype.eq=function(value){
+	
+}
+
+Query.prototype.get=function(value){
+	
+}
+
+
+var obj=new Query("div");//这样操作，会把所有的div找到并且保存到当前的实例上，这个实例就是obj
+function $(selector){
+	return new Query(selector);	
+}
+$("div").width()
+</script>

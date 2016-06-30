@@ -1,0 +1,21 @@
+1、什么叫做事件?
+  ->事件它就是一个行为或者一个操作,不管我们是否给其用代码编写过,只要当前的这个行为操作了,那么就会把对应的事件触发
+  ->事件是元素天生就拥有的行为,只要行为操作了,那么对应的事件就会被触发,如果为其绑定了方法,那么方法就会被执行,如果没有绑定方法,只是什么事都不做而已,但是事件已经被触发了
+
+  click、mouseover、mouseout、mousemove、mouseenter、mouseleave、mousedown、mouseup、mousewheel(鼠标滚轮滚动事件)、load、scroll、resize(window.onresize:当前浏览器屏幕窗口大小发生改变)、keydown、keyup、blur(文本框失去光标)、focus(文本框获取光标)、readystatechange...
+
+
+2、事件绑定
+  ->给元素的某一个事件行为绑定一个方法,当事件行为触发的时候会执行我们为其绑定的方法
+  oBox.onclick = function () {
+      this.style.background = "orange";
+  };
+
+
+3、事件对象
+  ->给元素的某个事件绑定一个方法,当事件触发的时候会执行绑定的方法,但是不仅仅是简单的执行,浏览器还会给绑定的方法传递一个参数值,这个参数值就是我们的事件对象
+
+
+
+var a = 0, b = 0;//->var a=0; var b=0;
+var a = b = 0;//->var a=0; b=a; (由于在私有作用域中b不是私有的,所以不建议这样编写)

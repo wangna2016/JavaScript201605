@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>什么是事件</title>
+<style type="text/css">
+body *{ padding:20px; display:block; color:#fff; }
+</style>
+</head>
+
+
+<body>
+<div id="outer" style="width:600px; background:pink; ">
+ 	outer
+	<div id="middle" style="background:red">
+    middle
+    	<div id="inner" style="background:green;">
+        inner
+        	<p id="p1" style="background:yellow;">p1,p1,p1
+            	<a id="a1" href="###" style="background:black; color:#fff;">aaaaaaaa
+                	<span id="span1" style=" background:blue">span,span</span>
+                
+                </a>
+            </p>
+        
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+<script>
+var eles=document.getElementsByTagName("*");
+//标准器的事件传播是两个阶段，这两个阶段同时都有
+//IE只有冒泡阶段
+/*
+for(var i=0;i<eles.length;i++){
+	eles.item(i).onclick=function(e){
+		
+		
+		alert(this.id||this.tagName);
+		return false;//这样的写法只能阻止DOM0级事件绑定的默认行为
+	}
+}
+*/
+function fn(e){
+		alert(this.id||this.tagName);
+		//如果是处理DOM2级的事件，阻止事件的默认行为一定要用
+		e.preventDefault();
+	}
+for(var i=0;i<eles.length;i++){
+	var ele=eles.item(i);
+	ele.addEventListener("click",fn,false);//表示把fn方法绑定到事件的冒泡阶段
+	ele.addEventListener("click",fn,true);//此方法的第三个参数是：指在事件的捕获阶段绑定处理方法
+	ele.addEventListener("click",fn,true);
+	
+	}
+</script>

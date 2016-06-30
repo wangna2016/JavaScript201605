@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+div{ width:150px; height:150px; position:absolute; top:150px; left:150px; background:#6FC; cursor:move; -webkit-user-select:none;}
+</style>
+</head>
+
+<body>
+<div id="div1"><img width="150" height="150" style="width:150px" src="../img/12.png"></div>
+<div id="div2"  style="left:600px; top:500px;"><img width="150" height="150"  src="../img/6.png"></div>
+<div id="div3" style=" left:310px;">我是第三个div</div>
+
+</body>
+</html>
+<script src="event2.js"></script>
+<script>
+function down(e){//准备拖拽
+	this.x=this.offsetLeft;
+	this.y=this.offsetTop;
+	this.mx=e.pageX;
+	this.my=e.pageY;
+	if(this.setCapture){//IE和fireFox用setCapture方法
+		this.setCapture();
+		on(this,"mousemove",move);
+		on(this,"mouseup",up);
+	}else{
+		this.MOVE=move.bind(this);//this.MOVE=processThis(move,this);
+		this.UP=up.bind(this);//this.UP=processThis(up,this);
+		on(document,"mousemove",this.MOVE);
+		on(document,"mouseup",this.UP);
+	}
+	
+	e.preventDefault();//用来防止mousedown行为会默认以为这是在开始选中文字内容
+	
+}
+
+function move(e){
+	this.style.left=this.x+(e.pageX-this.mx)+"px";
+	this.style.top=this.y+(e.pageY-this.my)+"px";
+	
+}
+
+function up(){
+	if(this.releaseCapture){
+		this.releaseCapture();
+		off(this,"mousemove",move);
+		off(this,"mouseup",up);
+	}else{
+		off(document,"mousemove",this.MOVE);
+		off(document,"mouseup",this.UP);
+	}
+	
+}
+
+var eles=document.getElementsByTagName("div");
+for(var i=0;i<eles.length;i++){
+	on(eles[i],"mousedown",down);
+}
+
+</script>

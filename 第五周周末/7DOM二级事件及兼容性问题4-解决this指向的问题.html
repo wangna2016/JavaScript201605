@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+</head>
+
+<body>
+<div id="div1" style="height:100px; background:#0FF"><a href="http://www.zhufengpeixun.cn">珠峰培训</a></div>
+</body>
+</html>
+<script>
+//标准浏览器的DOM2事件
+var ele=document.getElementById("div1");
+var i=0;
+function fn1(e){
+	alert(this.innerHTML);
+	i++;
+	if(i==1){
+		//表示第一次执行的时候，就把fn1在click事件上移除，第二次再点div的时候，fn1不应该再执行
+		
+		unbind(this,"click",fn1);	
+	}
+
+}
+function fn2(e){alert(2);}
+
+
+function fn3(e){
+	i++;
+	/*if(i==3){//当第三次点div的时候，把fn1，fn2,fn4移除。这样，当第四次再点div的时候，fn1,fn2就不执行了。fn4这次不执行
+		this.removeEventListener("click",fn1,false);
+		this.removeEventListener("click",fn1,false);
+		this.removeEventListener("click",fn4,false);	
+	}*/
+	alert(3);
+	
+	}
+function fn4(e){alert(4);}
+function fn5(e){alert(5);}
+function fn6(e){alert(6);}
+function fn7(e){alert(7);}
+function fn8(e){alert(8);}
+function fn9(e){alert(9);}
+//ele.addEventListener("click",fn1,false);
+var tempFn=null;
+function bind(ele,type,fn){//负责用DOM2的方法来绑定事件，ele是被绑定事件的元素，type是事件类型,fn绑定的方法
+	if(ele.addEventListener){
+		ele.addEventListener(type,fn,false);
+	}else{
+		//ele.attachEvent("on"+type,fn);
+		//fn在被事件驱动执行的时候，fn里的this指向ele：解决方案是当fn执行的时候用call或apply方法强制让fn里的this指向ele
+		//需要用call或apply方法来改造一下fn
+		
+		//bind(ele,"click",fn1);
+		var fnTemp=function (){fn.call(ele)};//fn会在这个方法里执行，执行时候fn的功能没有变化，但是this被强制指向ele
+		fnTemp.photo=fn;
+		
+		/*bind(ele,"click",fn1);
+		bind(ele,"click",fn2);
+		bind(ele,"click",fn3);*/
+		
+		//1、fnTemp是私有的变量，但是需要跨作用域能够找到它，（因为只有找到这个方法才能把它在事件上移除）就是说在unbind里可以访问到fnTemp的引用
+		//2、不但要把它保存下来，还要把这儿的fnTemp识别出来，我们要知道数组里保存的这些fnTemp中，那一个是由当前的这个fn变化而来的
+		//unbind(ele,"click",fn1)
+		//a fnTemp;从这一堆的fnTemp中，识别出那一个才是由fn1变形来的
+		
+		//unbind和bind有没有共同操作的对象呢？ele
+		//把fnTemp上的引用保存到ele的自定义属性上
+		//当然这个自定义属性是有一定的技巧的
+		
+		if(!ele["aBind"+type]){//为真表示此数组不存在
+			ele["aBind"+type]=[];
+		}
+		var a=ele["aBind"+type];
+		a.push(fnTemp);//保存真正绑定到事件上的方法，便于跨作用域在unbind里能找到这个fnTemp
+		/*
+		ele["aBind"+type]=[];
+		//以某个字符串为前缀，以事件类型为区分符来定义这个数组。
+		ele.abcd=[];
+		ele.abcd.push(fnTemp);
+		*/
+		//click,mouseover,mousemove, 就是为了按事件类型来保存绑定不同事件上的方法
+		//为什么还要加aBind做前缀呢？因为事件属性是系统已有的方法（DOM元素上已经合法占用了这个属性，如果我们再定义一个同名的属性，冲突了）。前缀是为最大可能避免冲突
+		/*ele.click=[]
+		ele.submit();
+		ele.click();
+		ele.click.push(fnTemp);*/
+	
+		ele.attachEvent("on"+type,fnTemp);
+		//unbind(ele,"click",fn1)
+		
+		//事件池：把绑定在同一个事件上的所有方法放在一个“池子”里
+		//移除的时候会去这个池子找这个方法
+		//问题出在：绑定的时候，把重新包装的fn保存到事件池里了，但是移除的时候是去事件池找fn了，所以就找不到了，导致移除失败
+		
+	}
+	
+}
+
+function unbind(ele,type,fn){//移除绑定的方法
+	if(ele.removeEventListener){
+		ele.removeEventListener(type,fn,false);	
+	}else{
+		var a=ele["aBind"+type];
+		for(var i=0;i<a.length;i++){
+			if(a[i].photo==fn){
+				
+				ele.detachEvent("on"+type,a[i]);	
+				
+			}
+		}
+		
+		
+	}
+	
+}
+bind(ele,"click",fn1);
+bind(ele,"click",fn2);
+//依次解决
+//1、绑定的this关键字指向问题：this要指向ele（指向被绑定的元素）
+//2、方法被重复绑定的问题
+//3、执行顺序的问题
+
+</script>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style type="text/css">
+#div1{ background:red; height:100px;} 
+</style>
+</head>
+
+<body>
+<h1>数组的塌陷问题是怎么出现的</h1>
+<div id="div1">我是div1</div>
+</body>
+<script src="event1.js"></script>
+<script>
+//bind ,unbind方法
+function fn1(){console.log(this.innerHTML+"fn1");};
+function fn2(){console.log("fn2");};
+var i=0;
+function fn3(){
+	i++;
+	//当fn3运行到第2次的时候，在fn3运行的时候，把fn1,fn2,fn3从click事件移除到
+	if(i==2){
+		off(this,"click",fn1);
+		off(this,"click",fn2);
+		off(this,"click",fn3);	
+		
+		/*
+			数组塌陷的原因如下：
+		this["aEvent"+type]是个数组，保存的内容如下
+			[fn1,fn2,fn3,fn4,fn5,fn6,fn7]
+		//移除的时候，run正在运行，当执行off方法的时候，是fn3在调用off，如果fn3执行那run里面，循环执行到第几次了呢？也就是说run里的i这会是几？i==2
+		这时候fn3中，把数组的第0，1，2项删除了，数组变成下一行的样子：
+		[fn4,fn5,fn6,fn7];
+		//fn3执行完之后，run里的i变成3了，（下一次循环i是3，）现在的这个数组，i如果是3,正好对应fn7,所以fn4,fn5,fn6就被跳过了
+		*/
+		
+		
+	}
+	console.log("fn3");
+};
+function fn4(){console.log("fn4");};
+function fn5(){console.log("fn5");};
+function fn6(){console.log("fn6");};
+function fn7(){console.log("fn7");};
+function fn8(){console.log("fn8");};
+function fn9(){console.log("fn9");};
+on(div1,"click",fn1);
+on(div1,"click",fn2);
+on(div1,"click",fn3);
+on(div1,"click",fn4);
+on(div1,"click",fn5);
+on(div1,"click",fn6);
+on(div1,"click",fn7);
+</script>
