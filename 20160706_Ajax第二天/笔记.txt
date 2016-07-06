@@ -1,0 +1,29 @@
+->在服务器端的NODE环境中,我们的某一JS文件被修改,如果想看到最新的效果,需要通过NODE重新执行这个JS
+
+->
+URI:统一资源标识符 (URI是老子,URN和URL都是它的儿子)
+URN:统一资源名称
+URL:统一资源定位符(破地址)
+  协议    域名/IP     端口  路径和名称        问号传参     锚点定位
+  http://192.168.0.20:80/lib/index.html?name=12&age=7#aa
+
+->
+sync:同步
+async:异步
+
+->
+MIME文件类型:
+TXT  ->text/plain
+HTML ->text/html
+CSS  ->text/css
+JS   ->text/javascript
+JSON ->application/json
+
+JPG  ->image/jpeg
+PNG  ->image/png
+GIF  ->image/gif
+ICO  ->image/x-icon
+SVG  ->image/svg+xml
+BMP  ->application/x-MS-bmp
+
+对于音视频等不同格式文件的MIME类型自己回去百度搜索吧
