@@ -1,0 +1,86 @@
+HTTP:超文本传输协议
+
+->作用：
+  用来处理客户端和服务器端的内容传输的，例如：客户端通过HTTP可以给服务器端传递点东西(REQUEST请求阶段)，服务器端也可以通过HTTP把东西返回给客户端(RESPONSE响应阶段)
+
+->HTTP事物:
+  事物其实就是一件完整的事情，对于HTTP来说，只有“REQUEST请求阶段”和“RESPONSE响应阶段”都完成才算彻底的完成这件事情
+
+  当客户端向服务器端发送一个请求后，客户端和服务器端之间就建立起来一个HTTP链接通道，只有当服务器端把内容返回给客户端，这个HTTP链接通道才会结束
+
+->HTTP METHOD:HTTP请求的方式,客户端向服务器端发送请求的方式有好多
+  GET:
+    ->我们主要的目的是从服务器端拿东西(也是可以给服务器端传递内容的),一般情况下给的少拿的多,我们都使用GET方式
+
+  POST:
+    ->我们主要的目的是给服务器推送东西(服务器也是可以给客户端内容的),一般情况下给的多拿的少,我们都使用POST请求
+
+  PUT:
+    ->向服务器增加内容
+
+  DELETE:
+    ->从服务器上删除内容
+
+  HEAD
+  ...
+
+->HTTP STATUES:HTTP响应网络状态码,服务器会根据自身的处理情况告诉客户端响应的一个状态或者结果(这个状态会用一些特殊的数字代表,这些数字就是状态码)
+
+  2:
+  200(或者以2开头的三位数字)都代表成功
+
+  3:
+  301 永久转移(永久重定向)  之前京东的网址360buy.com,现在是jd.com,从今以后我们只要输入360buy.com就让他永久转移到jd.com上
+
+  302 临时转移(临时重定向)  服务器负载均衡 当服务器处理不过来请求的时候,我们把一些请求临时转移到其他的服务器上进行处理
+
+  304 读取缓存数据
+
+  4:
+  400 请求的参数出现错误
+  401 无权限访问
+  404 请求的地址不存在
+
+  5:
+  500 服务器出现未知错误
+  503 当前的服务器已经超负荷负载,处理不过来了
+
+->HTTP报文:客户端和服务器端传输的内容有很多,这些所有的内容都可以称之为报文
+
+  1)起始行
+
+
+  2)首部：通用首部(请求和响应都有的首部)、请求首部、响应首部、自定义首部
+    【Request Headers(view source):】
+      GET /index.html?name=12 HTTP/1.1 ->起始行:请求方式、请求的资源文件路径和名称以及问号后面的参数值、传输协议的版本号(由客户端来设定)
+
+      //->从下面开始的都是请求首部(天生自带的)
+      Host: 192.168.0.20
+      Connection: keep-alive
+      Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+      Upgrade-Insecure-Requests: 1
+      User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2679.0 Safari/537.36
+      Accept-Encoding: gzip, deflate, sdch
+      Accept-Language: zh-CN,zh;q=0.8
+
+    【Response Headers(view source)】
+      HTTP/1.1 200 OK  ->响应的起始行：HTTP版本、响应的状态码以及状态码的描述 (由服务器来设定)
+      ->响应首部(由服务器来设定) response.writeHead(200,{'content-type':'text/html;charset=utf-8;'})
+
+      content-type: text/html;charset=utf-8;
+      Date: Wed, 06 Jul 2016 09:19:02 GMT  ->服务器本次响应的时间(服务器时间:格林尼治时间 北京时间是GMT+0800)
+      Connection: keep-alive
+      Transfer-Encoding: chunked
+
+    【Query string parameters】
+      我们客户端传递给服务器端的内容(自己定义的),不管是在URL地址后面的问号传参还是在请求主体中传递过去的值，都可以在这里查看到
+
+  3)主体
+    请求主体:客户端有些时候会把传递给服务器的内容放在请求主体中
+
+    响应主体:服务器端会把返回给客户端的内容放在响应主体中(响应主体内容可以在控制台->NetWorks->Response中查看到)
+
+
+前端优化方法：
+->减少HTTP请求的次数
+->降低HTTP请求内容的大小

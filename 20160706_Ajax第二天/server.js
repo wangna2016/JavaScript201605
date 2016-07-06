@@ -37,9 +37,10 @@ var server = http.createServer(function (request, response) {
         } catch (e) {
             //->对于非正常的请求(比如请求的文件在服务器不存在),我们返回给客户端404(资源文件不存在)
             response.writeHead(404);
-            response.end(null);
+            response.end("当前的页面不存在~~");
         }
     }
+
 });
 server.listen(80, function () {
     console.log("服务创建成功正在监听80端口!");

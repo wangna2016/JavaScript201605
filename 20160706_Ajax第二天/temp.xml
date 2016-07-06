@@ -1,0 +1,17 @@
+<root>
+    <person>
+        <name>周啸天</name>
+        <age>26</age>
+        <sex>男</sex>
+    </person>
+    <person>
+        <name>韩小波</name>
+        <age>62</age>
+        <sex>男</sex>
+    </person>
+    <person>
+        <name>张学荣</name>
+        <age>22</age>
+        <sex>女</sex>
+    </person>
+</root>
