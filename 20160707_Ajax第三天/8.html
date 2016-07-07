@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript">
+    ajax({
+        url: "/data/getAllData",
+        success: function (data) {
+            console.log(data);
+        }
+    });
+
+    ajax({
+        url: "/data/getAllData",
+        type: "post",
+        data: '{"name":"zhufeng","age":7}',
+        success: function (data) {
+            console.log(data);
+        }
+    });
+</script>
+</body>
+</html>

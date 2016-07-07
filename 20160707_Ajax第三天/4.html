@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.open("get", "/data/getAllData", false);
+    //    xhr.onreadystatechange = function () {
+    //        if (xhr.readyState === 4) {
+    //            console.log(xhr.responseText);//->第一步
+    //        }
+    //    };
+    //    xhr.send();//->同步:只有当服务器把数据内容返回给客户端后(readyState=4)本次的Ajax才算结束,才会继续执行其它的代码
+    //    console.log("ok");//->第二步
+
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.open("get", "/data/getAllData", true);
+    //    xhr.onreadystatechange = function () {
+    //        if (xhr.readyState === 4) {
+    //            console.log(xhr.responseText);//->第二步
+    //        }
+    //    };
+    //    xhr.send();
+    //    console.log("ok");//->第一步
+
+    //-----------------------------------------------
+    //->Ajax操作过程中如果我们采用的是同步编程,那么我们必须要把onreadystatechange放在xhr.send之前绑定,只有这样才能监听到结果；如果采用的是异步，那么放在之前和放在之后是无所谓的；
+
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.open("get", "/data/getAllData", false);
+    //    xhr.send();//->只有当readyState=4的时候我们才算完成,才会继续执行下面的代码(在32行彻底完成后我们的状态已经变为4了)
+    //    //->当前的事件绑定是在状态已经变为4的时候才刚刚绑定的,而onreadystatechange只有状态在原来值的基础上变为一个新的值才会被触发,但是此时我们的状态不会在变了,绑定的方法也不会被执行了
+    //    xhr.onreadystatechange = function () {
+    //        if (xhr.readyState === 4) {
+    //            console.log(xhr.responseText);
+    //        }
+    //    };
+
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.open("get", "/data/getAllData", true);
+    //    xhr.send();
+    //    xhr.onreadystatechange = function () {
+    //        if (xhr.readyState === 4) {
+    //            console.log(xhr.responseText);
+    //        }
+    //    };
+
+
+    //--------------------------------------------
+    //->采用Ajax同步编程,我们只能检测到状态变为4这个阶段,对于状态为2或者3这个阶段我们是无法检测到的,这样的话也是无法在这几个阶段进行特殊处理的;
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.open("get", "/data/getAllData", false);
+    //    console.log(xhr.readyState);//->1 在我们开始监听之前我们的状态为1
+    //    xhr.onreadystatechange = function () {//->这样的话其实我们的事件只能检测到从1变为4了,所以只执行一次
+    //        console.log(xhr.readyState);//->4
+    //    };
+    //    xhr.send();//->Ajax结束的时候状态为4
+
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.onreadystatechange = function () {
+    //        console.log(xhr.readyState);//->1 4
+    //    };
+    //    xhr.open("get", "/data/getAllData", false);
+    //    xhr.send();
+
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.open("get", "/data/getAllData", true);
+    //    xhr.onreadystatechange = function () {
+    //        console.log(xhr.readyState);//->2 3 4
+    //    };
+    //    xhr.send();
+
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.open("get", "/data/getAllData", true);
+    //    xhr.send();
+    //    xhr.onreadystatechange = function () {
+    //        console.log(xhr.readyState);//->2 3 4
+    //    };
+
+    //    var xhr = new XMLHttpRequest();
+    //    xhr.onreadystatechange = function () {
+    //        console.log(xhr.readyState);//->1 2 3 4
+    //    };
+    //    xhr.open("get", "/data/getAllData", true);
+    //    xhr.send();
+</script>
+</body>
+</html>
