@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    var xhr = new XMLHttpRequest;
+    xhr.open("get", "/data/getAllData");
+    //->设置的请求头信息应该在SEND之前完成
+    //xhr.setRequestHeader("Accept-Language", "utf-8;q=0.8");
+    xhr.send();
+    //->当Ajax的请求或者响应的状态发生改变的时候就会触发onreadystatechange这个事件,执行对应的绑定方法
+    xhr.onreadystatechange = function () {
+        //->xhr.status:HTTP STATUS 响应状态码
+        //->xhr.readyState:Ajax状态码
+        //0 UNSENT 未发送
+        //1 OPENED 已经打开
+        //2 HEADERS_RECEIVED 响应头信息已经返回给客户端了
+        //3 LOADING 响应的主体内容正在加载
+        //4 DONE 响应的主体内容也已经返回给客户端了,此时我们的Ajax结束
+
+        //->不一定非要等到readyState===4的时候才获取数据,当它等于2的时候,我们响应头信息都请求回来了,我们可以先获取响应头中的内容
+        if (xhr.readyState === 2) {
+            var serverTime = xhr.getResponseHeader("Date");
+            console.log(new Date(serverTime));//->把在响应头信息中获取到的格林尼治时间转换为北京时间
+        }
+
+        if (xhr.readyState === 4 && /^2\d{2}$/.test(xhr.status)) {
+            //->获取内容
+            //xhr.responseText; ->存储的就是我们响应回来的内容
+            console.log(JSON.parse(xhr.responseText));
+
+            //xhr.responseXML; ->获取到的是一个XML格式的数据
+        }
+    };
+
+    //    [同源]
+    //    pageURL:http://192.168.0.20:666/2.html
+    //    dataURL:http://192.168.0.20:666/data/getAllData
+</script>
+</body>
+</html>
