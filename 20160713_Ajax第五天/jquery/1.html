@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+
+<script charset="utf-8" type="text/javascript" src="jquery-1.11.3.min.js"></script>
+<script charset="UTF-8" type="text/javascript">
+    //    $.ajax({
+    //        url: "data.txt",
+    //        type: "get",//->设置HTTP METHOD
+    //        dataType: "json",//->设置请求内容的格式类型 text、json(会把获取的内容转换为JSON格式的对象)
+    //        async: true, //->设置同步或者异步编程
+    //        data: null,//->设置POST请求时候请求主体中的内容
+    //        cache: false,//->设置GET请求的时候是否读取缓存 false代表没有缓存(其实是在URL的末尾追加了一个随机数),
+    //        timeout: 1000,//->设置超时时间,如果在1s中之内还没有请求回来数据,会执行ERROR
+    //        success: function (data) {
+    //            //->请求成功后回调的函数
+    //            console.log(data);
+    //        },
+    //        error: function (message) {
+    //            //->请求失败后回调的函数
+    //        }
+    //    });
+
+    $.ajax({
+        url: "data.txt",
+        type: "get",
+        dataType: "json",
+        cache: false,
+        success: function (data) {
+            console.log(data);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+
+<script charset="utf-8" type="text/javascript" src="jquery-1.11.3.min.js"></script>
+<script charset="UTF-8" type="text/javascript">
+    //->jQuery中的JSONP请求只需要在AJAX语法的基础上把dataType修改为JSONP即可
+    //    $.ajax({
+    //        url: "http://192.168.0.21/getData",
+    //        type: "get",
+    //        dataType: "jsonp",
+    //        jsonpCallback: "aa",//->修改传给服务器的函数名,之前是走随机生成的函数名,通过这个属性我们可以自己指定函数名
+    //        jsonp: "cb",//->修改callback属性名为cb
+    //        success: function (data) {
+    //            console.log(data);
+    //        }
+    //    });
+    //->http://192.168.0.21/getData?callback=jQuery11130966930979326514_1468381475054&_=1468381475055
+
+    //->JSONP都是GET请求,没有POST请求(因为没有请求主体);传递给服务器的内容都是通过问号传参的方式进行的。
+    //->不需要自己清楚缓存,jQuery中的JSONP默认是清除缓存的
+    //->jQuery中的JSONP会默认在URL后面传递一个?callback=随机生成的函数名(这个函数就是success后面传递进来的那个匿名函数)
+
+
+    //->需要保证fn是全局函数,不能是私有的
+    //    function fn(data) {
+    //        console.log(data);
+    //    }
+    //
+    //    $.ajax({
+    //        url: "http://192.168.0.21/getData",
+    //        type: "get",
+    //        dataType: "jsonp",
+    //        jsonpCallback: "fn"
+    //    });
+
+    //->如果是私有的fn,最后是无法找到fn执行的(因为后台服务器返回的是fn(...),执行的是全局下的fn)
+    //    ~function () {
+    //        function fn(data) {
+    //            console.log(data);
+    //        }
+    //
+    //        $.ajax({
+    //            url: "http://192.168.0.21/getData",
+    //            type: "get",
+    //            dataType: "jsonp",
+    //            jsonpCallback: "fn"
+    //        });
+    //    }();
+
+    var personModule = (function () {
+        function fn(data) {
+            console.log(data);
+        }
+
+        return {
+            fn: fn
+        }
+    })();
+    $.ajax({
+        url: "http://192.168.0.21/getData",
+        type: "get",
+        dataType: "jsonp",
+        jsonpCallback: "personModule.fn"
+    });
+
+</script>
+</body>
+</html>
