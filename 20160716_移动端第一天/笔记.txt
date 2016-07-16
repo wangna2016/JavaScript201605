@@ -125,4 +125,4 @@
           <script type="text/javascript" src="html5.min.js"></script>
         <![endif]-->
 
-   ->HTML5中还修改删除了一些标签
+   ->HTML5中还修改删除了一些标签(详细见“移动端 [HTML5元素].doc”)
