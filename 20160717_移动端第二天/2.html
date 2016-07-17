@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <title>REM响应式布局</title>
+    <link charset="utf-8" type="text/css" rel="stylesheet" href="css/reset.min.css"/>
+    <style type="text/css">
+        /*--
+            EM和REM都是相对的单位
+            ->EM是相当对于自己父级元素的fontSize来设定的,例如:父级的fontSize=16px 我们子级元素的宽度设定是10EM，子级的宽度是160px
+            ->REM是相对于整个页面根级元素(HTML)的fontSize设定的，例如:HTML的fontSize是100px，意思就是1REM就等于100px，我们有一个盒子是250px*310px 我们布局的时候写成 2.5rem*3.1rem
+        --*/
+
+        html, body {
+            width: 100%;
+            background: #eee;
+            overflow-x: hidden;
+        }
+
+        html {
+            /*--在640的设计稿中,我们REM的计算根植是100px,也就是1REM=100PX--*/
+            font-size: 100px;
+        }
+
+        .main {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .box {
+            /*--我们的布局尺寸严格按照设计稿的尺寸来设定,只不过需要把所有的PX都按照REM的转换比率转换成REM的值--*/
+            margin: 0 .1rem;
+            height: 2rem;
+            background: green;
+        }
+
+        /*--
+          由于REM是一个相对的单位,只要我们以后把HTML的font-size值改变了(也就是REM和PX之间的转化根植改变了),以前设定的REM的样式值也会自己跟着改变
+        --*/
+    </style>
+</head>
+<body>
+<!--
+   设计稿:640*1136  盒子:620*200
+-->
+<div class="main">
+    <div class="box"></div>
+</div>
+
+<script type="text/javascript">
+    ~function (desW) {
+        var winW = document.documentElement.clientWidth;
+        //->如果当前屏幕的宽度已经大于设计稿的宽度了,我们一般不会在进行REM根植的调整,都按照设计稿的尺寸布局,只不过让整个区域在页面中间,两边留空白
+        if (winW > desW) {
+            var oMain = document.querySelector(".main");
+            oMain.style.width = desW + "px";
+            return;
+        }
+        document.documentElement.style.fontSize = (winW / desW) * 100 + "px";
+    }(640);
+</script>
+</body>
+</html>
