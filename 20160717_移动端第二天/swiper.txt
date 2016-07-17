@@ -1,0 +1,16 @@
+->swiper插件采用的是构造函数模式搭建的,Swiper本身是一个类,我们初始化Swiper其实就是创建这个类的一个实例:
+  var swipe1=new Swiper("[你想让那个容器实现滑动,我们就把这个容器的样式类名或者ID传递进来 .classname/#id] 例如:.swiper-container" , {
+      第二个参数是一个对象,这个对象中传递的所有的属性名和属性值都是在配置swiper运动处理时候的规则，例如: loop:true 设置循环不间断的无缝滚动
+  });
+
+  Swiper中提供给我们当前实例操作的方法大部分都在实例的私有属性上，而Swiper.prototype中大部分提供的都是平台和兼容支持的检测
+
+
+->在开始给Swiper进行初始话配置的时候我们还可以设置很多的属性
+  http://www.swiper.com.cn/api/index.html
+
+
+
+
+
+
