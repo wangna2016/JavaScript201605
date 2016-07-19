@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //->1、创建一个Ajax对象
+    var xhr = new XMLHttpRequest;//->不兼容IE6及更低版本的浏览器
+
+    //->2、OPEN,打开客户端和服务器端连接的数据请求的地址,设定获取方式以及同步还是异步
+    //->xhr.open([HTTP METHOD]、[URL]、[async/sync ->true]、[user name]、[user pass]);
+    //1)最后的用户名和密码
+    //  一般情况下我们不需要传递,但是如果服务器做了安全限制,只允许特定的用户访问,我们需要把代表自己权限的用户名和密码传递给服务器
+
+    //2)async/sync
+    //  写true代表异步获取数据,写false代表同步获取数据,不写默认是true
+
+    //3)URL
+    //  服务器器提供给客户端的获取数据的接口地址(API)
+
+    //4)HTTP METHOD
+
+    xhr.open("get", "http://localhost:63342/lib/getAllData");
+
+    //->3、发送请求
+    xhr.send();
+
+</script>
+</body>
+</html>

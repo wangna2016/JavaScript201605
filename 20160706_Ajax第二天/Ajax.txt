@@ -1,0 +1,39 @@
+Ajax:async(Asynchronous) javascript and xml 异步的JS和XML
+
+在同源下
+->我们可以使用Ajax技术(JS中的一门技术),在客户端JS里面编写一些代码向服务器发送请求,把数据内容(一般都是JSON格式的数据)从服务器中获取到
+
+->我们上午请求的HTML/CSS/JS文件中的内容，当我们在浏览器的地址栏中指定好文件地址后，浏览器可以自主的把代码返回给客户端渲染，不需要使用Ajax获取...
+
+
+
+->同源/非同源(跨域)
+  同源:我们的页面和我们要获取的数据在同一台服务器上 Ajax
+  跨域:我们的页面和我们要获取的数据不在同一台服务器上 JSONP
+
+  我想请求获取数据,那么肯定需要一个获取数据的地址dataURL
+  我们当前的页面要想展示肯定需要一个浏览器,浏览器的地址栏肯定有当前页面的地址pageURL
+
+  相区分是同源还是跨域就看两个地址中的三项值是否一样:协议、域名、端口,三个都一样是同源，只要与一个不一样就是跨域
+
+  [同源]
+  pageURL: http://192.168.0.20/index.html
+  dataURL: http://192.168.0.20/kbs/hotMatchList
+
+  [跨域]
+  pageURL: http://192.168.0.20/index.html
+  dataURL: http://matchweb.sports.qq.com/kbs/hotMatchList
+
+  [跨域]
+  pageURL: http://v.qq.com/index.html
+  dataURL: http://s.qq.com/hotMatchList
+
+->扫盲
+  一级域名:www.qq.com
+  二级域名:sports.qq.com
+  三级域名:kbs.sports.qq.com
+
+->扫盲
+  XML:可扩展的标记语言,和XHTML不一样(XHTML所用的标签都是W3C规定好的),而我们的XML所用的标签都是自己定义的
+  一般情况下我们可以用XML做数据的存储(例如:temp.xml)
+

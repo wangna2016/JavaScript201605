@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box2 {
+            position: relative;
+            margin: 200px auto;
+            width: 300px;
+            height: 300px;
+            border: 1px dashed #000;
+        }
+
+        /*--
+            使用CSS让一个元素在容器的正中间(水平和垂直方向都是居中的)
+            1、
+            .box2 > div {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin: -25px 0 0 -100px;
+
+                width: 200px;
+                height: 50px;
+                background: green;
+            }
+            只要盒子的宽高改变我们需要重新的调整margin的值,而且事先设定margin的时候也需要知道盒子的宽度和高度
+
+            2、不需要知道具体的宽高也可以实现居中(在IE低版本浏览器中不兼容,我们一般只在移动端项目中使用)
+            .box2 > div {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                margin: auto;
+
+                width: 200px;
+                height: 30px;
+                background: green;
+            }
+
+            JS如何的实现自己回去想
+        --*/
+        .center {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+        }
+
+        .box2 > div {
+            width: 200px;
+            height: 30px;
+            background: green;
+
+            transition: all .3s linear 0s;
+        }
+
+        /*.box2 > div {
+            /!*height: 50px;*!/
+            /!*--上面设定了过渡动画,然后又立马又让元素的高度样式改变,浏览器是不予以进行动画处理的，想要实现动画，需要通过一些特定的行为或者方式进行触发改变样式才可以--*!/
+        }*/
+
+        /*--通过CSS的操作伪类来改变元素的样式，从而触发动画的执行--*/
+        /*:hover:鼠标滑过变为一套新的样式,鼠标离开又回到原来的样式*/
+        /* .box2 > div:hover {
+             width: 100px;
+             height: 50px;
+         }*/
+
+        /*--通过媒体查询触发--*/
+        /*@media all and (max-width: 1000px) {
+            .box2 > div {
+                width: 100px;
+                height: 50px;
+            }
+        }*/
+
+    </style>
+<body>
+<div class="box2">
+    <div class="center" id="box"></div>
+</div>
+<script type="text/javascript">
+    //->通过JS来触发
+    var box = document.getElementById("box");
+    window.setTimeout(function () {
+        box.style.width = "100px";
+        box.style.height = "50px";
+    }, 0);
+</script>
+</body>
+</html>

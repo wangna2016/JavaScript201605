@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //->惰性思想:懒,能少些尽量少些,能少判尽量少判断...
+
+    //->高级单例模式
+    var DOM = (function () {
+        var flag = window.getComputedStyle ? true : false;
+
+        function getCss(curEle, attr) {
+            if (flag) {
+                return window.getComputedStyle(curEle, null)[attr];
+            }
+            return curEle.currentStyle[attr];
+        }
+
+        function getElementsByClass(strClass) {
+            if (flag) {
+                return document.getElementsByClassName(strClass);
+            }
+            strClass = strClass.replace(/^ +| +$/g, "").split(/ +/g);
+        }
+
+        return {
+            getCss: getCss,
+            getElementsByClass: getElementsByClass
+        };
+    })();
+
+    DOM.getCss();
+    DOM.getCss();
+    DOM.getElementsByClass();
+
+
+</script>
+</body>
+</html>

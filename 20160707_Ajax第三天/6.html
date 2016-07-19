@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //var xhr = new XMLHttpRequest;//->IE6及更低版本浏览器不支持
+
+    //->惰性思想:函数的重新覆盖
+
+    //->把不同浏览器下获取Ajax对象的处理方法分别定义为四个小方法,存储到一个数组ARY中;循环ARY中的每一项,让每一项的方法执行,如果执行没有出现错误,说明当前的这个方法可以获取到Ajax对象,此时我们把createXHR这个方法的值重新替换为当前的这个小方法,这样的话下一次在执行createXHR直接执行的就是可以的那个小方法...
+    var createXHR = function () {
+        var xhr = null;
+        var ary = [
+            function () {
+                return new XMLHttpRequest;
+            },
+            function () {
+                return new new ActiveXObject("Microsoft.XMLHTTP");
+            },
+            function () {
+                return new ActiveXObject("Msxml2.XMLHTTP");
+            },
+            function () {
+                return new ActiveXObject("Msxml3.XMLHTTP");
+            }
+        ];
+
+        //->循环数组中的每一项
+        for (var i = 0, len = ary.length; i < len; i++) {
+            var curFn = ary[i];
+            try {
+                xhr = curFn();
+            } catch (e) {
+                //->执行其中的某一个小方法报错的话,我们就继续执行下一个
+                continue;
+            }
+            //->能走的这的话说明当前的这个小方法执行没有报错,此时curFn存储的那个小函数就是我们想要的
+            createXHR = curFn;
+            break;
+        }
+        return xhr;
+    };
+
+    console.log(createXHR);
+    var xhr = createXHR();
+    console.log(xhr);
+
+    console.log(createXHR);
+    xhr = createXHR();
+    console.log(xhr);
+</script>
+</body>
+</html>

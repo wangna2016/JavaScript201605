@@ -1,0 +1,36 @@
+//url.parse("http://192.168.0.20:80/lib/index.html?name=12&age=7#aa")
+{
+  protocol: 'http:',
+  //->协议
+  slashes: true,
+  //->是否有斜杠
+  auth: null,
+  //->认证
+  host: '192.168.0.20:80',
+  //->域名或者IP地址+端口
+  port: '80',
+  //->端口号,默认是80端口
+  hostname: '192.168.0.20',
+  //->域名或者IP地址
+  hash: '#aa',
+  //->#后面的值在这个中存储
+  search: '?name=12&age=7',
+  //->问号以及问号后传递进来的参数值
+  query: 'name=12&age=7',
+  //->单独的参数值
+  pathname: '/lib/index.html',
+  //->文件的路径或者名称
+  path: '/lib/index.html?name=12&age=7',
+  //->文件的路径名称+参数
+  href: 'http://192.168.0.20/lib/index.html?name=12&age=7#aa'
+  //->原始解析的URL地址
+}
+
+
+//url.parse("http://192.168.0.20:80/lib/index.html?name=12&age=7#aa",true)
+{
+    ...
+    query:{name: '12', age: '7'}, //->单独的参数值,只不过解析成为对象键值对方式了
+    pathname: '/lib/index.html', //->文件的路径或者名称
+    ...
+}

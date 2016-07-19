@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<script type="text/javascript">
+    //->在GET请求中,如果需要客户端给服务器传递点东西,需要把传递的内容放在URL的末尾,通过问号传参的方式传递给服务器
+    //例如:/data/getAllData?name=zhufeng&age=7 我们的name和age就是传递给服务器的内容
+    //    var xhr = new XMLHttpRequest;
+    //    xhr.open("get", "/data/getAllData?name=zhufeng&age=7", true);
+    //    xhr.send(null);
+
+    //->POST请求中,如果需要给服务器传递点东西的话,我们是放在请求主体中带给服务器的
+    //    var xhr = new XMLHttpRequest;
+    //    xhr.open("post", "/data/getAllData", true);
+    //    xhr.send('[{"name":"aa","age":17},{"name":"bb","age":18}]');//->我们一般都会把传递给服务器的内容变为JSON格式的字符串传递给服务器
+
+    //->GET/POST区别
+    //1、传给服务器的内容存在大小的限制
+    //->GET请求因为是把传给服务器的内容都放在URL拼接出来的,而每一个浏览器对于URL的长度都有限制(谷歌8kb、火狐7kb、IE是2kb),如果我们传递给服务器的东西太多,必然导致URL长度超出,超出的部分浏览器会自己截取,这样服务器获取到的内容是不完整的...
+
+    //->理论上POST请求是不存在大小限制的,但是由于我们一般都采用的是HTTP传输方法,这样也会受到网络和HTTP的一些限制,但是只要传递的内容不特别大(一般网站都要求不能超过2MB)还是没啥问题的
+
+    //2、安全问题
+    //->GET是把传输的内容放在了URL上,这样的话如果有恶意程序,会把我们传递的URL做劫持,导致传递给服务器的内容泄露
+    //->POST不存在这个问题,所以项目中如果需要安全度比较高的请求我们都采用POST请求(例如：注册和登录)
+
+    //3、缓存问题
+    //->POST不会存在任何的缓存,所以不需要处理
+    //->GET请求存在缓存,我第一次通过一个地址向服务器发送请求,把数据得到,此时浏览器和服务器有一些内置的机制会把第一次请求的数据缓存到某一个地方,当我第二次在重新的请求这个URL地址,很有可能是把第一次自己默认缓存的数据得到...(这样做的话我们就无法实时获取最新的数据了,所以一般情况下我们都不让请求走缓存数据)
+
+    //->我们其实只需要在每一次请求的地址后面加上随机数,这样就可以保证每一次请求的地址不完全一样,这样的话也就不会重新的读取上一次缓存的数据了...
+    //    var xhr = new XMLHttpRequest;
+    //    xhr.open("get", "/data/getAllData?name=zhufeng&age=7&_=" + Math.random(), true);
+    //    xhr.send(null);
+</script>
+</body>
+</html>

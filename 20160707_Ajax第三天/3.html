@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>异步编程</title>
+</head>
+<body>
+<script type="text/javascript">
+    //->JS都是单线程的(JS脑子只有一根筋,一次只能做一件事情,不能同时进行多件事情的处理)
+
+    //1、JS中的异步编程
+    //->定时器
+    //    var count = 0;
+    //    window.setTimeout(function () {
+    //        count++;
+    //        console.log(count);//->1 第二次
+    //    }, 100);
+    //    console.log(count);//->0 第一次
+
+    //    var count = 0;
+    //    window.setTimeout(function () {
+    //        count++;
+    //        console.log(count);//->1
+    //    }, 0);//->定时器的时间设置为0,也不是立即执行,每个浏览器都有一个最小的反应时间(谷歌5~6ms IE10~13ms)，只有要等待的时间我们就不等,把当前定时器的这个任务放在等待任务队列中，当JS闲下来的时候在看是否到达时间决定是否执行
+    //    console.log(count);//->0
+
+    //->JS是单线程的,我们设定一个等待时间后继续执行下面的代码,只有当下面的代码彻底执行完,JS才能空出时间到等待任务队列中依次的把到时间的任务执行(如果下面代码一直完不成,哪怕定时器到达时间后也不会被执行)
+    //    var count = 0;
+    //    window.setTimeout(function () {
+    //        count++;
+    //        console.log(count);//->
+    //    }, 0);
+    //    console.log(count);//->0
+    //    while (1) {
+    //
+    //    }
+
+    //->设定两个等待的定时器,但是后面的程序需要很长的时间才可以执行完成,当执行完成的时候两个定时器的时间都到达了,先触发等待时间短的那个定时器（这个和饭店的不太一样,因为浏览器在设置的所有定时器中默认会认为你想要的就是设定等待时间短的那个就是先执行的）
+    //    var count = 0;
+    //    window.setTimeout(function () {
+    //        count = 10;
+    //        console.log(count);
+    //    }, 100);
+    //
+    //    window.setTimeout(function () {
+    //        count = -10;
+    //        console.log(count);
+    //    }, 99);
+    //
+    //    var c = new Date();
+    //    var i = 0;
+    //    while (i < 1000000000) {
+    //        i++;
+    //    }
+    //    console.log(new Date() - c);
+
+
+    //->所有的事件绑定
+    //->回调函数
+    //->还可以设置Ajax采用异步编程
+    //    var xhr = new XMLHttpRequest;
+    //    xhr.open("get", "/data/getAllData", false);
+    //    xhr.onreadystatechange = function () {
+    //        if (xhr.readyState === 4) {
+    //            console.log(xhr.responseText);//->第一步
+    //        }
+    //    };
+    //    xhr.send();//->ajax开始 request+response(花费一些时间) 同步:只要我们的response没有完成(只有readyState=4才算response完成),下面的代码就不会执行
+    //    console.log("ok");//->第二步
+
+
+    var xhr = new XMLHttpRequest;
+    xhr.open("get", "/data/getAllData");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            console.log(xhr.responseText);//->第二步
+        }
+    };
+    xhr.send();
+    console.log("ok");//->第一步
+</script>
+</body>
+</html>

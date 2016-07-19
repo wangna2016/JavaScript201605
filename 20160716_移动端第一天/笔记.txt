@@ -1,0 +1,128 @@
+建议大家获取买一本“图解CSS3”,这本书相当于CSS3语法应用的新华词典
+1、复习CSS3
+  ->CSS3中新提供了很多常用快捷的属性,可以让我们实现更加丰富绚丽的效果
+
+  ->盒子圆角border-radius
+
+  ->盒子阴影box-shadow/文本阴影text-shadow
+
+  ->背景颜色渐变background:-webkit-radio-gradient/-webkit-linear-gradient
+
+  ->对于背景有很多的变革:
+    background-size:cover/10px 20px/50% 50%/200px...;
+    background-origin:设置背景的起始位置 border-box content-box padding-box
+    background-clip:设置背景图片裁切
+
+  ->滤镜 -webkit-filter:grayscale、blur...
+
+  ->CSS3选择器: #div1>a #div1+a #div1~a  :nth-child(1/even/odd/2n+1/4n+1...) :nth-last-child :hover :active ...
+
+  ->CSS3导入特殊的字体包 @font-face...
+
+  ->媒体查询 @media
+    媒体设备 all screen print...
+    媒体条件 设定查询的条件
+
+    /*--当前屏幕的尺寸在360px以内(包含360px)，并且屏幕的宽度大于320px，就会单独执行此处代码块中编写的样式--*/
+    @media all and (max-width: 360px) and (min-width: 321px){
+        body {
+            background: chocolate;
+        }
+    }
+
+    @media all and (width:320px){
+
+    }
+
+    @media all and (max/min/-height:xxx){
+
+    }
+
+    //->横竖屏幕的检测:我们的JS或者CSS(HTML5页面)只能检测是横屏还是竖屏，但是不能禁止横竖屏的切换
+    @media all and (orientation: landscape) {
+        /*横屏*/
+        body {
+            background: chocolate;
+        }
+    }
+    @media all and (orientation: portrait) {
+        /*竖屏*/
+        body {
+            background: green;
+        }
+    }
+
+    //->JS实现横竖屏幕的检测
+    var flag = "onorientationchange" in window,
+        event = flag ? "orientationchange" : "resize";
+    window.addEventListener(event, function () {
+        if (flag) {
+            if (Math.abs(window.orientation) === 90) {
+                //->横屏
+                alert("横");
+            } else {
+                //->竖屏
+                alert("竖");
+            }
+        }
+    }, false);
+
+  ->CSS3变形(不是动画,它仅仅是让一个元素变为某一个形状或者位置等,不设置动画会立即变为目标的形状)：
+    transform:
+      ->旋转 rotate(45deg)/rotateX/rotateY/rotateZ(和rotate是同样的效果)
+      ->缩放 scale(1.5)/scaleX/scaleY/scaleZ
+      ->倾斜 skew(45deg)/skewX/skewY/skewZ
+      ->位移 translate(100px,100px,0)/translateX/translateY/translateZ
+      ->矩阵(通过矩阵公式自定义变形的效果) matrix
+
+    transform-origin:
+      ->设置变形的基准点
+
+   ->CSS3动画
+    [过渡动画]
+    transition:
+      [property] ->设置当前元素的哪些样式属性是跟着走过渡动画的,一般用all,所有都跟着走过渡动画
+      [duration] ->过渡动画的时间
+      [timing-function] ->动画运动的方式 linear、ease、ease-in、ease-out、ease-in-out、自定义方式(三次赛贝尔曲线)
+      [delay] ->动画的延迟时间
+
+    所谓的过渡动画，其实就是事先设定一套动画规则，后期只要当前元素的任何一个样式发生改变，都会按照上述的规则进行运动
+
+    CSS3动画在设定完成后,如果立马就把元素的样式改变了,都不会执行动画效果,需要一定的延迟；所以项目中的CSS3动画我们都是基于事件驱动触发的(CSS伪类、JS触发(事件或者定时器)、@media媒体查询加测到屏幕改变到目标位置也会触发...)；
+
+    [帧动画]
+    animation:
+      [name]运动轨迹的名称 @keyframes设定运动的轨迹
+      [duration] 运动的时间
+      [timing-function] 运动的方式
+      [delay] 延迟时间
+      [count] 运动的次数 1/infinite(无限次运动)
+      [fill-model] 运动完成的状态设置  forwards动画运动完成后,让当前元素停留在最后一帧的位置（从A运动到B,不设定这个值动画结束后会立马回到A的位置，设定这属性值会停在B的位置） backwards在animation-delay所指定的一段时间内，在动画显示之前，应用开始属性值（在第一个关键帧中定义）  both:同时拥有forwards和backwards(项目中最常用的就是both)
+
+    所谓的帧动画,其实就是设定一套运动的轨迹,比如从A到B,过渡动画是按照规则一直运动到B，之间的轨迹是无法进行修改的；
+
+   animation && transition
+   ->能用CSS实现的动画绝对不用JS,能用JS实现的动画绝对不用FLASH
+   ->CSS动画中能用animation实现的我们绝对不用transition(transition比animation消耗的性能多)
+     但是有些时候我们目标位置的值不是写死的，是需要在JS中动态设定的，这样的话我们只能用transition（animation的目标值都是在CSS中规定死的）
+
+     但是还有些有些时候，我们实现的动画很简单，用transition控制也是比较方便的我们可以使用transition
+
+   ->能用transform控制的变形尽量不用具体的样式属性控制,因为transform开启了硬件加速，实现的性能会好一些
+
+
+   ->CSS3中增加了新的盒子模型
+     ->box-sizing: border-box;
+     ->flexbox 弹性/伸缩盒子模型
+     ->columns 栅格化多列布局
+
+二、复习HTML5
+   ->HTML5中新增加一些构建页面语义化结构的标签 header、footer、nav、section、article、aside、figure(配图)、figcaption(配图说明)...
+     在IE6~8中这些标签都不支持,我们需要引入HTML5.min.js
+
+        ->在HEAD区域引入这个JS就可以处理新标签的兼容问题了
+        <!--[if lt IE 9]>
+          <script type="text/javascript" src="html5.min.js"></script>
+        <![endif]-->
+
+   ->HTML5中还修改删除了一些标签(详细见“移动端 [HTML5元素].doc”)
