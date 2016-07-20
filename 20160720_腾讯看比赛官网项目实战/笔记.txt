@@ -25,3 +25,7 @@
    background: rgba(255, 255, 255, 0.6);
 
    优雅降级:按照高版本的浏览器开发样式，低版本不兼容的话可以想其它的办法解决或者不解决
+
+5、获取当前屏幕的高度
+   JS: document.documentElement.clientHeight || document.body.clientHeight;
+   jQuery: $(window).innerHeight();
