@@ -273,8 +273,10 @@ var url = window.location.href,
 var hash = reg.test(url) ? reg.exec(url)[1] : null;
 
 var $curMenu = $(".menu a[href*='" + hash + "']");
-$curMenu.parent().addClass("bg").siblings().removeClass("bg");
-menuScroll.scrollToElement($curMenu.parent()[0], 300);
+if ($curMenu.length > 0) {
+    $curMenu.parent().addClass("bg").siblings().removeClass("bg");
+    menuScroll.scrollToElement($curMenu.parent()[0], 300);
+}
 
 calendarModule.init(queryColumnId(hash));
 
