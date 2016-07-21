@@ -1,48 +1,117 @@
+~function (pro) {
+    pro.myFormatTime = myFormatTime;
+    //->myFormatTime:用来把指定的时间字符串按照既定的模板格式进行格式化
+    function myFormatTime(template) {
+        template = template || "{0}年{1}月{2}日 {3}时{4}分{5}秒";
+        var ary = this.match(/\d+/g);
+        return template.replace(/\{(\d+)\}/g, function () {
+            var index = arguments[1],
+                item = ary[index];
+            !item ? item = "00" : null;
+            item.length < 2 ? item = "0" + item : null;
+            return item;
+        });
+    }
+}(String.prototype);
+
+//->获取需要操作的元素对象
 var $content = $(".content"),
     $calendar = $content.find(".calendar"),
+    $calendarList = $calendar.find("ul"),
     $matchList = $content.find(".matchList");
+var serURL = "http://matchweb.sports.qq.com/kbs";
 
 //第一步：控制区域CONTENT/MATCH LIST的高度
 changeHeight();
 function changeHeight() {
     var $winH = $(window).innerHeight();
-
-    //->CONTENT的高度=一屏幕的高度-HEADER高度-MARGIN值
     $content.css("height", $winH - 63 - 30);
-
-    //->MATCH LIST的高度=CONTENT的高度-CALENDAR的高度-MARGIN值
     $matchList.css("height", $content.outerHeight() - $calendar.outerHeight() - 15);
 }
-//->当浏览器窗口大小改变的时候,重新把对应区域的高度进行改变
 $(window).on("resize", changeHeight);
 
 
 //第二步：使用ISCROLL.JS实现指定区域的局部滚动
-//[例如让MENU区域实现局部滚动]
-//->首先给MENU区域加一个CSS样式 "position: relative;" , 这样做的目的是为了让一会出现的滚动条是相对于MENU这个区域定位的(我们看见的滚动条是ISCROLL给自动创建的,它的样式中是用position: absolute实现的,如果MENU区域没有加relative,它会相对于BODY去定位,这样滚动条就不能处出现在MENU区域内了)
-
-//->第二步初始化ISCROLL
 var menuScroll = new IScroll(".menu", {
-    scrollbars: true,//->显示滚动条
-    bounce: false,//->到达边界后没有缓冲效果
-    mouseWheel: true//->PC端鼠标滚轮滚动,区域也跟着滚动
+    scrollbars: true,
+    bounce: false,
+    mouseWheel: true
 });
-
-//->第三步:我们还可以自定义滚动条的样式 原理:ISCROLL生成的滚动条有“iScrollVerticalScrollbar”样式,我们自己设定它的样式
-$(".menu .iScrollVerticalScrollbar").css({
-    opacity: 0.3
-});
-
-//[matchList 区域的局部滚动]
-//ISCROLL的部分原理:ISCROLL需要外层容器的高度是固定的,并且它是给外层容器中的第一个子元素实现滚动的,所以需要把容器中的内容统一放在容器第一个子元素中
 var matchListScroll = new IScroll(".matchList", {
     scrollbars: true,
     bounce: false,
     mouseWheel: true
 });
-$(".matchList .iScrollVerticalScrollbar").css({
-    opacity: 0.3
-});
+$(".iScrollVerticalScrollbar").css("opacity", 0.3);
+
+//第三步：绑定日期区域的数据
+var calendarModule = (function () {
+    var $calendarFns = $.Callbacks();
+
+    //->获取数据后:把日期列表版绑定在日期的区域
+    $calendarFns.add(bindHTML);
+    function bindHTML(data, today) {
+        var str = '';
+        $.each(data, function (index, curData) {
+            str += '<li date="' + curData["date"] + '"><a href="javascript:;">';
+            str += '<span>' + curData["weekday"] + '</span>';
+            str += '<span>' + curData["date"].myFormatTime("{1}-{2}") + '</span>';
+            str += '</a></li>';
+        });
+        $calendarList.html(str).css("width", data.length * 110);
+        //->给当前的区域设定宽度,让所有的LI在UL中一行展示,以后想展示目前隐藏的LI,我们只需要控制UL在WAPPERR中的LEFT的值即可(等同于轮播图实现的思路)
+    }
+
+    //->获取数据后:定位当当前日期的位置或者定位到当前日期后面最近的一个位置
+    $calendarFns.add(positionToday);
+    function positionToday(data, today) {
+        //->计算当天日期和所有日期的时间差
+        var ary = [];
+        today = new Date(today.replace(/-/g, "/"));
+        $calendarList.children("li").each(function (index, curLi) {
+            var curLiDate = new Date($(curLi).attr("date").replace(/-/g, "/"));
+            ary.push(today - curLiDate);//->把相差毫秒差存储到数组中
+        });
+
+        //->在数组中取出距离零最近的这一个正数值,以及取出的这个值的索引(i)
+        for (var i = 0; i < ary.length; i++) {
+            var n = ary[i];
+            if (n <= 0) {
+                break;
+            }
+        }
+
+        //->定位到具体的位置并且让当前日期有选中的样式: -i * 110 让当前LI在七个中的最左边,如果需要让其在中间 -i*110+3*110 => (3-i)*110
+        $calendarList.css("left", (3 - i) * 110).find("li:eq(" + i + ")").addClass("bg");
+    }
+
+
+    //->模块中方法的入口
+    function init(columnId) {
+        columnId = columnId || 100000;
+        $.ajax({
+            url: serURL + "/calendar?columnId=" + columnId,
+            type: "get",
+            dataType: "jsonp",
+            success: function (jsonData) {
+                if (jsonData && jsonData["code"] == 0) {
+                    var data = jsonData["data"],
+                        today = data["today"];
+                    data = data["data"];
+                    $calendarFns.fire(data, today);
+                }
+            }
+        });
+    }
+
+    return {
+        init: init
+    };
+})();
+calendarModule.init();
+
+
+
 
 
 
