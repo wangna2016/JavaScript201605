@@ -60,70 +60,79 @@ var calendarModule = (function () {
             str += '</a></li>';
         });
         $calendarList.html(str).css("width", data.length * 110);
+        //->给当前的区域设定宽度,让所有的LI在UL中一行展示,以后想展示目前隐藏的LI,我们只需要控制UL在WAPPERR中的LEFT的值即可(等同于轮播图实现的思路)
     }
 
     //->获取数据后:定位当当前日期的位置或者定位到当前日期后面最近的一个位置
     $calendarFns.add(positionToday);
-    function positionToday(data, today, columnId) {
+    function positionToday(data, today) {
+        //->计算当天日期和所有日期的时间差
         var ary = [];
         today = new Date(today.replace(/-/g, "/"));
         $calendarList.children("li").each(function (index, curLi) {
             var curLiDate = new Date($(curLi).attr("date").replace(/-/g, "/"));
-            ary.push(today - curLiDate);
+            ary.push(today - curLiDate);//->把相差毫秒差存储到数组中
         });
+
+        //->在数组中取出距离零最近的这一个正数值,以及取出的这个值的索引(i)
         for (var i = 0; i < ary.length; i++) {
             var n = ary[i];
             if (n <= 0) {
                 break;
             }
         }
+
+        //->如果今天日期大于所有日期,我们定位到最后一个即可
         if (i === ary.length) {
             i = ary.length - 1;
         }
+
+        //->定位到具体的位置并且让当前日期有选中的样式: -i * 110 让当前LI在七个中的最左边,如果需要让其在中间 -i*110+3*110 => (3-i)*110
         var curLeft = (3 - i) * 110;
         curLeft = curLeft > maxL ? maxL : (curLeft < minL ? minL : curLeft);
         $calendarList.css("left", curLeft).find("li:eq(" + i + ")").addClass("bg");
-
-        //->绑定数据
-        matchModule.init(columnId);
     }
 
     //->获取数据后:完成左右按钮和LI的点击操作
     $calendarFns.add(bindEvent);
-    function bindEvent(data, today, columnId) {
+    function bindEvent() {
         $calendar.on("click", function (e) {
             var tar = e.target,
                 tarTag = tar.tagName.toUpperCase(),
                 $tar = $(tar);
+
+            //->如果我们点击的是SPAN我们都获取它的父级元素(A),以后我们只需要判断A即可
             if (tarTag === "SPAN") {
                 tar = tar.parentNode;
                 $tar = $(tar);
                 tarTag = tar.tagName.toUpperCase();
             }
+
             if (tarTag === "A") {
+                //->点击的是LI下的A
                 if (tar.parentNode.tagName.toUpperCase() === "LI") {
                     $tar.parent().addClass("bg").siblings().removeClass("bg");
-                    matchModule.scrollTo($tar.parent().attr("date"));
                     return;
                 }
 
                 //->点击的是左或者右
                 var curL = parseFloat($calendarList.css("left"));
+                //->为了防止快速点击,我们需要保证每一次点击的时候我们起始的LEFT的值是110的倍数才可以,只有这样才能保证每一屏幕都是完整的七个
                 if (curL % 110 !== 0) {
                     curL = Math.round(curL / 110) * 110;
                 }
                 if ($tar.hasClass("caleTriLeft")) {
+                    //->左:向右走,在原来的LEFT值基础上+770即可
                     curL += 770;
                 }
                 if ($tar.hasClass("caleTriRight")) {
+                    //->右:向左走,在原来的LEFT值基础上-770即可
                     curL -= 770;
                 }
                 curL = curL > maxL ? maxL : (curL < minL ? minL : curL);
+                //->开始运动":当运动完成后,让当前展示的这七个中的第一个选中
                 $calendarList.stop().animate({left: curL}, 500, function () {
                     $(this).find("li:eq(" + Math.abs(curL) / 110 + ")").addClass("bg").siblings().removeClass("bg");
-
-                    //->绑定数据
-                    matchModule.init(columnId);
                 });
             }
 
@@ -143,7 +152,7 @@ var calendarModule = (function () {
                         today = data["today"];
                     data = data["data"];
                     minL = -(data.length - 7) * 110;//->最小LEFT
-                    $calendarFns.fire(data, today, columnId);
+                    $calendarFns.fire(data, today);
                 }
             }
         });
@@ -153,132 +162,7 @@ var calendarModule = (function () {
         init: init
     };
 })();
-
-//第四步：绑定比赛列表区域的数据
-var matchModule = (function () {
-    //->滚动到具体的日期位置
-    function scrollTo(tarTime) {
-        var tarElement = $(".matchInfo[date='" + tarTime + "']")[0];
-        if (tarElement) {
-            matchListScroll.scrollToElement(tarElement);
-        }
-    }
-
-    //->绑定HTML
-    function bindHTML(data) {
-        var str = '';
-        $.each(data, function (key, value) {
-            str += '<div class="matchInfo" date="' + key + '">';
-            str += '<h2>' + key.myFormatTime("{1}月{2}日") + '</h2>';
-            str += '<ul>';
-            $.each(value, function (index, curData) {
-                //->每一个LI中还包含很多的详细信息,在这里把对应的HTML字符串拼接完成即可(自己回去扩展)
-                str += '<li></li>';
-            });
-            str += '</ul>';
-            str += '</div>';
-        });
-        $matchList.children("div").eq(0).html(str);
-        matchListScroll.refresh();
-        scrollTo($calendarList.find("li[class='bg']").attr("date"));
-    }
-
-    //->获取数据
-    function init(columnId) {
-        columnId = columnId || 100000;
-        var strIn = Math.abs(parseFloat($calendarList.css("left"))) / 110,
-            endIn = strIn + 6;
-        var $allLis = $calendarList.find("li"),
-            strTime = $allLis.eq(strIn).attr("date"),
-            endTime = $allLis.eq(endIn).attr("date");
-
-        $.ajax({
-            url: serURL + "/list?columnId=" + columnId + "&startTime=" + strTime + "&endTime=" + endTime,
-            type: "get",
-            dataType: "jsonp",
-            success: function (jsonData) {
-                if (jsonData && jsonData["code"] == 0) {
-                    bindHTML(jsonData["data"]);
-                }
-            }
-        });
-    }
-
-    return {
-        init: init,
-        scrollTo: scrollTo
-    };
-})();
-
-//第五步：点击左侧的MENU中的LI,右侧跟着改变
-$(".menu a").on("click", function (e) {
-    $(this).parent().addClass("bg").siblings().removeClass("bg");
-    //->获取每一个LI对应的columnId
-    var hash = $(this).attr("href").substring(1);
-    calendarModule.init(queryColumnId(hash));
-
-    //->滚动到具体的区域
-    menuScroll.scrollToElement($(this).parent()[0], 300);
-});
-function queryColumnId(hash) {
-    var columnId = 100000;
-    switch (hash) {
-        case "nba":
-            columnId = 100000;
-            break;
-        case "ec":
-            columnId = 3;
-            break;
-        case "csl":
-            columnId = 208;
-            break;
-        case "afc":
-            columnId = 605;
-            break;
-        case "ucl":
-            columnId = 5;
-            break;
-        case "pl":
-            columnId = 8;
-            break;
-        case "laliga":
-            columnId = 23;
-            break;
-        case "seriea":
-            columnId = 21;
-            break;
-        case "bundesliga":
-            columnId = 22;
-            break;
-        case "l1":
-            columnId = 24;
-            break;
-        case "cba":
-            columnId = 100008;
-            break;
-        case "nfl":
-            columnId = 100005;
-            break;
-        case "others":
-            columnId = 100002;
-            break;
-    }
-    return columnId;
-}
-
-
-//->开始进来绑定对应赛事的操作
-var url = window.location.href,
-    reg = /#([^?=&#]+)/;
-var hash = reg.test(url) ? reg.exec(url)[1] : null;
-
-var $curMenu = $(".menu a[href*='" + hash + "']");
-$curMenu.parent().addClass("bg").siblings().removeClass("bg");
-menuScroll.scrollToElement($curMenu.parent()[0], 300);
-
-calendarModule.init(queryColumnId(hash));
-
-
+calendarModule.init();
 
 
 

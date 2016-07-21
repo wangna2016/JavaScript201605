@@ -1,7 +1,4 @@
 //->http://matchweb.sports.qq.com/kbs/calendar?columnId=100000  我们获取的是NBA赛事的比赛日期 columnId=100000代表的是NBA
-
-//http://matchweb.sports.qq.com/kbs/list?callback=gameList&columnId=100000&startTime=2016-07-17&endTime=2016-07-27&_=1469067290408
-
 {
   "code": 0, //->状态码,0代表获取成功 其余的值都是错误都有自己特殊的错误原因
   "data": {
