@@ -1,0 +1,36 @@
+//->LESS代码
+.box {
+  color: blue;
+  &:hover {
+    color: green;
+  }
+
+  &-top {
+    height: 30px;
+  }
+
+  &-center {
+    height: 500px;
+  }
+
+  //->多个&&
+  & > &-top {
+    color: blue;
+  }
+
+  & + &-top {
+    color: red;
+  }
+
+  & &-top {
+    color: grey;
+  }
+
+  &&-top {
+    color: black;
+  }
+
+  &, &-top {
+    color: orange;
+  }
+}
