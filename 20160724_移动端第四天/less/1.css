@@ -1,0 +1,36 @@
+.box {
+    color: blue;
+}
+
+.box:hover {
+    color: green;
+}
+
+.box-top {
+    height: 30px;
+}
+
+.box-center {
+    height: 500px;
+}
+
+.box > .box-top {
+    color: blue;
+}
+
+.box + .box-top {
+    color: red;
+}
+
+.box .box-top {
+    color: grey;
+}
+
+.box.box-top {
+    color: black;
+}
+
+.box,
+.box-top {
+    color: orange;
+}

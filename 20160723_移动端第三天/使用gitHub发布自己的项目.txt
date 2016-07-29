@@ -1,0 +1,60 @@
+1、什么是gitHub?
+   https://github.com/
+   一个网站,我们在这个网站注册一个账号,我们可以在自己的账号下创建0-N个仓库,每一个仓库都可以用来存放项目的源代码和说明文件,文件的上传下载等管理都是基于git命令来操作的。
+
+   目前前端界你知道的和你不知道的框架、类库、插件的源码都在gitHub上有托管。
+
+2、FORK
+   在gitHub中我们可以通过FORK把别人优秀的代码复制一份到自己的仓库中
+
+3、gitHub基本操作
+   自己的账号信息都可以在右上角头像展开后的settings中进行相关的操作
+
+4、使用gitHub发布静态页面
+  “静态页面”：所有由前端开发的页面(项目页面的运行环境是浏览器),里面的数据内容既可以是写死的也可以是通过Ajax/JSONP数据绑定的
+
+   gitHub不提供NODE、Apache、IIS这样的服务器端运行环境的，所以如果我们把之前写的NODE代码上传到gitHub发布，想要实现一个后台程序是不可以的
+
+   ->登录或者注册gitHub
+
+   ->在gitHub中创建一个仓库(仓库默认有一个MASTER的主分支,默认没有其它的分支了)
+     扩展:
+     到此为止，我们可以把这个仓库克隆到本地($ clone xxx.git)，把自己的项目源代码通过($ git add -A / $ git commit -m'' / $ git push origin master)三步骤上传到gitHub仓库进行托管
+
+   ->以这个仓库为依托，发布我们的项目
+     项目发布完成的变化:
+     1)生成了一个地址 http://zhouxiaotian.github.io/myResume/ 以后我们通过这个地址访问我们的项目;值的注意的是，地址的全写是：http://zhouxiaotian.github.io/myResume/index.html 如果请求的HTML是index.html我们可以省略不写，除了这个index.html可以省略其它的不能省略。
+
+     2)在分支中增加了一个叫做 gh-pages，这个分支的作用：我们发布页面的源代码并没有在master这个分支下，而是在gh-pages这个分支下管理的；换句话说，以后如果想修改发布的项目内容，需要把最新的文件传到 gh-pages 这个分支下；
+
+   ->修改仓库的默认分支为gh-pages
+
+   ->把gitHub中的仓库克隆到本地
+     $ git clone 地址
+
+   ->把自己的简历文件上传到远程的仓库
+     1)把默认生成的文件(除了.git以外)都删除掉
+     2)把我们自己的简历文件放到文件夹中
+     3)上传到远程仓库
+       $ git add -A
+       $ git commit -m''
+       $ git push origin gh-pages (一定要记住是传到gh-pages这个分支下的)
+
+   ->把我们网址生成二维码
+     https://zhouxiaotian.github.io/myResume/resume.html
+     草料:http://cli.im/
+
+仓库的详细描述我们都放在README文件中,README里面内容编写的格式采用MARKDOWN语法
+
+
+李树鹏组:
+龙霞:
+PC:
+移动端:
+...
+
+周末班第一组:
+曹欢欢 地址
+....
+
+

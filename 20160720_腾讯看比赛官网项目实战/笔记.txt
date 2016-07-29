@@ -1,0 +1,33 @@
+1、获取后查一下如何给当前的网站设置ICON图标，在用户打开页面的时候，浏览器的页卡栏中的图标是自己设定的
+
+2、页面HEAD区域的TITLE设置是存在很多好处的：可以在浏览器的页卡中显示、有利于网站的SEO搜索引擎优化、在微信的二次分享中我们设置的TITLE将会成为分享出去的TITLE(当然我们也可以调取微信通过jsBridge提供的分享接口)
+
+   SEO基本的
+   <title>看比赛_体育直播_珠峰培训</title>
+   <meta name="keywords" content="网站的关键字"/>
+   <meta name="description" content="网站的简要描述"/>
+
+   LOGO采用背景图设置,我们在区域中加一个H1(但是是隐藏的标签),由于H1的权重比较的大,这样有利于我们的SEO优化
+   <div class="logo">
+        <h1>腾讯看比赛</h1>
+   </div>
+
+
+3、条件注释:我们平时用的注释也可以写成具有业务逻辑的判断
+   <!--[if lt IE 9]>
+   <script charset="utf-8" type="text/javascript" src="js/html5.min.js"></script>
+  <![endif]-->
+   如果放在上述的条件注释中，在标准浏览器中就不会下载和使用html5.min.js了,只有在IE6~8中才会下载和引入...
+
+4、渐进增强和优雅降级
+   渐进增强:先按照低版本的实现一套样式,然后针对于高版本浏览器在单独写一套样式
+   background: #fff;
+   background: rgba(255, 255, 255, 0.6);
+
+   优雅降级:按照高版本的浏览器开发样式，低版本不兼容的话可以想其它的办法解决或者不解决
+
+5、获取当前屏幕的高度
+   JS: document.documentElement.clientHeight || document.body.clientHeight;
+   jQuery: $(window).innerHeight();
+
+6、我们通过JS实现数据绑定(字符串拼接、动态创建DOM、模板引擎...)我们绑定上去的内容在页面的源代码中是查看不到的，这样如果内容需要做SEO搜索抓取的话，则不能使用JS进行数据绑定，而采用PHP/Ruby/Python...等后台语言实现数据的绑定

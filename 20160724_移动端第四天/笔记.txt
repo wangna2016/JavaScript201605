@@ -1,0 +1,112 @@
+HTML5
+1、HTML5中新增加一些构建页面语义化结构的标签 header、footer、nav、section、article、aside、figure(配图)、figcaption(配图说明)...
+   在IE6~8中这些标签都不支持,我们需要引入HTML5.min.js
+
+   ->在HEAD区域引入这个JS就可以处理新标签的兼容问题了
+   <!--[if lt IE 9]>
+     <script type="text/javascript" src="html5.min.js"></script>
+   <![endif]-->
+
+   ->HTML5中还修改删除了一些标签(详细见“移动端 [HTML5元素].doc”)
+
+2、给input标签新增加了很多的类型
+   ->传统的表单元素:form、lable、input(type=text/password/submit/reset/button/radio/checkbox/file/hidden...)、textarea、select...
+
+   ->增加了哪些新的类型呢?
+     type=search/url/email/tel/number/range/date/month/time/color...
+
+     优势:
+     ->提供了更加强大的功能,例如:之前想要选择年月日我们还需要引入外部的日历插件来实现,但是现在不需要,我们只需要让其类型为date即可实现
+
+     ->内置验证机制,不需要我们自己编写正则验证 (CSS验证 && JS验证)
+
+     ->我们在移动端如果使用了新增加的这些类型，浏览器会自己根据类型调取出更适合用户输入的虚拟键盘，例如：type=tel 调取出来的键盘是数字键盘
+
+   ->HTML5对于表单元素还新增加了一个属性:placeholder文本框的提示  (扩展:在标准浏览器中的提示我们都可以用placeholder实现，但是IE6~8下不支持这个属性我们只能自己使用JS来模拟了，如何模拟呢?)
+
+   ->表单元素的事件
+     1)focus、blur在PC端和移动端都可以使用
+     2)keyup、keydown事件在移动端不能使用，因为移动端的键盘都是虚拟出来的，我们无法监听到keyup等行为；在移动端不管是keyup还是keydown，我们统一使用input事件；
+     userEmail.addEventListener("input",function...);
+
+3、音视频处理
+   ->音频用audio
+   ->视频用video
+
+4、canvas 画布
+   ->H5中提供了一系列的API方法可以让我们创建一个画布并且在画布上画任何我们想看到的图形
+   ->目前项目中统计图表基本上都是采用canvas绘制的
+     百度开发的组件:
+     highCharts:http://www.hcharts.cn/
+     ECharts:http://echarts.baidu.com/
+
+     其它绘制图标的组件:
+     d3.js
+     svg.js
+
+5、HTML5中新增加的API
+   ->检测横竖屏切换
+   ->检测当前地理位置信息
+   ->web works && WebSockets
+   ->离线存储
+
+   ->本地存储：cookie && webStorage(localStorage 和 sessionStorage) && 本地数据库的存储(webSQL和indexedDB) && 本地缓存存储(ApplicationCatch和catchStorage)
+
+     所谓的本地存储是把一个页面中的部分信息，存储到客户端(存储到客户端的浏览器中了)，当页面刷新或者关闭，刚才存储的那些信息是不会随着消失的。
+
+     本地存储在实际项目中太重要了:
+     ->记住用户名密码 或者 自动登录
+     ->购物车
+     ->页面通信
+
+
+   ->cookie:支持所有的浏览器的,目前项目中用户名密码等基础信息的本地存储都是使用的cookie
+     document.cookie来设置或者获取cookie的信息(以后可以使用我封装好的那个cookie.js)
+     弊端:
+     1)存储的内容量特别的小,一般浏览器在同一个源下只能存储4kb的大小
+     2)用户可能出于安全的角度禁用cookie的存储(无痕浏览:ctrl shift n是开启谷歌的隐身模式)
+     3)cookie存在过期时间,一般来说都是我们来设置,但是我们设置的时间长也没用(cookie清除有N多方式:存储的量多了,后面的会把前面存储的挤掉；我们清除浏览器的缓存和垃圾都有可能清除cookie；使用360等安全卫士清理的时候一般也会把cookie清除掉；)
+
+   ->HTML5中新的本地存储方案:webStorage->localStorage和sessionStorage
+     & sessionStorage:当前窗口的会话存储，只要当前窗口关闭，存储的信息就没有了
+     & localStorage:持久化存储到本地,没有过期时间,只要你自己不手动在JS中或者控制台中清除,会永久存储下来。
+     webStorage在同一个源下可以存储5MB的内容
+
+     ->setItem、getItem、removeItem、clear...
+
+   谷歌的控制台Resources中可以看到我们的cookie和storage的本地存储信息，我们的cookie或者localStorage都采用的是明文存储(我们自己在控制台可以看见属性名和属性值)
+   ->为了安全，我们不能把重要的信息存储到本地，如果非要存储的话，我们要把重要的信息进行加密(不可逆转加密:MD5.js 用户的密码都应该是不可逆转的加密)
+
+
+6、实战项目中页面之间通信的方式
+   A页面 我在A页面中进行某一个操作 跳转到了B页面，我们需要在B页面中获取A页面中的一些信息(例如：存储的信息或者是点击的是哪一个按钮跳转页面的...)
+
+   1、URL地址栏问号传参
+      在A跳转到B页面的时候，我们传递给B页面不同的参数，这样B页面可以根据参数的不一样展示不同的内容(列表->详细 基本上都是这种模式)
+      http://kbs.sports.qq.com/kbsweb/game.htm?mid=100002:2369
+      http://kbs.sports.qq.com/kbsweb/game.htm?mid=100002:2368
+
+   2、本地存储
+      我在登录页面登录成功，我们在登录页知道了用户的账号信息，当我进入首页的时候，发现登录页面的账号信息在首页依然可以获取到
+
+   3、服务器存储(session、数据库等)
+      我媳妇在家用手机购物了一些商品，我在自己的电脑上也购物了一些商品，我们的购物信息都存储到服务器上了，这样不管谁都可以看到对方购买的产品了
+
+   4、iframe(目前不常用,我们项目中都在逐步的用单页面模块化开发代替iframe,只有特殊的需求才用)
+      A页面中有一个iframe,iframe的src嵌入的是B页面的地址，这样我们称A页面是父级页面，B页面是子页面，父页面和子页面之间可以进行部分内容的通信(我们可以在父页面获取子页面中的部分内容，但是需要子页面支持)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

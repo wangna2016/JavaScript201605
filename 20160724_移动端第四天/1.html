@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <title>珠峰培训HTML5表单</title>
+    <link charset="utf-8" type="text/css" rel="stylesheet" href="css/reset.min.css"/>
+    <style type="text/css">
+        /*--禁止文本域随意的随意拖动--*/
+        /*textarea {
+            width: 300px;
+            height: 150px;
+            border: 1px solid #eee;
+            resize: none;
+        }*/
+        /*--以后项目中如果需要使用编辑器:http://ueditor.baidu.com/website/--*/
+
+        html, body {
+            width: 100%;
+            font-size: 14px;
+            overflow-x: hidden;
+        }
+
+        input, label {
+            display: block;
+        }
+
+        #userEmail, #labelEmail {
+            box-sizing: border-box;
+            padding: 0 10px;
+            width: 96%;
+        }
+
+        #userEmail {
+            margin: 10px auto;
+            height: 35px;
+            border: 1px solid #ccc;
+        }
+
+        #userEmail.success {
+            border-color: green;
+        }
+
+        #userEmail.error {
+            border-color: red;
+        }
+
+        /*--CSS验证--*/
+        #userEmail:valid {
+            border-color: green;
+        }
+
+        #userEmail:invalid {
+            border-color: red;
+        }
+
+        #labelEmail {
+            margin: 0 auto;
+            height: 30px;
+            line-height: 30px;
+            border: 1px dashed #ccc;
+        }
+
+        #labelEmail.success {
+            color: green;
+            border-color: green;
+        }
+
+        #labelEmail.error {
+            color: red;
+            border-color: red;
+        }
+
+        #userAge {
+            margin: 10px;
+            width: 50px;
+            height: 30px;
+            text-align: center;
+        }
+
+        #rangeAge {
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+<input type="email" id="userEmail" placeholder="请输入邮箱"/>
+<label id="labelEmail">请输入您常用的邮箱~</label>
+<input type="number" max="65" min="18" step="1" value="25" id="userAge" disabled/>
+<input type="range" max="65" min="18" step="1" value="25" id="rangeAge"/>
+<script type="text/javascript">
+    document.getElementById("rangeAge").addEventListener("input", function () {
+        document.getElementById("userAge").value = this.value;
+    }, false);
+</script>
+
+
+<script type="text/javascript">
+    var userEmail = document.getElementById("userEmail"),
+            labelEmail = document.getElementById("labelEmail");
+    var reg = /^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+
+    //->一边输入一边提示:成功的话文本框颜色为绿色 失败的话文本框颜色为红色 文本框没有内容颜色依然是灰色
+    //keydown、keypress、keyup
+    //    userEmail.addEventListener("keyup", function () {
+    //        var val = this.value.replace(/^ +| +$/g, "");
+    //        if (val === "") {
+    //            this.className = null;
+    //            return;
+    //        }
+    //        if (!reg.test(val)) {
+    //            this.className = "error";
+    //            return;
+    //        }
+    //        this.className = "success";
+    //    });
+
+    //->光标离开文本框做提示:控制labelEmail的样式和里面的文字内容
+    //focus获取焦点 blur失去焦点
+    //    userEmail.addEventListener("blur", function () {
+    //        var val = this.value.replace(/^ +| +$/g, "");
+    //        if (val === "") {
+    //            labelEmail.className = null;
+    //            labelEmail.innerHTML = "请输入您常用的邮箱~";
+    //            return;
+    //        }
+    //        if (!reg.test(val)) {
+    //            labelEmail.className = "error";
+    //            labelEmail.innerHTML = "输入的邮箱格式错误!!";
+    //            return;
+    //        }
+    //        labelEmail.className = "success";
+    //        labelEmail.innerHTML = "输入正确!!";
+    //    });
+
+    /*--HTML5 JS验证--*/
+    userEmail.addEventListener("blur", function () {
+        //->this.checkValidity：验证输入的内容是否符合内置的验证机制
+        if (this.checkValidity()) {
+            labelEmail.className = "success";
+            labelEmail.innerHTML = "输入正确!!";
+            return;
+        }
+        labelEmail.className = "error";
+        labelEmail.innerHTML = "输入的邮箱格式错误!!";
+    });
+</script>
+<!--radio或者checkbox按照name的值进行分组-->
+<!--<input type="radio" name="sex" id="sexMan" checked/><label for="sexMan">男</label>
+<input type="radio" name="sex" id="sexWoman"/><label for="sexWoman">女</label>-->
+
+<!--省市县三级联动自己回去可以扩展-->
+<!--<select>
+    <option>北京</option>
+    <option>上海</option>
+    <option selected>广州</option>
+</select>-->
+</body>
+</html>
